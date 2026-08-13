@@ -69,7 +69,7 @@ yet. If you are looking for that, it does not exist here.
 Prerequisite: Go 1.26 or later.
 
 ```sh
-git clone https://github.com/tadanahq/kozmo-bf.git
+git clone https://github.com/tadanahq/kbf.git
 cd kozmo-bf
 ```
 

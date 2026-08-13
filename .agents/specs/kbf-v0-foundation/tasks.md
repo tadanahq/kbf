@@ -6,7 +6,7 @@ status: in_progress
 
 ## Batch 1: Scaffold + model + schema
 
-- [x] Go module under `tools/` (module `github.com/tadanahq/kozmo-bf/tools`; org corrected from an invented kozmo-hq, owner 2026-08-13), cobra skeleton with `kbf` root + `schema` command — `go run ./cmd/kbf --help` lists `schema` (lint lands with Batch 2). Verified.
+- [x] Go module under `tools/` (module `github.com/tadanahq/kbf/tools`; org corrected from an invented kozmo-hq, owner 2026-08-13), cobra skeleton with `kbf` root + `schema` command — `go run ./cmd/kbf --help` lists `schema` (lint lands with Batch 2). Verified.
   - go.mod created, deps fetched (cobra, goccy/go-yaml, invopop/jsonschema, lipgloss). design.md gained an "Implementation clarifications" section resolving tier vocab, KBF007/008 mechanics, extends resolution, schema scope — read that before touching lint or schemagen. Content agent (parallel) has since appended a relation-identity clarification (KBF003/008 key on (name,from,to) for relations) — binding for Batch 2 rules.
 - [x] Canonical model structs in `internal/model/` for the seven primitives per design — 7 files (model.go + entity/relation/metric/action/competency/manifest/slots.go), every field has a why-comment. Compiles, gofmt clean.
 - [x] `internal/schemagen/` + `kbf schema [--check]` generating `schema/ontology.schema.yaml` + `schema/manifest.schema.yaml` — Doc comments flow into schema `description` via invopop's AddGoComments (had to compute base/dir dynamically so it works from both repo root and tools/; see comment on `modelImportComponents`). Verified: generates clean YAML, `--check` exits 0 when current, exits 1 with a clear "stale" message after a struct-comment edit, exits 0 again after revert.
