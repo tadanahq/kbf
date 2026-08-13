@@ -1,0 +1,5 @@
+# `expects` names a relation verb, not an entity or metric: KBF009's
+# resolution set spans every kind (design.md).
+kind: competency-question
+question: Which books were written by which authors?
+expects: [written-by]

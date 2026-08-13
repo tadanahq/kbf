@@ -1,0 +1,11 @@
+kind: entity
+name: book
+meaning: A single title held by the library.
+identity: [book_id]
+resolution: identity-mapping
+tier: structural
+---
+kind: action
+name: flag-overdue
+on: book
+writes: finding

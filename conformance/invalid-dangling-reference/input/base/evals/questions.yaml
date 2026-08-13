@@ -1,0 +1,4 @@
+# `late-fee-total` is not declared anywhere: a dangling reference.
+kind: competency-question
+question: What is the total in unpaid late fees?
+expects: [late-fee-total]

@@ -3,13 +3,8 @@
 # `make check` is the quality gate (AGENTS.md / project-standards.md):
 # gofmt, golangci-lint, go test, `kbf lint` over packages/ + examples/
 # (dogfood), the conformance suite, schema-freshness, and boundaries.
-# Green before any task is marked done.
-#
-# conformance/ has no fixtures yet (Batch 4): that target degrades to a
-# clear skip message and exit 0 rather than fail a fresh clone that hasn't
-# reached that batch. Every other target enforces for real: dogfood-lint
-# (packages/universal-core, examples/cafe-demo) and boundaries
-# (scripts/boundaries.go) both have real content/code to check already.
+# Green before any task is marked done. Every target enforces for real:
+# no empty-pass left anywhere (all content/code this gate checks exists).
 
 TOOLS := tools
 SCRIPTS := scripts
@@ -47,19 +42,11 @@ build: $(BIN)
 
 .PHONY: dogfood-lint
 dogfood-lint: $(BIN)
-	@if [ -f packages/universal-core/manifest.yaml ] && [ -f examples/cafe-demo/manifest.yaml ]; then \
-		./$(BIN) lint packages/universal-core examples/cafe-demo; \
-	else \
-		echo "dogfood-lint: packages/universal-core or examples/cafe-demo not present yet, skipping"; \
-	fi
+	./$(BIN) lint packages/universal-core examples/cafe-demo
 
 .PHONY: conformance
 conformance:
-	@if [ -z "$$(find conformance -type f 2>/dev/null)" ]; then \
-		echo "conformance: no fixtures under conformance/ yet, skipping"; \
-	else \
-		cd $(TOOLS) && go test ./internal/conformance/...; \
-	fi
+	cd $(TOOLS) && go test ./internal/conformance/...
 
 .PHONY: schema
 schema: $(BIN)

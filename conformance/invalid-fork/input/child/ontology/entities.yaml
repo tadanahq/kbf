@@ -1,0 +1,9 @@
+# Redeclares the parent's `book` and sets `meaning`, a non-glossary
+# field: a fork, not an extension (design.md, spec/package-format.md's
+# "Extension rules").
+kind: entity
+name: book
+meaning: A redefinition of the parent's book entity.
+identity: [book_id]
+resolution: identity-mapping
+tier: structural

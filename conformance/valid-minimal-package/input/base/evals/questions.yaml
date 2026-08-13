@@ -1,0 +1,3 @@
+kind: competency-question
+question: How many books does each branch hold?
+expects: [book-count]

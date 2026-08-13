@@ -1,0 +1,9 @@
+# `to: branch` is a typo; no `branch` entity is declared anywhere.
+kind: relation
+name: held-at
+from: book
+to: branch
+cardinality: many-to-one
+join: [book_id, branch_id]
+tier: source-synced
+temporal: false

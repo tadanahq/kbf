@@ -1,0 +1,7 @@
+kind: metric
+name: book-count
+formula: count(book)
+grain: [branch, business-date]
+additivity: additive
+unit: count
+tier: structural

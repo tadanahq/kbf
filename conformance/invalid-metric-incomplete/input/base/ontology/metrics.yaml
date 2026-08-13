@@ -1,0 +1,5 @@
+kind: metric
+name: book-count
+formula: count(book)
+unit: count
+tier: structural

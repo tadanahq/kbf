@@ -1,0 +1,10 @@
+# `shelved-at` is not in the parent's vocabulary ({held-at}). An extending
+# package cannot introduce a new verb on its own (design.md/conventions.md).
+kind: relation
+name: shelved-at
+from: book
+to: branch
+cardinality: many-to-one
+join: [book_id, branch_id]
+tier: client-configured
+temporal: false

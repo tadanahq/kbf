@@ -1,0 +1,12 @@
+# Reuses the parent's `held-at` verb for a new pair (author, branch: an
+# author's home branch), distinct from the parent's (book, branch). Per
+# design.md, relation identity is (name, from, to): a different pair is a
+# new relation, not a fork, even though the verb recurs.
+kind: relation
+name: held-at
+from: author
+to: branch
+cardinality: many-to-one
+join: [author_id, branch_id]
+tier: client-configured
+temporal: false

@@ -1,0 +1,8 @@
+kind: entity
+name: book
+meaning: A single title held by the library.
+identity: [book_id]
+resolution: identity-mapping
+tier: structural
+attributes:
+  - {name: title, type: text, slot: catalog.book-title}
