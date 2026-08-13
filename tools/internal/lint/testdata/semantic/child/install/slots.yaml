@@ -1,0 +1,8 @@
+# First row matches the parent's widget attribute (inherited: an install
+# configures the resolved ontology, not just what the child redeclares).
+# Second row has no matching attribute anywhere -> KBF012.
+
+- slot: catalog.widget-label
+  source: demopos
+- slot: catalog.orphan-slot
+  source: ""

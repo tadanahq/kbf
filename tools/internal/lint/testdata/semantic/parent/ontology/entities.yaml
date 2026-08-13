@@ -1,0 +1,22 @@
+kind: entity
+name: widget
+meaning: A thing the workshop makes. Child will fork this illegitimately.
+identity: [widget_id]
+resolution: identity-mapping
+tier: structural
+attributes:
+  - {name: label, type: text, slot: catalog.widget-label}
+---
+kind: entity
+name: gizmo
+meaning: Another thing the workshop makes. Child will override this legitimately.
+identity: [gizmo_id]
+resolution: identity-mapping
+tier: structural
+---
+kind: entity
+name: workshop
+meaning: Where widgets and gizmos are made.
+identity: [workshop_id]
+resolution: identity-mapping
+tier: structural

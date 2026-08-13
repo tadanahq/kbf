@@ -1,0 +1,17 @@
+kind: metric
+name: widget-count
+formula: count(widget)
+grain: [workshop, business-date]
+additivity: additive
+unit: count
+thresholds: {warn-below: 10}
+tier: structural
+---
+kind: metric
+name: gizmo-ratio
+formula: count(gizmo) / count(widget)
+grain: [workshop, business-date]
+additivity: non-additive
+unit: ratio
+thresholds: {warn-above: 0.5}
+tier: structural

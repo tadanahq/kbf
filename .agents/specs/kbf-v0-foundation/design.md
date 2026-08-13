@@ -31,7 +31,7 @@ kind: relation
 name: contains
 from: dish
 to: ingredient
-cardinality: many-to-many      # enum: one-to-one|one-to-many|many-to-many
+cardinality: many-to-many      # enum: one-to-one|one-to-many|many-to-one|many-to-many
 join: [dish_id, ingredient_id]
 tier: source-synced            # enum: source-synced|client-configured
 temporal: false
@@ -205,3 +205,39 @@ diverge"; binds Batch 3/4 content authoring too.
   child, with or without field changes, is always a fork, no glossary
   carve-out. Entity/Metric/Action/competency-question identity stays plain
   name (already globally unique by construction), unaffected by this note.
+- **Completeness checks (KBF004/KBF005/KBF010) skip override fragments.**
+  Confirmed against real content: cafe-demo's `product` entity fragment is
+  `{kind, name, synonyms}` only, and its `labor-cost-ratio` metric fragment is
+  `{kind, name, thresholds}` only, matching the glossary-override shape
+  exactly (fields elsewhere in this doc). Validated standalone, both would
+  fail KBF004 (no identity) and KBF010/KBF005 (no tier / no grain+additivity)
+  even though they are correct content. So: an element is classified as an
+  override fragment (name+kind match in extends-root; name+from+to match for
+  relations) BEFORE structural completeness rules run, and KBF004/005/010 are
+  skipped for it: KBF008 already validates that everything it sets is
+  glossary-eligible, and completeness is inherited from the parent, not
+  re-asserted. A NEW element (no match in extends-root) still needs full
+  completeness: cafe-demo's `waste-ratio` metric and `location`-`location`
+  relation are both declared in full, and are still checked.
+- **KBF009's resolution set spans every kind, matched by bare name.**
+  universal-core's competency questions reference relation verbs directly
+  (`expects: [sells]`, `expects: [works-at]`, `expects: [places]`), not just
+  entity/metric names. So KBF009 resolves a referenced name against entities,
+  metrics, actions, and relations together (relations by their `name`/verb,
+  same field used for KBF007, not the full (name,from,to) triple: confirming
+  *something* by that name exists is KBF009's job, not disambiguating which
+  pair, so a recurring verb still resolves).
+- **Cardinality is four values, not three: `many-to-one` was a real gap,
+  not a content mistake.** The original enum above (`one-to-one|one-to-many
+  |many-to-many`) was incomplete. `from`/`to` are fixed and directional, so
+  "many locations belong-to one organization" is genuinely many-to-one; it
+  cannot be restated as one-to-many without reversing from/to, which would
+  also reverse the relation's meaning. `packages/universal-core` uses
+  `many-to-one` 7 times (every child-to-parent relation: `belongs-to`,
+  `works-at`, `staffed-by`, `located-at`, `billed-to`) and correctly so;
+  linting it against the 3-value enum produced 8 false-positive KBF002s
+  across both packages before this was caught. Fixed in
+  `internal/model.Cardinalities` and regenerated schema. **Not yet fixed**:
+  `spec/primitives/relation.md`'s cardinality field table still says three
+  values; that edit belongs to the content batch (spec/ is out of this
+  batch's scope), flagged here and in the handoff report so it isn't lost.

@@ -1,0 +1,22 @@
+version: "2"
+
+# Same shape as tools/.golangci.yml, kept in sync deliberately: scripts/ is
+# a separate Go module (repo-gate tooling, not the KBF CLI) but holds
+# itself to the same bar.
+linters:
+  default: standard
+  enable:
+    - misspell
+    - revive
+  settings:
+    revive:
+      rules:
+        - name: package-comments
+          disabled: true
+        - name: exported
+          disabled: true
+
+formatters:
+  enable:
+    - gofmt
+    - goimports

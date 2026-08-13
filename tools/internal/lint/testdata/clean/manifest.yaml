@@ -1,0 +1,4 @@
+name: clean-fixture
+version: 0.1.0
+spec: v0
+extends: null

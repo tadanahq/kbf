@@ -1,0 +1,26 @@
+# widget-count: redeclares the parent's metric and sets `formula`, a
+# non-glossary field -> KBF008 fork.
+# gizmo-ratio: redeclares with only `thresholds` set -> a legitimate
+# glossary override, no finding.
+# orphan-metric: net new, but its grain references an entity that does not
+# exist -> KBF009.
+
+kind: metric
+name: widget-count
+formula: count(widget) * 2
+grain: [workshop]
+additivity: additive
+unit: count
+tier: structural
+---
+kind: metric
+name: gizmo-ratio
+thresholds: {warn-above: 0.6}
+---
+kind: metric
+name: orphan-metric
+formula: count(widget)
+grain: [nonexistent-entity, business-date]
+additivity: additive
+unit: count
+tier: structural

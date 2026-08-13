@@ -1,0 +1,21 @@
+# "contains" recurs across two pairs on purpose, echoing the real content:
+# relation identity is (name, from, to), and the vocabulary this fixture's
+# child package must stay inside is {contains}.
+
+kind: relation
+name: contains
+from: workshop
+to: widget
+cardinality: one-to-many
+join: [workshop_id, widget_id]
+tier: source-synced
+temporal: false
+---
+kind: relation
+name: contains
+from: workshop
+to: gizmo
+cardinality: one-to-many
+join: [workshop_id, gizmo_id]
+tier: source-synced
+temporal: false

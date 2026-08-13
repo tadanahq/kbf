@@ -1,0 +1,30 @@
+# Fixture for structural rules (KBF001, KBF003, KBF004, KBF010). Not
+# teaching content: generic names on purpose, kept out of packages/ and
+# examples/ (public hygiene: the only example business is Demo Cafe).
+
+kind: entity
+name: widget
+meaning: A clean baseline entity; every rule below should leave this alone.
+identity: [widget_id]
+resolution: identity-mapping
+tier: structural
+---
+kind: entity
+name: gadget
+meaning: Triggers KBF001 via an unrecognized field.
+identity: [gadget_id]
+resolution: identity-mapping
+tier: structural
+not_a_real_field: surprise
+---
+kind: entity
+name: sprocket
+meaning: Triggers KBF004 (no identity) and KBF010 (no tier).
+resolution: identity-mapping
+---
+kind: entity
+name: widget
+meaning: Same name as the first entity above; triggers KBF003.
+identity: [widget_id]
+resolution: identity-mapping
+tier: structural

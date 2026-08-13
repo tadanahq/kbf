@@ -1,0 +1,38 @@
+kind: entity
+name: widget
+meaning: A fully valid entity, used to prove a clean package lints with zero findings.
+identity: [widget_id]
+resolution: identity-mapping
+tier: structural
+attributes:
+  - {name: label, type: text, slot: catalog.widget-label}
+---
+kind: entity
+name: workshop
+meaning: The place a widget is made; exists so a relation has two ends.
+identity: [workshop_id]
+resolution: identity-mapping
+tier: structural
+---
+kind: relation
+name: contains
+from: workshop
+to: widget
+cardinality: one-to-many
+join: [workshop_id, widget_id]
+tier: source-synced
+temporal: false
+---
+kind: metric
+name: widget-count
+formula: count(widget)
+grain: [workshop, business-date]
+additivity: additive
+unit: count
+tier: structural
+---
+kind: action
+name: flag-for-review
+on: widget
+risk: auto
+writes: finding

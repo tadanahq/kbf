@@ -1,0 +1,22 @@
+# First relation: `to` doesn't resolve -> KBF006. Distinct (name,from,to)
+# from anything in the parent, so it is a new relation, not a fork
+# candidate, and gets checked in full.
+# Second relation: verb isn't in the parent's vocabulary -> KBF007.
+
+kind: relation
+name: contains
+from: workshop
+to: nonexistent-entity
+cardinality: one-to-many
+join: [workshop_id, x_id]
+tier: client-configured
+temporal: false
+---
+kind: relation
+name: invented-verb
+from: workshop
+to: widget
+cardinality: one-to-many
+join: [workshop_id, widget_id]
+tier: client-configured
+temporal: false

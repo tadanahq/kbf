@@ -1,0 +1,25 @@
+# More structural fixtures: KBF002 (bad enum value) on a metric, plus one
+# clean relation and action so the package isn't entity-only.
+
+kind: metric
+name: widget-count
+formula: count(widget)
+grain: [widget]
+additivity: sometimes
+unit: count
+tier: structural
+---
+kind: relation
+name: contains
+from: widget
+to: gadget
+cardinality: many-to-many
+join: [widget_id, gadget_id]
+tier: source-synced
+temporal: false
+---
+kind: action
+name: flag-for-review
+on: widget
+risk: auto
+writes: finding

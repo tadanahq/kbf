@@ -1,0 +1,44 @@
+{
+  "rules": [
+    {
+      "id": "KBF001",
+      "file": "testdata/structural/ontology/entity.yaml",
+      "line": 18,
+      "element": "not_a_real_field",
+      "message": "unknown field \"not_a_real_field\"",
+      "fix": "remove it, or check spelling against the primitive's fields"
+    },
+    {
+      "id": "KBF004",
+      "file": "testdata/structural/ontology/entity.yaml",
+      "line": 20,
+      "element": "sprocket",
+      "message": "entity has no identity key(s)",
+      "fix": "add identity: [<key>, ...]"
+    },
+    {
+      "id": "KBF010",
+      "file": "testdata/structural/ontology/entity.yaml",
+      "line": 20,
+      "element": "sprocket",
+      "message": "entity has no governance tier",
+      "fix": "add tier: structural, glossary, or instance"
+    },
+    {
+      "id": "KBF003",
+      "file": "testdata/structural/ontology/entity.yaml",
+      "line": 25,
+      "element": "widget",
+      "message": "duplicate entity \"widget\", first declared at testdata/structural/ontology/entity.yaml:5",
+      "fix": "rename one, or remove the duplicate"
+    },
+    {
+      "id": "KBF002",
+      "file": "testdata/structural/ontology/other.yaml",
+      "line": 4,
+      "element": "sometimes",
+      "message": "additivity \"sometimes\" is not one of additive, semi-additive, non-additive",
+      "fix": "set additivity to one of: additive, semi-additive, non-additive"
+    }
+  ]
+}

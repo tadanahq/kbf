@@ -1,0 +1,14 @@
+# widget: redeclares the parent's entity and sets a non-glossary field
+# (meaning) -> KBF008 fork. gizmo: redeclares with only synonyms set -> a
+# legitimate glossary override, no finding at all.
+
+kind: entity
+name: widget
+meaning: Redeclared with a non-glossary field set; this is a fork.
+identity: [widget_id]
+resolution: identity-mapping
+tier: structural
+---
+kind: entity
+name: gizmo
+synonyms: {en: [thingamajig]}
