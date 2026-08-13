@@ -1,14 +1,21 @@
 # kozmo-bf – Project Overview
 
-**KBF (Kozmo Business Framework)** is an open spec and toolset that organizes a
-business for AI agents. Its core artifact is the **KBF Ontology**: a versioned,
-YAML-authored contract declaring what a business's data *means* (semantic
-elements: entities, relations, metrics) and what agents may *do* about it
-(action elements), plus the operational elements that make it installable (slot
-mappings, competency questions, namespaces).
+**KBF (Kozmo Business Framework)** is the open framework that organizes a
+business for AI agents: the business layer of an agentic operating system.
+Its modules, in dependency order: the **KBF Ontology** (the contract), the
+**package format** (playbooks as runnable packages), the **findings contract**
+(the judgment layer), and **Outcomes** (value measurement). This repo is the
+home of all of them; the ontology never stands in for the whole framework.
 
-One line: **semantic layers describe data for dashboards; the KBF Ontology
-describes a business for agents.**
+The **KBF Ontology** is the foundation module and v0's shipped artifact: a
+versioned, YAML-authored contract declaring what a business's data *means*
+(semantic elements: entities, relations, metrics) and what agents may *do*
+about it (action elements), plus the operational elements that make it
+installable (slot mappings, competency questions, namespaces).
+
+One line for the framework: **KBF makes a business installable for agents.**
+One line for the module: **semantic layers describe data for dashboards; the
+KBF Ontology describes a business for agents.**
 
 ## Why it exists
 

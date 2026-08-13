@@ -8,8 +8,10 @@ reference this file and the steering docs; they never restate either. What gets
 built and in which order is decided by the product owner outside this repo;
 sequencing reaches this repo only through spec capsules.
 
-**This repo is public.** It is the reference implementation of the KBF Ontology
-Spec and a showcase of how we engineer. Everything here is written for a
+**This repo is public.** It is the home of KBF, the Kozmo Business Framework:
+its specs (the KBF Ontology first, further modules as they land), reference
+tooling, and base packages: and a showcase of how we engineer. The ontology is
+KBF's foundation module, never a synonym for KBF itself. Everything here is written for a
 stranger: no client names, no internal project references, no private paths, no
 prices. That rule is absolute and machine-checked (`make boundaries`).
 

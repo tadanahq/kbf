@@ -1,4 +1,23 @@
-# KBF: the Kozmo Business Framework Ontology
+# KBF: the Kozmo Business Framework
+
+KBF organizes a business for AI agents. It is the business layer of an
+agentic operating system: the framework that declares what a company's
+data means, what its agents may do about it, and how a whole vertical's
+operating knowledge ships as an installable package.
+
+## The framework
+
+| Module | What it declares | Status |
+|---|---|---|
+| **KBF Ontology** | The contract: semantic elements (entities, relations, metrics) + action elements + operational elements | **v0, ships today** (spec + tooling in this repo) |
+| **Package format** | Playbooks as runnable packages: ontology + integrations + workflows + agents + evals + install | Partial in v0 (manifest + ontology + evals + install linted; the rest reserved) |
+| **Findings contract** | The judgment layer: claims with evidence, confidence, temporal validity | Roadmap |
+| **Outcomes** | Value measurement over metrics and findings | Roadmap |
+
+The ontology is the foundation module: everything else in the framework
+builds on it, which is why it ships first.
+
+## The KBF Ontology (what ships today)
 
 Semantic layers describe data for dashboards. The KBF Ontology describes a
 business for agents.
@@ -37,8 +56,10 @@ Ontology.
 
 ## Status: v0
 
-v0 is **config-phase tooling only**: `kbf` helps an agent or a human
-author and validate an ontology. It does not run queries against one.
+v0 ships the framework's foundation module (the KBF Ontology Spec, its
+packages, and its tooling) and is **config-phase tooling only**: `kbf`
+helps an agent or a human author and validate an ontology. It does not
+run queries against one.
 Runtime enforcement (validating an agent-generated query against the
 contract before it executes) is on the roadmap, not in this repository
 yet. If you are looking for that, it does not exist here.
