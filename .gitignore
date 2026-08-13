@@ -8,6 +8,10 @@ dist/
 *.test
 coverage.out
 
+# `kbf compile --to mermaid` output: the README tour's step 6 generates
+# this exact file; it's a regeneratable byproduct, not source content.
+*.mmd
+
 # Editors / OS
 .DS_Store
 .vscode/
