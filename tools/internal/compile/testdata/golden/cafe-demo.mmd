@@ -1,0 +1,37 @@
+flowchart LR
+  %% entities
+  customer["customer"]
+  employee["employee"]
+  location["location"]
+  order["order"]
+  organization["organization"]
+  product["product"]
+  purchase["purchase"]
+  shift["shift"]
+  supplier["supplier"]
+  %% relations
+  customer -->|places| order
+  employee -->|responsible-for| location
+  employee -->|works-at| location
+  location -->|belongs-to| location
+  location -->|belongs-to| organization
+  location -->|sells| product
+  order -->|contains| product
+  order -->|derived-from| order
+  order -->|located-at| location
+  product -->|supersedes| product
+  purchase -->|billed-to| organization
+  purchase -->|contains| product
+  shift -->|located-at| location
+  shift -->|staffed-by| employee
+  supplier -->|supplies| product
+  supplier -->|supplies| purchase
+  %% actions
+  action_annotate(("annotate"))
+  action_annotate -.->|auto| customer
+  action_request_sync(("request-sync"))
+  action_request_sync -.->|confirm| location
+  action_flag_for_review(("flag-for-review"))
+  action_flag_for_review -.->|auto| order
+  action_propose_extension(("propose-extension"))
+  action_propose_extension -.->|confirm| organization
