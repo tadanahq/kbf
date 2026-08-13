@@ -70,7 +70,7 @@ Prerequisite: Go 1.26 or later.
 
 ```sh
 git clone https://github.com/tadanahq/kbf.git
-cd kozmo-bf
+cd kbf
 ```
 
 **1. Read the thesis.** You just did (above). For the full shape of the
