@@ -1,0 +1,167 @@
+{
+  "packages": [
+    {
+      "package": "cafe-demo",
+      "rows": [
+        {
+          "entity": "customer",
+          "slot": "crm.customer-contact",
+          "source": "",
+          "mapped": false
+        },
+        {
+          "entity": "customer",
+          "slot": "crm.customer-joined-date",
+          "source": "",
+          "mapped": false
+        },
+        {
+          "entity": "customer",
+          "slot": "crm.customer-name",
+          "source": "",
+          "mapped": false
+        },
+        {
+          "entity": "employee",
+          "slot": "hr.employee-hire-date",
+          "source": "demobooks",
+          "mapped": true
+        },
+        {
+          "entity": "employee",
+          "slot": "hr.employee-name",
+          "source": "demobooks",
+          "mapped": true
+        },
+        {
+          "entity": "employee",
+          "slot": "hr.employee-role",
+          "source": "demobooks",
+          "mapped": true
+        },
+        {
+          "entity": "location",
+          "slot": "core.location-address",
+          "source": "demopos",
+          "mapped": true
+        },
+        {
+          "entity": "location",
+          "slot": "core.location-label",
+          "source": "demopos",
+          "mapped": true
+        },
+        {
+          "entity": "location",
+          "slot": "core.location-timezone",
+          "source": "demopos",
+          "mapped": true
+        },
+        {
+          "entity": "order",
+          "slot": "sales.order-status",
+          "source": "demopos",
+          "mapped": true
+        },
+        {
+          "entity": "order",
+          "slot": "sales.order-timestamp",
+          "source": "demopos",
+          "mapped": true
+        },
+        {
+          "entity": "order",
+          "slot": "sales.order-total",
+          "source": "demopos",
+          "mapped": true
+        },
+        {
+          "entity": "organization",
+          "slot": "core.organization-display-name",
+          "source": "demobooks",
+          "mapped": true
+        },
+        {
+          "entity": "organization",
+          "slot": "core.organization-legal-name",
+          "source": "demobooks",
+          "mapped": true
+        },
+        {
+          "entity": "organization",
+          "slot": "core.organization-tax-id",
+          "source": "demobooks",
+          "mapped": true
+        },
+        {
+          "entity": "product",
+          "slot": "catalog.product-category",
+          "source": "demopos",
+          "mapped": true
+        },
+        {
+          "entity": "product",
+          "slot": "catalog.product-label",
+          "source": "demopos",
+          "mapped": true
+        },
+        {
+          "entity": "product",
+          "slot": "catalog.product-price",
+          "source": "demopos",
+          "mapped": true
+        },
+        {
+          "entity": "purchase",
+          "slot": "purchasing.purchase-status",
+          "source": "demobooks",
+          "mapped": true
+        },
+        {
+          "entity": "purchase",
+          "slot": "purchasing.purchase-timestamp",
+          "source": "demobooks",
+          "mapped": true
+        },
+        {
+          "entity": "purchase",
+          "slot": "purchasing.purchase-total",
+          "source": "demobooks",
+          "mapped": true
+        },
+        {
+          "entity": "shift",
+          "slot": "hr.shift-end",
+          "source": "demobooks",
+          "mapped": true
+        },
+        {
+          "entity": "shift",
+          "slot": "hr.shift-labor-cost",
+          "source": "demobooks",
+          "mapped": true
+        },
+        {
+          "entity": "shift",
+          "slot": "hr.shift-start",
+          "source": "demobooks",
+          "mapped": true
+        },
+        {
+          "entity": "supplier",
+          "slot": "purchasing.supplier-contact",
+          "source": "demobooks",
+          "mapped": true
+        },
+        {
+          "entity": "supplier",
+          "slot": "purchasing.supplier-name",
+          "source": "demobooks",
+          "mapped": true
+        }
+      ],
+      "declared": 26,
+      "mapped": 23
+    }
+  ]
+}
