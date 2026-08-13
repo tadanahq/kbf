@@ -1,0 +1,5 @@
+# .gitignore
+bin/
+dist/
+*.test
+.DS_Store
