@@ -1,0 +1,44 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://raw.githubusercontent.com/tadanahq/kbf/main/schema/manifest.schema.yaml
+$ref: "#/$defs/Manifest"
+$defs:
+  Manifest:
+    properties:
+      name:
+        type: string
+        description: "Name is the package's identifier, e.g. \"universal-core\". Doubles as its namespace: element uniqueness (KBF003) and fork detection (KBF008) are scoped by this name."
+      version:
+        type: string
+        description: "Version is the package's own version, independent of the spec version it targets (project-standards.md: spec versioning is independent of tool/package versioning)."
+      spec:
+        type: string
+        description: Spec is the KBF spec version this package's content was authored against, e.g. "v0".
+      extends:
+        oneOf:
+        - type: string
+          description: "Extends names the parent package this one extends, or null for a root package (only universal-core is root in v0). A pointer so the loader can tell \"null\" (root, valid) apart from \"missing key\" (invalid): both decode a Go string to \"\", but only the former is a legal manifest. Non-null values must resolve within the set of packages passed to `kbf lint`: KBF011."
+        - type: "null"
+    additionalProperties: false
+    type: object
+    required:
+    - name
+    - version
+    - spec
+    - extends
+    description: "Manifest is a package's identity card: manifest.yaml at the package root. It names the package, the spec version it targets, and what it extends. Every package has exactly one manifest; the linter reads it before touching any ontology content, since extends drives cross-package resolution (KBF006, KBF007, KBF008)."
+  SlotMapping:
+    properties:
+      slot:
+        type: string
+        description: Slot is the slot identifier, e.g. "pos.catalog". Referenced by Attribute.Slot elsewhere in the package.
+      source:
+        type: string
+        description: "Source is the source system this slot is mapped to. Empty means declared but not yet mapped: counted as unmapped by `kbf coverage`."
+    additionalProperties: false
+    type: object
+    required:
+    - slot
+    - source
+    description: "SlotMapping is one row of a package's install/slots.yaml: a declared slot and the source system it fills from, if known yet. The file itself is a plain list of these rows (no `kind:` wrapper): static coverage is the share of rows with a non-empty Source. Every attribute Slot reference (model.Attribute.Slot) must name a slot declared here: KBF012."
+title: KBF Package Manifest
+description: Identity and extension declaration for a KBF package (manifest.yaml).

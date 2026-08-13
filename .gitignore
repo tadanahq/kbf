@@ -1,5 +1,14 @@
 # .gitignore
+
+# Build output (Makefile's $(BIN), goreleaser's future dist/).
 bin/
 dist/
+
+# Go
 *.test
+coverage.out
+
+# Editors / OS
 .DS_Store
+.vscode/
+.idea/

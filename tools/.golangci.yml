@@ -1,0 +1,25 @@
+version: "2"
+
+# Kept intentionally small: the standard set (errcheck, govet, ineffassign,
+# staticcheck, unused) plus a couple that catch what those miss. Error
+# messages are product here (AGENTS.md), so misspell earns its place.
+linters:
+  default: standard
+  enable:
+    - misspell
+    - revive
+  settings:
+    revive:
+      rules:
+        # Doc comments here explain the *why* of a field/type (the
+        # convention this repo holds itself to), not a restatement of its
+        # name; the stock exported-comment-format check fights that.
+        - name: package-comments
+          disabled: true
+        - name: exported
+          disabled: true
+
+formatters:
+  enable:
+    - gofmt
+    - goimports

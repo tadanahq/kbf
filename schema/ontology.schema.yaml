@@ -1,0 +1,213 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://raw.githubusercontent.com/tadanahq/kbf/main/schema/ontology.schema.yaml
+$defs:
+  Action:
+    properties:
+      kind:
+        type: string
+        enum:
+        - action
+        description: Kind discriminates this document as an action; always "action".
+      name:
+        type: string
+        description: "Name is the kebab-case identifier for this action, e.g. \"flag-for-review\". Unique within a namespace: KBF003."
+      "on":
+        type: string
+        description: "On is the entity name this action targets. Must resolve to a declared entity: KBF009."
+      risk:
+        type: string
+        description: "Risk states whether an agent may take this action unsupervised (auto) or must get confirmation first (confirm). This is Action's governance-equivalent tier: empty risk is KBF010."
+      writes:
+        type: string
+        description: "Writes names what the action produces, e.g. \"finding\". Free text in v0: the set of writable targets grows with the findings layer, not something the linter should freeze early."
+    additionalProperties: false
+    type: object
+    required:
+    - kind
+    - name
+    - "on"
+    - risk
+    - writes
+    description: "Action is a verb an agent may execute against an entity: what it does, how risky it is to let an agent do it unsupervised, and what it writes. Risk is Action's governance-equivalent field (project-architecture.md's \"risk tier\"); Action has no separate Tier field, see design.md."
+  Attribute:
+    properties:
+      name:
+        type: string
+        description: Name is the attribute's identifier within its owning entity.
+      type:
+        type: string
+        description: "Type is the attribute's data type: text, number, boolean, date and similar are expected. Free text in v0: design.md does not mark this field as a closed vocabulary, unlike cardinality/additivity/risk/tier."
+      slot:
+        type: string
+        description: "Slot is the source-system slot this attribute fills from, e.g. \"pos.catalog\". Must be declared in the package's install/slots.yaml: KBF012. Empty means intentionally unmapped."
+    additionalProperties: false
+    type: object
+    required:
+    - name
+    - type
+    description: Attribute is one typed field on an entity, sourced from a system slot. A separate struct (not inlined) because schemagen needs it as its own named definition, and both Entity and future package content reference it.
+  CompetencyQuestion:
+    properties:
+      kind:
+        type: string
+        enum:
+        - competency-question
+        description: Kind discriminates this document as a competency question; always "competency-question".
+      question:
+        type: string
+        description: Question is the natural-language question a business owner would actually ask.
+      expects:
+        items:
+          type: string
+        type: array
+        description: "Expects lists the element name(s) (metrics, entities) the answer must use. Each entry must resolve to a declared element: KBF009."
+    additionalProperties: false
+    type: object
+    required:
+    - kind
+    - question
+    - expects
+    description: "CompetencyQuestion is the acceptance test for an ontology: a question a business owner would ask, plus the elements the answer must draw on. It has no Name (nothing else references a competency question by name) and no governance Tier: it is an operational element, not owned content."
+  Entity:
+    properties:
+      kind:
+        type: string
+        enum:
+        - entity
+        description: Kind discriminates this document as an entity; always "entity".
+      name:
+        type: string
+        description: "Name is the kebab-case identifier other primitives reference by (relation from/to, metric grain, action on). Unique within a namespace: KBF003."
+      meaning:
+        type: string
+        description: Meaning is the one-sentence definition an agent grounds itself in before acting; required because a field name alone is not a contract.
+      identity:
+        items:
+          type: string
+        type: array
+        description: "Identity lists the key(s) that resolve a real-world instance to one row. Empty identity means the entity cannot be resolved: KBF004."
+      resolution:
+        type: string
+        description: Resolution names the strategy that turns raw source keys into the identity above. Opaque free text in v0 (see design.md); named, checkable strategies are gate-era work, not a v0 concern.
+      tier:
+        type: string
+        description: "Tier is this entity's governance tier: structural, glossary, or instance. Empty tier is KBF010; a non-empty but unrecognized value is KBF002."
+      synonyms:
+        additionalProperties:
+          items:
+            type: string
+          type: array
+        type: object
+        description: "Synonyms maps a locale to alternate names an agent might see in natural language. Glossary-tier: an extending package may add synonyms to a core entity without forking it (KBF008)."
+      attributes:
+        items:
+          $ref: "#/$defs/Attribute"
+        type: array
+        description: "Attributes are the entity's typed fields, each declaring the source slot it fills from. Optional: an entity can exist before its attributes are fully mapped."
+      states:
+        items:
+          type: string
+        type: array
+        description: States lists the lifecycle values this entity can hold, when it has real state (an order has states; a supplier-purchase line may not). Optional by design.
+    additionalProperties: false
+    type: object
+    required:
+    - kind
+    - name
+    - meaning
+    - identity
+    - resolution
+    - tier
+    description: "Entity is a thing the business tracks with identity: an order, a customer, a shift. It is the anchor other primitives point at (relations join entities, metrics grain by them, actions target them), so its identity and meaning must be unambiguous before anything else is checked."
+  Metric:
+    properties:
+      kind:
+        type: string
+        enum:
+        - metric
+        description: Kind discriminates this document as a metric; always "metric".
+      name:
+        type: string
+        description: "Name is the kebab-case identifier other primitives reference by (competency-question expects). Unique within a namespace: KBF003."
+      formula:
+        type: string
+        description: "Formula is the computation, kept as an opaque expression string in v0: parsing and validating expression semantics is gate-era work, out of scope for config-phase tooling."
+      grain:
+        items:
+          type: string
+        type: array
+        description: "Grain lists the entity name(s) this metric is computed per. Empty grain makes the metric un-aggregatable: KBF005. Each entry must resolve to a declared entity: KBF009."
+      additivity:
+        type: string
+        description: "Additivity states whether the metric can be summed across its grain, summed only across some dimensions, or never summed: additive, semi-additive, or non-additive. Required alongside Grain: KBF005."
+      unit:
+        type: string
+        description: "Unit is the metric's unit of measure (ratio, currency, count, days, ...). Free text in v0: units are too numerous for a closed vocabulary."
+      thresholds:
+        additionalProperties:
+          type: number
+        type: object
+        description: "Thresholds maps a threshold name to its value, e.g. warn-below: 0.60. Glossary-tier: an extending package may retune thresholds on a core metric without forking it (KBF008)."
+      tier:
+        type: string
+        description: "Tier is this metric's governance tier: structural, glossary, or instance. Empty tier is KBF010; a non-empty but unrecognized value is KBF002."
+    additionalProperties: false
+    type: object
+    required:
+    - kind
+    - name
+    - formula
+    - grain
+    - additivity
+    - unit
+    - tier
+    description: "Metric is a named, computable number: a formula at a grain, with declared additivity so an agent (or a downstream aggregation) never sums something that should have been averaged. Thresholds are glossary-tier by definition: a business owner can retune them without forking the metric."
+  Relation:
+    properties:
+      kind:
+        type: string
+        enum:
+        - relation
+        description: Kind discriminates this document as a relation; always "relation".
+      name:
+        type: string
+        description: "Name is the relation's verb, e.g. \"contains\" or \"staffed-by\". Doubles as the controlled-vocabulary token: KBF007 checks it against the set of verbs already used in the extends-root package."
+      from:
+        type: string
+        description: "From is the source entity's name. Must resolve within the package or its extends-root: KBF006."
+      to:
+        type: string
+        description: "To is the target entity's name. Must resolve within the package or its extends-root: KBF006."
+      cardinality:
+        type: string
+        description: "Cardinality states the shape of the join, needed before any query generation can be trusted to aggregate correctly: one-to-one, one-to-many, or many-to-many."
+      join:
+        items:
+          type: string
+        type: array
+        description: Join lists the key(s) that implement the relation at the data layer.
+      tier:
+        type: string
+        description: "Tier states who populates this relation: source-synced (from a source system) or client-configured (per client install). This is NOT the governance tier vocabulary (structural/glossary/instance) that Entity and Metric use; see design.md's \"Implementation clarifications\"."
+      temporal:
+        type: boolean
+        description: "Temporal marks whether the relation carries a validity window (the join can change over time and old rows still matter). Defaults to false: most relations are point-in-time current-state only."
+    additionalProperties: false
+    type: object
+    required:
+    - kind
+    - name
+    - from
+    - to
+    - cardinality
+    - join
+    - tier
+    description: "Relation is a directed, verb-named link between two entities: how they connect, at what cardinality, and through which join keys. The verb itself (Name) is drawn from a controlled vocabulary so agents can reason over relations without learning a new verb per package: see KBF007 and design.md's \"Implementation clarifications\" for where that vocabulary lives."
+oneOf:
+- $ref: "#/$defs/Entity"
+- $ref: "#/$defs/Relation"
+- $ref: "#/$defs/Metric"
+- $ref: "#/$defs/Action"
+- $ref: "#/$defs/CompetencyQuestion"
+title: KBF Ontology Element
+description: "One KBF ontology element document: entity, relation, metric, action, or competency-question, discriminated by `kind`."
