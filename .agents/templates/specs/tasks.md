@@ -6,4 +6,4 @@ status: ready
 
 ## Batch 1: <label>
 
-- [ ] <task> — Done means: <verifiable outcome>
+- [ ] <task> · Done means: <verifiable outcome>
