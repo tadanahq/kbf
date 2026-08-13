@@ -1,0 +1,10 @@
+# Competency questions specific to Demo Cafe's extensions. Universal
+# competency questions are inherited from universal-core.
+
+kind: competency-question
+question: Which menu items have the highest waste ratio this month?
+expects: [waste-ratio]
+---
+kind: competency-question
+question: Which locations are grouped under Demo Cafe's flagship location?
+expects: [location]

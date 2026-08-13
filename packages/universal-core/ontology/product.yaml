@@ -1,0 +1,13 @@
+kind: entity
+name: product
+meaning: >-
+  A sellable item the business offers to customers.
+identity: [product_id]
+resolution: identity-mapping
+tier: structural
+synonyms: {en: [item, sku], es: [producto, articulo]}
+attributes:
+  - {name: label, type: text, slot: catalog.product-label}
+  - {name: category, type: text, slot: catalog.product-category}
+  - {name: unit-price, type: currency, slot: catalog.product-price}
+states: [active, retired]

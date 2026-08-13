@@ -1,0 +1,14 @@
+kind: entity
+name: employee
+meaning: >-
+  A person who works for the business and may be scheduled or assigned
+  responsibility.
+identity: [employee_id]
+resolution: identity-mapping
+tier: structural
+synonyms: {en: [staff, worker], es: [empleado, colaborador]}
+attributes:
+  - {name: display-name, type: text, slot: hr.employee-name}
+  - {name: role, type: text, slot: hr.employee-role}
+  - {name: hired-at, type: date, slot: hr.employee-hire-date}
+states: [active, on-leave, terminated]

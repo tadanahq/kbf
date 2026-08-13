@@ -1,0 +1,57 @@
+# Slot-mapping template: one row per slot declared by an attribute in
+# ontology/*.yaml. universal-core ships every source empty; an install
+# (or a teaching package like examples/cafe-demo) fills them in. Static
+# coverage = share of rows below with a non-empty source.
+
+- slot: core.organization-legal-name
+  source: ""
+- slot: core.organization-display-name
+  source: ""
+- slot: core.organization-tax-id
+  source: ""
+- slot: core.location-label
+  source: ""
+- slot: core.location-address
+  source: ""
+- slot: core.location-timezone
+  source: ""
+- slot: sales.order-timestamp
+  source: ""
+- slot: sales.order-status
+  source: ""
+- slot: sales.order-total
+  source: ""
+- slot: catalog.product-label
+  source: ""
+- slot: catalog.product-category
+  source: ""
+- slot: catalog.product-price
+  source: ""
+- slot: crm.customer-name
+  source: ""
+- slot: crm.customer-contact
+  source: ""
+- slot: crm.customer-joined-date
+  source: ""
+- slot: hr.employee-name
+  source: ""
+- slot: hr.employee-role
+  source: ""
+- slot: hr.employee-hire-date
+  source: ""
+- slot: hr.shift-start
+  source: ""
+- slot: hr.shift-end
+  source: ""
+- slot: hr.shift-labor-cost
+  source: ""
+- slot: purchasing.supplier-name
+  source: ""
+- slot: purchasing.supplier-contact
+  source: ""
+- slot: purchasing.purchase-timestamp
+  source: ""
+- slot: purchasing.purchase-status
+  source: ""
+- slot: purchasing.purchase-total
+  source: ""

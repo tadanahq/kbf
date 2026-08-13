@@ -1,0 +1,13 @@
+# Demo Cafe calls `product` a "menu item" in conversation. Per design.md's
+# "Implementation clarifications" (KBF008), a glossary-only override must
+# leave every non-glossary field zero-valued: meaning, identity,
+# resolution, tier, attributes and states are omitted here on purpose,
+# not repeated. Only `synonyms` (Entity's one glossary-eligible field) is
+# set. The linter matches this fragment to
+# packages/universal-core/ontology/product.yaml by (kind, name) and layers
+# the synonym on top; that is a glossary edit, not a fork. See "Extension,
+# not fork" in spec/conventions.md.
+
+kind: entity
+name: product
+synonyms: {en: [item, sku, menu-item], es: [producto, articulo]}

@@ -1,0 +1,28 @@
+# Two extensions:
+# 1. labor-cost-ratio: a threshold override. Per design.md's "Implementation
+#    clarifications" (KBF008), the override leaves every non-glossary field
+#    zero-valued: formula, grain, additivity, unit and tier are omitted, not
+#    repeated. Only `thresholds` (Metric's one glossary-eligible field) is
+#    set, tightened from universal-core's 0.35 to 0.32. The linter matches
+#    this fragment to universal-core's labor-cost-ratio by (kind, name) and
+#    layers the threshold on top: a glossary edit, not a fork.
+# 2. waste-ratio: a net-new vertical metric, not present in core at all, so
+#    it is declared in full. Its formula references `purchase.waste-cost`,
+#    a concept Demo Cafe tracks but has not formally declared as an
+#    attribute yet: v0 formulas are opaque expression strings, not
+#    cross-referenced against declared attributes (see spec/versioning.md),
+#    so this is valid content even though `waste-cost` has no slot mapping
+#    of its own.
+
+kind: metric
+name: labor-cost-ratio
+thresholds: {warn-above: 0.32}
+---
+kind: metric
+name: waste-ratio
+formula: sum(purchase.waste-cost) / purchase-cost
+grain: [location, business-date]
+additivity: non-additive
+unit: ratio
+thresholds: {warn-above: 0.08}
+tier: structural

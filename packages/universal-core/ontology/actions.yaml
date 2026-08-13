@@ -1,0 +1,27 @@
+# Base actions, grouped by kind. `writes` names what the action produces;
+# in v0 every action writes to the findings layer or to a proposal queue,
+# never directly to a mart (see spec/primitives/action.md).
+
+kind: action
+name: flag-for-review
+on: order
+risk: auto
+writes: finding
+---
+kind: action
+name: annotate
+on: customer
+risk: auto
+writes: finding
+---
+kind: action
+name: request-sync
+on: location
+risk: confirm
+writes: sync-request
+---
+kind: action
+name: propose-extension
+on: organization
+risk: confirm
+writes: extension-proposal

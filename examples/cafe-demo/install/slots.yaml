@@ -1,0 +1,60 @@
+# Demo Cafe's install: the same 26 slots declared by universal-core's
+# attributes (cafe-demo adds no new attributes), mapped to two fictional
+# sources: demopos (the point-of-sale system) and demobooks (the
+# accounting system). Demo Cafe has no CRM yet, so the three crm.*
+# customer slots stay unmapped on purpose: `kbf coverage` should show
+# them as the one gap, proof the report distinguishes mapped from
+# unmapped rather than reporting a false 100%.
+
+- slot: core.organization-legal-name
+  source: demobooks
+- slot: core.organization-display-name
+  source: demobooks
+- slot: core.organization-tax-id
+  source: demobooks
+- slot: core.location-label
+  source: demopos
+- slot: core.location-address
+  source: demopos
+- slot: core.location-timezone
+  source: demopos
+- slot: sales.order-timestamp
+  source: demopos
+- slot: sales.order-status
+  source: demopos
+- slot: sales.order-total
+  source: demopos
+- slot: catalog.product-label
+  source: demopos
+- slot: catalog.product-category
+  source: demopos
+- slot: catalog.product-price
+  source: demopos
+- slot: crm.customer-name
+  source: ""
+- slot: crm.customer-contact
+  source: ""
+- slot: crm.customer-joined-date
+  source: ""
+- slot: hr.employee-name
+  source: demobooks
+- slot: hr.employee-role
+  source: demobooks
+- slot: hr.employee-hire-date
+  source: demobooks
+- slot: hr.shift-start
+  source: demobooks
+- slot: hr.shift-end
+  source: demobooks
+- slot: hr.shift-labor-cost
+  source: demobooks
+- slot: purchasing.supplier-name
+  source: demobooks
+- slot: purchasing.supplier-contact
+  source: demobooks
+- slot: purchasing.purchase-timestamp
+  source: demobooks
+- slot: purchasing.purchase-status
+  source: demobooks
+- slot: purchasing.purchase-total
+  source: demobooks

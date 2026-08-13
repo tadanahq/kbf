@@ -1,0 +1,12 @@
+kind: entity
+name: customer
+meaning: >-
+  A person or account that places orders with the business.
+identity: [customer_id]
+resolution: identity-mapping
+tier: structural
+synonyms: {en: [client, guest], es: [cliente]}
+attributes:
+  - {name: display-name, type: text, slot: crm.customer-name}
+  - {name: contact, type: text, slot: crm.customer-contact}
+  - {name: joined-at, type: date, slot: crm.customer-joined-date}

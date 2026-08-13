@@ -1,0 +1,38 @@
+# Competency questions are the acceptance suite: each names the elements
+# an agent's answer must exercise. At least one per entity (design.md).
+
+kind: competency-question
+question: Which locations belong to the organization, and what is total revenue across all of them this month?
+expects: [location, revenue]
+---
+kind: competency-question
+question: What is total revenue and order count for each location this month?
+expects: [revenue, order-count]
+---
+kind: competency-question
+question: What is the average ticket size per location this month?
+expects: [average-ticket]
+---
+kind: competency-question
+question: Which products does each location sell?
+expects: [sells]
+---
+kind: competency-question
+question: Which customers placed orders at a given location this month?
+expects: [places]
+---
+kind: competency-question
+question: Which employees worked at a given location this month?
+expects: [works-at]
+---
+kind: competency-question
+question: What is the labor cost ratio per location this month, and which locations are over threshold?
+expects: [labor-cost-ratio]
+---
+kind: competency-question
+question: Which suppliers does the business purchase from, and what is total purchase cost per supplier?
+expects: [supplier, purchase-cost]
+---
+kind: competency-question
+question: What is the gross margin per location this month after purchase cost?
+expects: [gross-margin]

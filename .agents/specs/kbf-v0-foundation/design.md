@@ -130,3 +130,78 @@ Fictional single-location cafe ("Demo Cafe"): extends universal-core with a
 - `extends` chain depth 1 in v0 (universal-core only); deeper chains are a
   spec-versioning question, not a linter feature.
 - Mermaid over any richer render: it previews natively in editors and GitHub.
+
+## Implementation clarifications (resolved during Batch 1/2, binding)
+
+Gaps found while building the model/linter. Recorded here per "don't silently
+diverge"; binds Batch 3/4 content authoring too.
+
+- **`tier` vocabulary is kind-specific.** Entity/Metric `tier` uses the
+  steering governance vocabulary (structural/glossary/instance), inherited
+  silently since design.md examples don't restate steering. Relation `tier`
+  is a distinct axis (source-synced/client-configured), explicitly annotated
+  in its example because it deviates from the default. Action has no `tier`
+  field; its governance-equivalent is `risk` (auto/confirm) per
+  project-architecture's "risk tier" framing. Competency-question and slot
+  mapping (operational elements) carry neither: KBF010 does not apply to them.
+- **KBF010 scope**: fires on empty Entity.tier, Relation.tier, Metric.tier, or
+  Action.risk. **KBF002 scope**: fires on any non-empty enum field whose value
+  is outside its kind-specific allowed set (tier, cardinality, additivity,
+  risk, and `kind` itself). Only fields design.md marks `# enum:`, plus tier/
+  risk per above, are closed vocabularies; `resolution`, `formula`, `unit`,
+  `attributes[].type` stay opaque strings in v0 (matches the documented
+  "formula and resolution are opaque strings" intent, generalized).
+- **KBF007 vocabulary source**: no separate declaration file. The controlled
+  verb vocabulary is the *set of distinct Relation.name values already
+  declared in the extends-root package* (universal-core, or self when linting
+  universal-core itself). Adding a verb means adding a relation to
+  universal-core (RFC), which then unlocks it for extending packages. No new
+  primitive, no `kind: verb-vocabulary`.
+- **KBF008 fork detection**: an extending package redeclaring an element with
+  a name+kind that exists in its extends-root is a fork UNLESS every
+  non-glossary field on the child's copy is zero-valued, i.e. the child only
+  layers glossary-tier fields. Glossary-eligible fields in v0: Entity.synonyms,
+  Metric.thresholds (matches "thresholds: glossary tier by definition").
+  Relation and Action have no glossary carve-out: any redeclaration forks.
+- **`extends` resolution**: `kbf lint` takes one or more package paths as
+  positional args and loads all of them into one in-memory set keyed by
+  manifest `name`. Each package's `extends` is resolved by name against that
+  set (not by filesystem convention: kbf lints arbitrary directories, not just
+  this repo's `packages/`). A package whose `extends` isn't among the supplied
+  paths fails KBF011 with a fix hint to pass the parent's path too. Linting a
+  single root package (`extends: null`) needs only its own path.
+- **KBF009 vs KBF006 vs KBF012 split**: KBF006 is relation.from/to only.
+  KBF012 is attribute slot references against `install/slots.yaml` only.
+  KBF009 (generic dangling cross-reference) covers everything else that names
+  another element: metric.grain entries, action.on, competency-question.expects.
+  Manifest.extends failing to resolve is KBF011 (manifest invalid), not KBF009.
+- **Schema file scope**: exactly two files as tasked. `SlotMapping` (the
+  `install/slots.yaml` row shape) is reflected into `manifest.schema.yaml`'s
+  `$defs` (installation-config family) but is not itself a file root schema in
+  v0, so `install/slots.yaml` doesn't get direct yaml-language-server root
+  validation yet. Structural validation of slots still happens via the Go
+  struct in the loader; this is a known, deliberate v0 gap, not a silent one.
+- **Relation identity for KBF003/KBF008 is (name, from, to), not bare name**
+  (found authoring content; binds Batch 2 as much as the entries above).
+  Relation.name holds a controlled-vocabulary *verb*, meant to recur across
+  unrelated entity pairs (that's the whole point of a 10-20 word vocabulary
+  covering dozens of relations: project-standards.md, and KBF007's own
+  wording, "the *set of distinct* Relation.name values", presupposes
+  repeats feeding that set). So (1) KBF003 duplicate-name-in-namespace, for
+  `kind: relation` only, keys on the (name, from, to) triple, not name
+  alone: universal-core legitimately declares `contains` and `supplies` and
+  `located-at` twice each, over different pairs. (2) KBF008 fork-matching
+  for `kind: relation` also keys on (name, from, to): a child package
+  declaring a relation whose triple doesn't already exist in the parent is
+  a new relation, full stop, not a fork candidate at all, even when the verb
+  is already used elsewhere in the parent under a different pair. This has
+  to be true or cafe-demo's own required extension (a new client-configured
+  `belongs-to` between two locations, reusing a verb the parent already
+  spends on location→organization) would be structurally impossible to
+  express: no package could ever add a relation without first winning an
+  RFC for a brand-new, never-before-used verb. "Relation... any
+  redeclaration forks" (above) still holds for the case this note carves
+  out from it: same (name, from, to) triple as the parent, re-stated by a
+  child, with or without field changes, is always a fork, no glossary
+  carve-out. Entity/Metric/Action/competency-question identity stays plain
+  name (already globally unique by construction), unaffected by this note.

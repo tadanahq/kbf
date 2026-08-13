@@ -1,0 +1,6 @@
+# universal-core is Playbook Zero: the base ontology every KBF business
+# shares. It has no parent; every other package extends it.
+name: universal-core
+version: 0.1.0
+spec: v0
+extends: null

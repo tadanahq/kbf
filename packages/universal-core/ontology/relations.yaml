@@ -1,0 +1,152 @@
+# Base relations, grouped by kind (design's "grouped files per kind" layout).
+# Each document below is a complete `kind: relation` element; `---`
+# separates them. Verbs come only from the controlled vocabulary in
+# spec/conventions.md. A verb may recur across different entity pairs:
+# relation identity is (name, from, to), not name alone (see "Relation
+# identity" in spec/conventions.md). Per design.md's "Implementation
+# clarifications" (KBF007), the controlled vocabulary IS the set of
+# distinct Relation.name values declared here, so all twelve seed verbs
+# are used at least once below, not just the ones a minimal graph needs.
+
+kind: relation
+name: belongs-to
+from: location
+to: organization
+cardinality: many-to-one
+join: [location_id, organization_id]
+tier: source-synced
+temporal: false
+---
+kind: relation
+name: works-at
+from: employee
+to: location
+cardinality: many-to-one
+join: [employee_id, location_id]
+tier: source-synced
+temporal: true
+---
+kind: relation
+name: staffed-by
+from: shift
+to: employee
+cardinality: many-to-one
+join: [shift_id, employee_id]
+tier: source-synced
+temporal: false
+---
+kind: relation
+name: located-at
+from: shift
+to: location
+cardinality: many-to-one
+join: [shift_id, location_id]
+tier: source-synced
+temporal: false
+---
+kind: relation
+name: located-at
+from: order
+to: location
+cardinality: many-to-one
+join: [order_id, location_id]
+tier: source-synced
+temporal: false
+---
+kind: relation
+name: places
+from: customer
+to: order
+cardinality: one-to-many
+join: [customer_id, order_id]
+tier: source-synced
+temporal: false
+---
+kind: relation
+name: contains
+from: order
+to: product
+cardinality: many-to-many
+join: [order_id, product_id]
+tier: source-synced
+temporal: false
+---
+kind: relation
+name: sells
+from: location
+to: product
+cardinality: many-to-many
+join: [location_id, product_id]
+tier: source-synced
+temporal: false
+---
+kind: relation
+name: supplies
+from: supplier
+to: product
+cardinality: many-to-many
+join: [supplier_id, product_id]
+tier: source-synced
+temporal: true
+---
+kind: relation
+name: supplies
+from: supplier
+to: purchase
+cardinality: one-to-many
+join: [supplier_id, purchase_id]
+tier: source-synced
+temporal: false
+---
+kind: relation
+name: contains
+from: purchase
+to: product
+cardinality: many-to-many
+join: [purchase_id, product_id]
+tier: source-synced
+temporal: false
+---
+kind: relation
+name: billed-to
+from: purchase
+to: organization
+cardinality: many-to-one
+join: [purchase_id, organization_id]
+tier: source-synced
+temporal: false
+---
+# No POS or HR feed emits "who is accountable for this location": an
+# owner assigns it by hand, so it sits at client-configured tier even
+# though it lives in universal-core. Coexists with `works-at` on the same
+# (employee, location) pair without conflict: different verb, different
+# relation (a manager is responsible-for a location without necessarily
+# clocking works-at shifts there).
+kind: relation
+name: responsible-for
+from: employee
+to: location
+cardinality: many-to-many
+join: [employee_id, location_id]
+tier: client-configured
+temporal: true
+---
+# A refund or adjustment order references the original sale it corrects.
+kind: relation
+name: derived-from
+from: order
+to: order
+cardinality: many-to-one
+join: [order_id, original_order_id]
+tier: source-synced
+temporal: false
+---
+# A menu refresh retires one product in favor of a direct replacement.
+kind: relation
+name: supersedes
+from: product
+to: product
+cardinality: one-to-one
+join: [product_id, superseded_product_id]
+tier: source-synced
+temporal: false
