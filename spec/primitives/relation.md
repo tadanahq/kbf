@@ -16,7 +16,7 @@ ad hoc; it comes from the controlled vocabulary in `conventions.md`.
 | `name` | yes | a verb from the controlled vocabulary | Not unique by itself: see "Relation identity" below. |
 | `from` | yes | entity name | Must resolve to a declared entity, or fails `KBF006`. |
 | `to` | yes | entity name | Must resolve to a declared entity, or fails `KBF006`. |
-| `cardinality` | yes | `one-to-one \| one-to-many \| many-to-many` | Read as "how many `from` per `to`". A bad value fails `KBF002`. |
+| `cardinality` | yes | `one-to-one \| one-to-many \| many-to-one \| many-to-many` | Read as "how many `from` per `to`". A bad value fails `KBF002`. |
 | `join` | yes | list of snake_case keys | The keys used to join `from` to `to`, ordered `[from_key, to_key]`. For a self-relation, the second key is role-qualified (`parent_location_id`, not a second `location_id`). |
 | `tier` | yes | `source-synced \| client-configured` | A distinct axis from entity/metric tier: whether a source system emits this relation, or a person configures it by hand. Empty fails `KBF010`. |
 | `temporal` | yes | boolean | Whether the relation's validity should be tracked over time (an employee's location assignment changes; a shift's staffing does not). |
@@ -56,7 +56,10 @@ temporal: true
 - **Undeclared endpoint.** A typo in `from` or `to` (`orderr`, `custmer`)
   fails `KBF006`, since it does not resolve to any declared entity.
 - **Bad cardinality value.** Anything outside `one-to-one`, `one-to-many`,
-  `many-to-many` fails `KBF002`.
+  `many-to-one`, `many-to-many` fails `KBF002`. `many-to-one` exists because
+  child-to-parent is the most common declared direction (`works-at`,
+  `belongs-to`): write the relation in the direction the business says it,
+  not inverted to avoid the value.
 - **Redeclaring a relation to change one field.** Unlike entity and metric,
   relation has no glossary carve-out: if a `(name, from, to)` triple already
   exists in the extends-root package, restating it for any reason, even to
