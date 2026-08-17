@@ -1,4 +1,5 @@
-name: parent
+name: core-parent
 version: 0.1.0
 spec: v0
 extends: null
+layer: root

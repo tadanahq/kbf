@@ -79,7 +79,8 @@ grain/additivity · `KBF006` relation endpoint not declared · `KBF007` verb
 outside controlled vocabulary · `KBF008` fork of a core element (redefinition
 in an extending package) · `KBF009` dangling cross-reference · `KBF010`
 missing governance tier · `KBF011` manifest missing/invalid · `KBF012` slot
-reference without declaration. Human render: lipgloss table grouped by file.
+reference without declaration · `KBF013` layer/taxonomy consistency (extends
+target, name prefix; Batch 6). Human render: lipgloss table grouped by file.
 `--format json`: `{rules: [{id, file, line, element, message, fix}]}`.
 
 ## Controlled verb vocabulary

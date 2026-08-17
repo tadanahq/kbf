@@ -1,0 +1,7 @@
+# layer: base with extends: null: KBF013, a base playbook must extend
+# something (a root or another base).
+name: core-tax-base-bad
+version: 0.1.0
+spec: v0
+extends: null
+layer: base

@@ -69,3 +69,11 @@ var Cardinalities = []string{"one-to-one", "one-to-many", "many-to-one", "many-t
 
 // Additivities is Metric.Additivity's vocabulary.
 var Additivities = []string{"additive", "semi-additive", "non-additive"}
+
+// Layers is Manifest.Layer's vocabulary: root (the single universal floor,
+// extends: null), base (a core playbook other playbooks build on), or
+// vertical (a business-specific leaf). KBF013 (internal/lint/taxonomy.go)
+// checks a playbook's Layer for consistency against its Extends and Name,
+// not just against this vocabulary; a bad-but-nonempty value is KBF002,
+// same treatment as every other closed-vocabulary field.
+var Layers = []string{"root", "base", "vertical"}

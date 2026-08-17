@@ -125,6 +125,7 @@ func Run(paths []string) (Result, error) {
 
 	for _, pkg := range universe.Order {
 		findings = append(findings, checkManifest(pkg, universe.Packages)...)
+		findings = append(findings, checkTaxonomy(pkg, universe.Packages)...)
 		if pkg.Manifest == nil {
 			continue // already flagged: no manifest, nothing coherent to check
 		}

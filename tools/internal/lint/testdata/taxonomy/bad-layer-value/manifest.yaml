@@ -1,0 +1,8 @@
+# layer holds a value outside {root, base, vertical}: KBF002, the same
+# treatment every other closed-vocabulary field gets. Must not also reach
+# KBF013 for the same reason as no-layer.
+name: core-tax-bogus
+version: 0.1.0
+spec: v0
+extends: null
+layer: bogus

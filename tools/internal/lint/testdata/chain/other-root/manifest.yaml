@@ -6,7 +6,8 @@
 # chain-cousin's bad relation connects, so that relation is fully
 # inherited on both ends: neither the verb nor the entities give
 # chain-cousin a legal way in.
-name: chain-other-root
+name: core-chain-other-root
 version: 0.1.0
 spec: v0
 extends: null
+layer: root

@@ -1,0 +1,9 @@
+# The valid three-layer trio KBF013's branch tests reuse (root/base/
+# vertical, this file's siblings): each branch test only adds the one
+# extra package under test, so a failure is never masked by a defect
+# somewhere else in the trio.
+name: core-tax-root
+version: 0.1.0
+spec: v0
+extends: null
+layer: root

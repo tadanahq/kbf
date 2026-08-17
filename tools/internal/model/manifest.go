@@ -38,4 +38,18 @@ type Manifest struct {
 	// legal manifest. Non-null values must resolve within the set of
 	// packages passed to `kbf lint`: KBF011.
 	Extends *string `yaml:"extends" json:"extends" jsonschema:"nullable"`
+	// Layer states this playbook's place in the taxonomy: root (the single
+	// universal floor, Extends must be null), base (a core playbook other
+	// playbooks build on: extends a root or another base), or vertical (a
+	// business-specific leaf: extends a base or root). This is what makes
+	// "core playbook" a checkable claim instead of a naming convention
+	// nobody enforces: KBF013 cross-checks Layer against Extends (a
+	// base/vertical must extend a root-or-base ancestor; a root must
+	// extend nothing) and against Name (root/base playbooks are named
+	// "core-...", vertical playbooks are not). Layer is a
+	// governance-taxonomy field the same way Entity/Metric.Tier is: empty
+	// Layer is KBF010, a non-empty value outside Layers is KBF002, and a
+	// non-empty, valid value that still doesn't line up with Extends or
+	// Name is KBF013.
+	Layer string `yaml:"layer" json:"layer"`
 }

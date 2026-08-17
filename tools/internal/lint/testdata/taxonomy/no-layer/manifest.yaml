@@ -1,0 +1,7 @@
+# No layer field at all: KBF010, same treatment as an empty Entity/
+# Metric.Tier. Must not also reach KBF013: there is nothing to
+# cross-check an absent layer against.
+name: core-tax-no-layer
+version: 0.1.0
+spec: v0
+extends: null

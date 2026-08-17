@@ -1,0 +1,8 @@
+# layer: root without a core- prefixed name: KBF013's name-prefix rule.
+# extends: null is correct here on purpose, so this fixture isolates the
+# name-prefix violation from the extends-shape one.
+name: tax-noprefix
+version: 0.1.0
+spec: v0
+extends: null
+layer: root

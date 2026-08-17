@@ -5,3 +5,4 @@ name: core-services
 version: 0.1.0
 spec: v0
 extends: core-universal
+layer: base

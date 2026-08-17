@@ -37,6 +37,7 @@ const (
 	KBF010 = "KBF010" // missing governance tier (or risk, for actions)
 	KBF011 = "KBF011" // manifest missing or invalid
 	KBF012 = "KBF012" // attribute slot reference without a matching install/slots.yaml declaration
+	KBF013 = "KBF013" // layer/taxonomy consistency: extends-target layer, name-prefix convention
 )
 
 // Finding is one rule violation. The field set and JSON keys are exactly
