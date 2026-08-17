@@ -11,13 +11,20 @@ any runtime that reads markdown instructions.
 
 ## Install
 
-Copy (or symlink) the skill folder into the project where the agent
-works:
+```sh
+kbf skill install
+```
+
+Writes `kbf-authoring/` into `.claude/skills/`, where Claude Code (and any
+agent runtime that reads the same convention) picks it up automatically.
+No clone needed: `kbf skill install` pulls the skill straight out of the
+binary (`go install github.com/tadanahq/kbf/tools/cmd/kbf@latest` first,
+if `kbf` isn't already on PATH), and the skill itself reads the rest of
+the spec the same way, through `kbf docs` (see `spec/cli.md`'s "Embedded
+content" section). Pass `--force` to reinstall over an existing copy.
+
+A manual copy still works, from inside a clone of this repository:
 
 ```sh
 cp -r skills/kbf-authoring /path/to/your-project/.claude/skills/
 ```
-
-Claude Code picks it up from `.claude/skills/` automatically. Keep the
-kbf repository cloned alongside your project: the skill drives its
-binary, core playbooks, and spec.

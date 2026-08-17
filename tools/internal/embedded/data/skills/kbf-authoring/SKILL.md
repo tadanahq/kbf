@@ -17,33 +17,43 @@ the translator, never the inventor.
 
 ## Ground truth first, always
 
-Before authoring anything, read from the kbf repository, in this order:
+Before authoring anything, read the spec through the binary; no clone
+needed, in this order:
 
-1. `spec/onboarding.md`: the eight-step raising methodology. It is the
+1. `kbf docs onboarding`: the eight-step raising methodology. It is the
    flow you will run; this skill only adds conduct rules to it.
-2. `spec/cli.md`: the command reference and the JSON interface you will
+2. `kbf docs cli`: the command reference and the JSON interface you will
    parse.
 
 Field-level questions (what may an entity carry, which enums exist) are
-answered by `schema/ontology.schema.yaml` and `schema/manifest.schema.yaml`,
-or by the primitive docs in `spec/primitives/`. Never answer a format
-question from memory: the spec moves, your memory doesn't.
+answered first by the primitive docs, also embedded (`kbf docs
+primitives/entity`; `kbf docs` with no argument lists every name), and
+for the exact machine-checked shape, by `schema/ontology.schema.yaml` and
+`schema/manifest.schema.yaml` (these two are not embedded: read them on
+GitHub, or in a clone, only if you need that level of precision). Never
+answer a format question from memory: the spec moves, your memory
+doesn't.
 
 ## Prerequisites check
 
 Confirm before starting, and fix or ask if missing:
 
-- The `kbf` binary runs (`kbf --help`). If not: clone
-  `https://github.com/tadanahq/kbf`, then
-  `cd tools && go build -o ../bin/kbf ./cmd/kbf`.
-- The core playbooks are reachable on disk (the `playbooks/` directory of
-  that clone). Every command takes the full composition closure as paths,
-  so you need them locally: `builds-on: [core-operations]` means passing
-  `playbooks/core-operations playbooks/core-business` on every invocation.
+- The `kbf` binary runs (`kbf --help`). If not: `go install
+  github.com/tadanahq/kbf/tools/cmd/kbf@latest`. No clone of the kbf
+  repository is needed anywhere in this flow: the core playbooks, this
+  skill, and the spec are all embedded in the binary (`kbf vendor` and
+  `kbf docs` materialize any of them to a real file on request).
+- This skill is installed (`kbf skill install`; idempotent, `--force` to
+  reinstall). If you are reading this file at all, it already is.
+- A `builds-on` name resolves even with no local copy: `builds-on:
+  [core-operations]` falls back to kbf's embedded core-operations
+  automatically, so `kbf lint <playbook>` alone is usually enough. Only
+  pass extra paths for a playbook that isn't one of the three embedded
+  cores (core-business, core-operations, core-services).
 
 ## Conduct rules for the interview steps
 
-Run the eight steps of `spec/onboarding.md` in order. These rules govern
+Run the eight steps of `kbf docs onboarding` in order. These rules govern
 HOW you run them with a human:
 
 - **One question at a time.** Never send the owner a questionnaire. Ask,
@@ -69,8 +79,12 @@ HOW you run them with a human:
 After every YAML change:
 
 ```sh
-kbf lint <playbook> <closure paths...> --format json
+kbf lint <playbook> --format json
 ```
+
+Add any non-core playbook's path too, if the closure needs one kbf
+doesn't already have embedded (core-business, core-operations, and
+core-services resolve on their own).
 
 Parse `rules[]`. For each finding, apply the `fix` hint at `file:line`.
 Re-run. The loop ends at `{"rules": []}`, never earlier. Do not suppress,
@@ -87,8 +101,9 @@ the owner does not recognize is still wrong), tag `v0.1.0`.
 
 - **Never fork**: if an element already exists in the closure, you may add
   glossary-tier fields only (synonyms, thresholds). A redeclaration that
-  changes anything else fails KBF008; the fix is to extend or to propose
-  upstream, never to copy.
+  changes anything else fails KBF008; the fix is to add only the
+  glossary-eligible fields, or to propose the change upstream, never to
+  copy the whole element.
 - **Reuse verbs before minting**: a new relation verb is legal only on a
   pair touching an entity this playbook declares (KBF007); prefer an
   existing verb on a new pair even then.
