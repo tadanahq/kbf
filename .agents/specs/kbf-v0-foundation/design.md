@@ -51,7 +51,7 @@ tier: structural
 ```yaml
 kind: action
 name: flag-for-review
-on: dish
+"on": dish                     # always quoted, see clarifications below
 risk: auto                     # enum: auto|confirm
 writes: finding
 ```
@@ -82,25 +82,73 @@ missing governance tier · `KBF011` manifest missing/invalid · `KBF012` slot
 reference without declaration. Human render: lipgloss table grouped by file.
 `--format json`: `{rules: [{id, file, line, element, message, fix}]}`.
 
-## Controlled verb vocabulary (v0 seed, lives in universal-core)
+## Controlled verb vocabulary
 
-`contains, belongs-to, located-at, works-at, supplies, sells, places, staffed-by,
-billed-to, derived-from, supersedes, responsible-for`. Additions via RFC.
+No fixed seed list anymore: superseded by the "Implementation clarifications"
+entry on chain-wide union (below). `universal-core`'s original nine
+(`contains, belongs-to, supplies, places, billed-to, employed-by,
+derived-from, supersedes, responsible-for`) plus each base package's own
+mint (`operations-core`: `located-at, sells, staffed-by, works-at`) are
+what exist today; any package may mint a new one on a new pair, RFC
+discipline still applies (reuse first), see `spec/conventions.md`.
 
-## universal-core content (v0)
+## Package architecture (layered, owner correction 2026-08-13)
 
-Entities: organization, location, order, product, customer, employee, shift,
-supplier-purchase (split as supplier + purchase, 9 files ok if cleaner).
-Metrics: revenue, order-count, average-ticket, labor-cost-ratio,
-purchase-cost, gross-margin. Actions: flag-for-review, annotate,
-request-sync, propose-extension. Competency questions: 1+ per entity.
+Three tiers, not one flat `universal-core` + verticals. See the
+"Layered base packages" entry in `.agents/steering/project-decisions.md`
+for the full rationale (the original `universal-core` carried an
+operating-business bias: location, shift, order, and product are not
+universal).
 
-## cafe-demo content
+- **`packages/universal-core`** (`extends: null`): the truly universal
+  floor. Entities: organization, customer, offering (product or service),
+  transaction (the revenue event), employee, supplier, purchase. Metrics:
+  revenue, transaction-count, average-transaction-value, gross-margin,
+  labor-cost-ratio, purchase-cost, grain stops at `[organization,
+  business-date]`. Actions unchanged in spirit (flag-for-review, annotate,
+  request-sync, propose-extension), retargeted off `location`/`order`.
+  Competency questions: 1+ per entity, business-neutral wording.
+- **`packages/operations-core`** (`extends: universal-core`): the base
+  layer for site-based businesses. Adds location, shift; verbs
+  located-at, staffed-by, works-at (all minted here, `employed-by` stays
+  universal-core's location-free HR fact), belongs-to and responsible-for
+  reused on new pairs. Metrics: average-ticket and
+  location-labor-cost-ratio, both net-new names at `[location,
+  business-date]` grain (not overrides: grain isn't glossary-eligible, so
+  a same-name redeclaration at a different grain would fork).
+- **`packages/services-core`** (`extends: universal-core`): the base
+  layer for engagement-based businesses. Adds engagement (synonyms:
+  project, retainer), deliverable. Mints no new verbs at all: `places`,
+  `contains`, `derived-from`, `responsible-for` all reused on new pairs,
+  RFC-reuse-first taken literally. Metrics: effective-rate and
+  on-time-delivery-rate; utilization considered and dropped (would need
+  employee capacity data universal-core's employee doesn't carry, and
+  services-core can't add attributes to an ancestor's entity without
+  forking it).
+- **`examples/cafe-demo`** (`extends: operations-core`): re-pointed, not
+  rebuilt. Same four extension mechanics as before (glossary synonym,
+  client-configured relation, threshold override, one vertical metric),
+  same fictional business, adjusted only where the restructure forces it:
+  the entity fragment now matches `offering` (declared two levels up, at
+  universal-core; KBF008 matches the nearest ancestor with the identity,
+  so this is unaffected by the extra hop), and the threshold override now
+  targets operations-core's `location-labor-cost-ratio` instead of a
+  metric that no longer has a location grain.
+- **`examples/studio-demo`** (`extends: services-core`, new): the second
+  demo, one per base chain. Fictional single-team marketing agency
+  ("Demo Studio"), mirrors cafe-demo's teaching role exactly: a glossary
+  synonym (`engagement` → "campaign"), a client-configured relation
+  (customer-to-customer, parent-account grouping, the same self-relation
+  shape as cafe-demo's location grouping), a threshold override
+  (on-time-delivery-rate), one net-new metric (repeat-engagement-rate),
+  slots mapped to fictional sources (`demopm`, `demobooks`), a couple
+  left unmapped on purpose (`purchasing.supplier-*`, a different gap than
+  cafe-demo's, proof the pattern isn't hardcoded to one business).
 
-Fictional single-location cafe ("Demo Cafe"): extends universal-core with a
-`menu-item` glossary rename (synonym, not fork), one client-configured relation
-(location grouping), one threshold override, one vertical metric
-(waste-ratio), slots mapped to fictional sources (`demopos`, `demobooks`).
+Both demo chains exist specifically so the "one shared multi-vertical
+core" claim is checkable, not asserted: `universal-core` is never linted
+alone as "the" example, only as the common ancestor of two visibly
+different businesses.
 
 ## Key flows
 
@@ -127,8 +175,12 @@ Fictional single-location cafe ("Demo Cafe"): extends universal-core with a
 
 - Cross-file resolution happens per package after full load; no incremental
   mode in v0.
-- `extends` chain depth 1 in v0 (universal-core only); deeper chains are a
-  spec-versioning question, not a linter feature.
+- ~~`extends` chain depth 1 in v0 (universal-core only); deeper chains are a
+  spec-versioning question, not a linter feature.~~ Superseded, owner
+  correction 2026-08-13: the package architecture is layered (verticals →
+  base packages → universal-core), so `extends` is fully recursive as of
+  the entry below. Depth 1 was a v0 simplification, not a spec-versioning
+  boundary; it did not survive contact with the real architecture.
 - Mermaid over any richer render: it previews natively in editors and GitHub.
 
 ## Implementation clarifications (resolved during Batch 1/2, binding)
@@ -237,7 +289,123 @@ diverge"; binds Batch 3/4 content authoring too.
   `works-at`, `staffed-by`, `located-at`, `billed-to`) and correctly so;
   linting it against the 3-value enum produced 8 false-positive KBF002s
   across both packages before this was caught. Fixed in
-  `internal/model.Cardinalities` and regenerated schema. **Not yet fixed**:
-  `spec/primitives/relation.md`'s cardinality field table still says three
-  values; that edit belongs to the content batch (spec/ is out of this
-  batch's scope), flagged here and in the handoff report so it isn't lost.
+  `internal/model.Cardinalities` and regenerated schema.
+  `spec/primitives/relation.md`'s field table fixed by the owner directly
+  (commit `a1166b1`); the model already matched, nothing more to do there.
+- **`extends` is fully recursive: chains, not a single hop (owner
+  correction, 2026-08-13, binding).** The package architecture is layered
+  (verticals extend base packages, which extend `universal-core`), so a
+  package's parent may itself have a parent. `Universe.Chain(pkg)`
+  (`internal/lint/universe.go`) walks the whole line and returns it
+  nearest-ancestor-first (immediate parent, then grandparent, ..., ending
+  at a package with `extends: null`); every rule that used to take a
+  single resolved parent now takes this chain instead. Four concrete
+  semantics changes, each checked by a fixture:
+  - **Cycle detection.** The walk tracks package names already seen; a
+    repeat means a cycle. This is `KBF011` (manifest invalid), not a hang
+    or a stack overflow: a package whose extends chain loops back on
+    itself is exactly as broken as one whose manifest is missing fields.
+    Every package on the cycle gets its own finding (each independently
+    detects the same loop starting from itself), not just one.
+  - **Missing-ancestor degradation is unchanged in kind, just possibly
+    farther up.** A package's own `extends` still only needs to resolve
+    against the universe *(checkManifest, immediate hop, unchanged)*; the
+    "grandparent wasn't passed to `kbf lint`" case surfaces as `Chain`
+    returning a shorter-than-expected slice, which every downstream rule
+    already treats as "less context available", not a special case to add.
+  - **KBF007's vocabulary is the union across the chain, not just the
+    root.** A base package that adds a verb (`operations-core` declaring
+    `located-at`, say) legalizes it for every package that extends
+    *that* package, directly or through further descendants, not for an
+    unrelated chain that also happens to extend `universal-core`. A
+    package's own newly-declared verbs never count toward its own check
+    (unchanged principle, just evaluated against the full union now): only
+    ancestors establish vocabulary. Self counts only when the package has
+    no ancestors at all (linting a root package alone) — the original "or
+    self when linting universal-core itself" carve-out, now phrased
+    generally instead of naming one specific package.
+  - **KBF008 matches against the nearest ancestor that has the identity,
+    not just the immediate parent.** A grandchild package forking an
+    element that only its *grandparent* declares (the parent never touched
+    it) still gets caught, reported against the grandparent by name. If
+    two ancestors both happen to carry the same identity (the parent
+    already layered a legitimate glossary override onto something the
+    grandparent declared, and a third-generation package tries to touch it
+    again), the nearer one is what is being extended or forked; farther
+    ancestors are not consulted once a match is found. Glossary carve-outs
+    and the "relation/action have none" rule are unchanged, applied at
+    whichever ancestor the match resolves to.
+  - **Coverage and compile's chain-wide behavior is a generalization, not
+    a new decision.** Coverage's attribute-to-entity lookup and slot-usage
+    checks now union every package in the chain, not just the immediate
+    parent, for the same reason as before: an install configures the whole
+    resolved ontology. Coverage's leaf-only *reporting* rule is unaffected
+    by chain depth: "not the extends-root of any other loaded package" is
+    already a chain-depth-agnostic definition. Compile's graph-building was
+    already chain-depth-agnostic too (it unions every loaded package
+    unconditionally, root or leaf, and always has): no code change there
+    at all, confirmed by re-reading it during this pass, not assumed.
+- **`Action.on` must always be quoted in authored YAML (found while
+  restructuring content for the layered-packages correction).**
+  `packages/universal-core/ontology/actions.yaml` had four unquoted `on:`
+  keys. goccy/go-yaml is YAML-1.2-compliant (its own source comments this
+  explicitly: `reservedLegacyBoolKeywords` is used only to decide when
+  *encoding* needs quotes for other parsers' benefit, never at parse
+  time), so `kbf` itself reads a bare `on:` correctly as the string key
+  `"on"`, not a boolean. But this repo's own stated goal is third-party,
+  language-agnostic conformance (`conformance/`), and a YAML-1.1 parser
+  (PyYAML's default `safe_load`, among others) resolves an unquoted
+  `on`/`off`/`yes`/`no` map key to a boolean, silently losing the field.
+  Fixed at the source: every `on:` in `packages/universal-core`,
+  `spec/primitives/action.md`, and this file's own meta-model example is
+  now `"on":`. Not a `kbf lint` gap (goccy/go-yaml was never wrong), but
+  worth a rule anyway: if `internal/lint` ever gains a style/portability
+  pass, "unquoted `on:` key" is a clean candidate.
+- **Open question for the owner: does a "base package" (operations-core,
+  services-core) get to introduce a verb itself, or only reuse one
+  universal-core already declares?** Found dogfooding against the
+  in-progress restructure, not resolved by guessing either way, because
+  the two readings are mutually exclusive and each breaks something real:
+  - **Reading A (implemented): only a true root (`extends: null`) is
+    self-included; every other package's vocabulary is strictly the union
+    of its ancestors', never its own new declarations.** This is what
+    ships right now (`controlledVocabulary`, `internal/lint/semantic.go`).
+    It keeps KBF007 reachable at all (see below) and keeps every fixture
+    in `internal/lint/testdata/chain/` and this batch's conformance
+    fixtures internally consistent, `invalid-relation-bad-verb`
+    (Batch 4, still passing) included. Under this reading,
+    `packages/operations-core` currently fails KBF007 on `works-at`,
+    `staffed-by`, `located-at`, and `sells`, because
+    `packages/universal-core`'s own `ontology/relations.yaml` does not
+    (yet, as of this note) declare any relation using those verbs.
+  - **Reading B (rejected, not just unimplemented): self is always
+    included, for every package, root or not.** This is the only reading
+    under which `operations-core`'s *current* content is legal as
+    written, and matches one plausible parse of "self included when
+    linting a root" (root as the trivial illustrative case of a broader
+    rule, not the only case). Rejected, not merely deferred, because it is
+    provably unworkable, not just a style preference: verb legality is
+    checked per relation, and a relation's own `name:` is definitionally
+    part of "its own package's declarations", so self-inclusion makes
+    every freshly-authored relation legalize itself unconditionally, for
+    every package, always. KBF007 could then never fire on any
+    non-matched relation, for any input: not this repo's content, not a
+    conformance fixture, not anything. Both `invalid-relation-bad-verb`
+    (Batch 4) and this batch's own sibling/cousin fixture
+    (`chain-cousin` in `internal/lint/testdata/chain/` and
+    `conformance/`, once added) would stop failing, and there would be no
+    way to construct a fixture that does: a rule that cannot fail on any
+    input is not a rule.
+  - **What this means for the content in flight**: either
+    `packages/universal-core` still needs a relation using each of these
+    four verbs (even a minimal, universally-plausible pairing, the same
+    role `chain/grandparent`'s `assembled-from: batch -> material` plays
+    in this batch's fixtures) before the restructure is done, or Reading A
+    itself needs owner correction to something narrower than "always" that
+    this note did not find (chain position relative to the root was
+    considered and does not work either: `invalid-relation-bad-verb`'s
+    failing child is exactly one hop below its root, the same distance
+    `operations-core` is below `universal-core`). Not resolved here on
+    purpose: this is a judgment call for whoever owns the vocabulary
+    policy, not something to silently pick a side on. Full readout in the
+    implementer's report for this batch.

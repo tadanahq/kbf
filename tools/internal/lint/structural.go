@@ -28,20 +28,18 @@ import (
 // can be decoded at all; this only checks enum-shaped *fields* on an
 // already-decoded element. Completeness (KBF004/KBF010, not KBF002: an
 // empty enum field is merely absent, not a bad value, so it never fires on
-// a fragment) is skipped for an element that matches something in root: it
-// is an override fragment or a fork, and either way KBF008 (semantic.go)
-// is the rule that speaks to it, not a second, redundant "missing tier"
+// a fragment) is skipped for an element that matches something anywhere in
+// chain (pkg's full ancestor line, nearest first: Universe.Chain): it is
+// an override fragment or a fork, and either way KBF008 (semantic.go) is
+// the rule that speaks to it, not a second, redundant "missing tier"
 // complaint. See design.md's "Implementation clarifications".
-func structuralFindings(pkg *Package, root *Package) []Finding {
+func structuralFindings(pkg *Package, chain []*Package) []Finding {
 	findings := checkDuplicateNames(pkg)
 
-	child := isChildPackage(pkg, root)
 	for _, e := range pkg.Elements {
 		findings = append(findings, checkEnums(e)...)
-		if child {
-			if _, matched := matchExtendsRoot(e, root); matched {
-				continue
-			}
+		if _, _, matched := matchInChain(e, chain); matched {
+			continue
 		}
 		findings = append(findings, checkCompleteness(e)...)
 	}

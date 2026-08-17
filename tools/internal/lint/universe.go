@@ -51,20 +51,45 @@ func Load(paths []string) (*Universe, []Finding, error) {
 	return u, findings, nil
 }
 
-// ExtendsRoot resolves pkg's single extends hop (v0: depth 1) to the
-// package its content is checked or resolved against. Returns pkg itself
-// for a root package (Extends == nil). Returns nil when Extends is set but
-// doesn't resolve within the universe: lint's checkManifest records that
-// as KBF011; coverage/compile simply have nothing more to inherit from.
-func (u *Universe) ExtendsRoot(pkg *Package) *Package {
-	if pkg.Manifest == nil || pkg.Manifest.Extends == nil {
-		return pkg
+// Chain walks pkg's extends chain and returns its ancestors, nearest
+// first (immediate parent, then grandparent, ..., ending at the chain's
+// root: a package with Extends == nil). pkg itself is never included.
+// Package architecture is layered as of the owner's structural correction
+// (design.md, "Implementation clarifications"): verticals extend base
+// packages, which extend universal-core, so a chain can be arbitrarily
+// deep, not just the single hop v0 originally assumed.
+//
+// resolved is false the moment a link's extends target isn't in the
+// universe: the existing "missing parent" case (KBF011), just possibly
+// several hops up instead of the immediate one. cycle is true if the walk
+// would revisit a package name already seen; the walk stops there rather
+// than looping. Either way, chain still holds whatever ancestors were
+// found before the problem, since partial context beats none: a package
+// three levels deep whose great-grandparent is missing still has its
+// nearer ancestors to check references against.
+func (u *Universe) Chain(pkg *Package) (chain []*Package, resolved bool, cycle bool) {
+	seen := map[string]bool{}
+	if pkg.Manifest != nil {
+		seen[pkg.Manifest.Name] = true
 	}
-	parent, ok := u.Packages[*pkg.Manifest.Extends]
-	if !ok {
-		return nil
+
+	current := pkg
+	for {
+		if current.Manifest == nil || current.Manifest.Extends == nil {
+			return chain, true, false
+		}
+		parentName := *current.Manifest.Extends
+		parent, ok := u.Packages[parentName]
+		if !ok {
+			return chain, false, false
+		}
+		if seen[parentName] {
+			return chain, false, true
+		}
+		seen[parentName] = true
+		chain = append(chain, parent)
+		current = parent
 	}
-	return parent
 }
 
 // IsLeaf reports whether pkg is not the extends-root of any other package
@@ -91,7 +116,7 @@ type Result struct {
 }
 
 // Run lints the packages rooted at each of paths: see Load for how the
-// universe is built and extends resolved.
+// universe is built and Chain for how extends is resolved.
 func Run(paths []string) (Result, error) {
 	universe, findings, err := Load(paths)
 	if err != nil {
@@ -100,14 +125,19 @@ func Run(paths []string) (Result, error) {
 
 	for _, pkg := range universe.Order {
 		findings = append(findings, checkManifest(pkg, universe.Packages)...)
-	}
-	for _, pkg := range universe.Order {
 		if pkg.Manifest == nil {
 			continue // already flagged: no manifest, nothing coherent to check
 		}
-		root := universe.ExtendsRoot(pkg)
-		findings = append(findings, structuralFindings(pkg, root)...)
-		findings = append(findings, semanticFindings(pkg, root, universe.Packages)...)
+		chain, _, cycle := universe.Chain(pkg)
+		if cycle {
+			findings = append(findings, Finding{
+				Rule: KBF011, File: pkg.ManifestFile, Line: pkg.ManifestLine, Element: "extends",
+				Message: "extends chain cycles back to a package already in it",
+				Fix:     "break the cycle: one of these packages must stop extending something that, directly or indirectly, extends it back",
+			})
+		}
+		findings = append(findings, structuralFindings(pkg, chain)...)
+		findings = append(findings, semanticFindings(pkg, chain)...)
 	}
 
 	sortFindings(findings)

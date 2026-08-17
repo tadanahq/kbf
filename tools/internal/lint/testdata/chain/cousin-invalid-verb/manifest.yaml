@@ -1,0 +1,10 @@
+# Extends chain-other-root: a genuinely unrelated chain, not
+# chain-grandparent's line at all. Proves KBF007's vocabulary union is
+# scoped to a package's real ancestors, not to whatever else happens to
+# be loaded in the same kbf lint invocation: assembled-from is real (it
+# is chain-grandparent's own verb), just not on this package's own path
+# to the root.
+name: chain-cousin
+version: 0.1.0
+spec: v0
+extends: chain-other-root

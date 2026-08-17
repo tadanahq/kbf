@@ -1,0 +1,16 @@
+# A base package (middle layer) adding a *relation instance* that reuses
+# a verb chain-grandparent already established: chain-grandparent's own
+# assembled-from is (batch, material); this is a new pair, (component,
+# material), legal because the verb itself is inherited. Only a true root
+# may introduce a genuinely new verb string (KBF007's vocabulary is the
+# union of *ancestors'* declarations, never a package's own, except when
+# it has no ancestors at all): a middle layer inventing one from nothing
+# would fail exactly like any other extending package always has.
+kind: relation
+name: assembled-from
+from: component
+to: material
+cardinality: many-to-many
+join: [component_id, material_id]
+tier: source-synced
+temporal: false

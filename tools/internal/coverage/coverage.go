@@ -65,16 +65,18 @@ func Compute(u *lint.Universe) []Report {
 }
 
 // computeOne builds pkg's report. The attribute-to-entity lookup spans
-// pkg plus its extends-root (an install configures the resolved ontology,
-// the same union KBF012 checks against), but the rows themselves come
-// only from pkg's own install/slots.yaml: by convention a leaf package's
-// slots.yaml is already the full resolved list, not just its own
-// additions (examples/cafe-demo's has all 26 rows, not the 0 new ones it
-// declares).
+// pkg plus every package in its extends chain (an install configures the
+// resolved ontology, the same union KBF012 checks against: a package
+// three layers deep still needs its great-grandparent's attributes
+// resolvable), but the rows themselves come only from pkg's own
+// install/slots.yaml: by convention a leaf package's slots.yaml is
+// already the full resolved list, not just its own additions
+// (examples/cafe-demo's has all 26 rows, not the 0 new ones it declares).
 func computeOne(u *lint.Universe, pkg *lint.Package) Report {
 	entityOf := attributeEntities(pkg)
-	if root := u.ExtendsRoot(pkg); root != nil && root != pkg {
-		for slot, entity := range attributeEntities(root) {
+	chain, _, _ := u.Chain(pkg)
+	for _, ancestor := range chain {
+		for slot, entity := range attributeEntities(ancestor) {
 			if _, ok := entityOf[slot]; !ok {
 				entityOf[slot] = entity
 			}

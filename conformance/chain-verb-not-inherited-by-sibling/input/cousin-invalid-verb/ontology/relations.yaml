@@ -1,0 +1,12 @@
+# assembled-from is real (chain-grandparent declares it), but this
+# package's only ancestor is chain-other-root, which has no relations at
+# all: illegal here, KBF007. Both endpoints are this package's own
+# entities so the only violation is the verb, not a dangling endpoint.
+kind: relation
+name: assembled-from
+from: gadget
+to: widget
+cardinality: many-to-many
+join: [gadget_id, widget_id]
+tier: source-synced
+temporal: false

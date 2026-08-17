@@ -1,0 +1,6 @@
+# A -> B -> C -> A: a cycle. No ontology content needed; the manifest
+# chain itself is the whole point of this fixture.
+name: chain-cycle-a
+version: 0.1.0
+spec: v0
+extends: chain-cycle-b

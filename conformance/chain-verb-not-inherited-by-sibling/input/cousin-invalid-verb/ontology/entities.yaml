@@ -1,0 +1,15 @@
+kind: entity
+name: gadget
+meaning: An entity in a sibling chain that never goes through chain-grandparent.
+identity: [gadget_id]
+resolution: identity-mapping
+tier: structural
+---
+kind: entity
+name: widget
+meaning: >-
+  The other end of this package's own relation, so the only violation
+  below is the verb itself, not an unrelated dangling endpoint.
+identity: [widget_id]
+resolution: identity-mapping
+tier: structural

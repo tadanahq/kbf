@@ -1,0 +1,27 @@
+# Root of a 3-level chain fixture (grandparent -> parent -> child), a
+# generic supply-chain domain, not a real business.
+
+kind: entity
+name: material
+meaning: A raw material a component can be assembled from.
+identity: [material_id]
+resolution: identity-mapping
+tier: structural
+attributes:
+  - {name: label, type: text, slot: catalog.material-label}
+---
+kind: entity
+name: site
+meaning: A place a material is sourced from.
+identity: [site_id]
+resolution: identity-mapping
+tier: structural
+---
+kind: entity
+name: batch
+meaning: >-
+  A production batch, only here to seed the assembled-from verb at the
+  root so a middle layer has something real to reuse.
+identity: [batch_id]
+resolution: identity-mapping
+tier: structural

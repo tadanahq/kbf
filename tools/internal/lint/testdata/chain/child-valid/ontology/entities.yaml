@@ -1,0 +1,8 @@
+kind: entity
+name: product
+meaning: A sellable item assembled from components.
+identity: [product_id]
+resolution: identity-mapping
+tier: structural
+attributes:
+  - {name: sku, type: text, slot: catalog.product-sku}

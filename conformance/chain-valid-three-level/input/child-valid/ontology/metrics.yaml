@@ -1,0 +1,10 @@
+# grain references `material`, declared two layers up in
+# chain-grandparent: proves KBF009's entity lookup spans the full chain,
+# not just the immediate parent.
+kind: metric
+name: product-count
+formula: count(product)
+grain: [material, business-date]
+additivity: additive
+unit: count
+tier: structural

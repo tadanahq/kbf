@@ -30,30 +30,30 @@ var recognizedDimensions = map[string]bool{"business-date": true}
 // KBF005 (metric completeness, grouped here per tasks.md's batch split,
 // not structural.go's), KBF006 (relation endpoints), KBF007 (verb
 // vocabulary), KBF008 (fork detection), KBF009 (dangling references), and
-// KBF012 (slot declarations without a matching attribute). root is the
-// resolved extends-root (see extendsRoot); nil means extends was set but
-// unresolvable, already reported as KBF011, so nothing here is checked
-// against wrongly-empty context.
-func semanticFindings(pkg *Package, root *Package, pkgs map[string]*Package) []Finding {
+// KBF012 (slot declarations without a matching attribute). chain is pkg's
+// full ancestor line, nearest first (Universe.Chain); empty means pkg is a
+// root package. A missing or cyclic link partway up the chain still
+// leaves chain populated with whatever ancestors resolved before that
+// point (Chain's own doc comment), so every check below just uses chain
+// as given without re-deriving how complete it is: Run already recorded
+// KBF011 for the gap itself.
+func semanticFindings(pkg *Package, chain []*Package) []Finding {
 	var findings []Finding
 
-	entities := knownNames(pkg, root, model.KindEntity)
-	vocabulary := controlledVocabulary(root)
-	anyName := knownNames(pkg, root, model.KindEntity, model.KindMetric, model.KindAction, model.KindRelation)
+	entities := knownNames(pkg, chain, model.KindEntity)
+	vocabulary := controlledVocabulary(pkg, chain)
+	anyName := knownNames(pkg, chain, model.KindEntity, model.KindMetric, model.KindAction, model.KindRelation)
 
-	child := isChildPackage(pkg, root)
 	for _, e := range pkg.Elements {
-		if child {
-			if _, matched := matchExtendsRoot(e, root); matched {
-				findings = append(findings, checkFork(e, root)...)
-				continue // KBF008 is the whole story for a matched element; see structuralFindings.
-			}
+		if _, ancestor, matched := matchInChain(e, chain); matched {
+			findings = append(findings, checkFork(e, ancestor)...)
+			continue // KBF008 is the whole story for a matched element; see structuralFindings.
 		}
 		findings = append(findings, checkGrainAndVocabulary(e, vocabulary)...)
 		findings = append(findings, checkReferences(e, entities, anyName)...)
 	}
 
-	findings = append(findings, checkSlotUsage(pkg, root)...)
+	findings = append(findings, checkSlotUsage(pkg, chain)...)
 	return findings
 }
 
@@ -68,7 +68,7 @@ func checkGrainAndVocabulary(e Element, vocabulary map[string]bool) []Finding {
 		}
 	case *model.Relation:
 		if !vocabulary[v.Name] {
-			return []Finding{{Rule: KBF007, File: e.File, Line: e.Line, Element: v.Name, Message: fmt.Sprintf("verb %q is outside the controlled vocabulary", v.Name), Fix: "use an existing verb, or add it to universal-core via RFC first"}}
+			return []Finding{{Rule: KBF007, File: e.File, Line: e.Line, Element: v.Name, Message: fmt.Sprintf("verb %q is outside the controlled vocabulary", v.Name), Fix: "use an existing verb, or add it to a base package in this package's extends chain via RFC first"}}
 		}
 	}
 	return nil
@@ -111,15 +111,20 @@ func checkReferences(e Element, entities, anyName map[string]bool) []Finding {
 }
 
 // checkFork is KBF008 for one element already known to match something in
-// root by identity: legitimate (entity/metric setting only their
-// glossary-eligible field) or a fork (everything else).
-func checkFork(e Element, root *Package) []Finding {
+// ancestor by identity: legitimate (entity/metric setting only their
+// glossary-eligible field) or a fork (everything else). ancestor is
+// whichever package in the chain matchInChain actually found the
+// collision in, nearest one first, which is not always pkg's immediate
+// parent: a grandchild forking an element only its grandparent declares
+// (the parent never touched it) reports against the grandparent, not a
+// generic "the chain".
+func checkFork(e Element, ancestor *Package) []Finding {
 	if (e.Kind == model.KindEntity || e.Kind == model.KindMetric) && isGlossaryOnly(e) {
 		return nil
 	}
 	return []Finding{{
 		Rule: KBF008, File: e.File, Line: e.Line, Element: e.Name(),
-		Message: fmt.Sprintf("%s %s already exists in %s: this redeclares it instead of extending it", e.Kind, describeKey(e), root.Manifest.Name),
+		Message: fmt.Sprintf("%s %s already exists in %s: this redeclares it instead of extending it", e.Kind, describeKey(e), ancestor.Manifest.Name),
 		Fix:     glossaryFixHint(e.Kind),
 	}}
 }
@@ -136,17 +141,13 @@ func glossaryFixHint(kind model.Kind) string {
 
 // checkSlotUsage is KBF012: every install/slots.yaml row must match an
 // attribute's slot reference somewhere in the resolved package (pkg, plus
-// root when pkg is a child: an install configures the whole effective
-// ontology, not just what the child itself redeclares). This is the
-// direction spec/primitives/slot-mapping.md documents; the reverse (an
-// attribute slot with no row) is deliberately not a v0 lint error, see
-// design.md.
-func checkSlotUsage(pkg *Package, root *Package) []Finding {
+// every package in chain: an install configures the whole effective
+// ontology, not just what pkg itself redeclares). This is the direction
+// spec/primitives/slot-mapping.md documents; the reverse (an attribute
+// slot with no row) is deliberately not a v0 lint error, see design.md.
+func checkSlotUsage(pkg *Package, chain []*Package) []Finding {
 	used := map[string]bool{}
 	collect := func(p *Package) {
-		if p == nil {
-			return
-		}
 		for _, e := range p.Elements {
 			ent, ok := e.Value.(*model.Entity)
 			if !ok {
@@ -160,8 +161,8 @@ func checkSlotUsage(pkg *Package, root *Package) []Finding {
 		}
 	}
 	collect(pkg)
-	if isChildPackage(pkg, root) {
-		collect(root)
+	for _, ancestor := range chain {
+		collect(ancestor)
 	}
 
 	var findings []Finding
@@ -178,18 +179,16 @@ func checkSlotUsage(pkg *Package, root *Package) []Finding {
 }
 
 // knownNames collects the bare Name() of every element of the given kinds
-// in pkg, plus root's too when pkg is a genuine child (a child's content
-// may reference an element it inherits rather than redeclares).
-func knownNames(pkg, root *Package, kinds ...model.Kind) map[string]bool {
+// in pkg, plus every package in chain (pkg's full ancestor line): a
+// package's content may reference an element it inherits from any layer
+// above it, not just its immediate parent.
+func knownNames(pkg *Package, chain []*Package, kinds ...model.Kind) map[string]bool {
 	want := make(map[model.Kind]bool, len(kinds))
 	for _, k := range kinds {
 		want[k] = true
 	}
 	names := map[string]bool{}
 	collect := func(p *Package) {
-		if p == nil {
-			return
-		}
 		for _, e := range p.Elements {
 			if want[e.Kind] {
 				names[e.Name()] = true
@@ -197,24 +196,32 @@ func knownNames(pkg, root *Package, kinds ...model.Kind) map[string]bool {
 		}
 	}
 	collect(pkg)
-	if isChildPackage(pkg, root) {
-		collect(root)
+	for _, ancestor := range chain {
+		collect(ancestor)
 	}
 	return names
 }
 
-// controlledVocabulary is the set of distinct relation verbs declared in
-// root: design.md's "Implementation clarifications" (KBF007). Passing pkg
-// itself as root (extendsRoot's result for a package with no parent) means
-// "self", matching "or self when linting universal-core itself".
-func controlledVocabulary(root *Package) map[string]bool {
-	verbs := map[string]bool{}
-	if root == nil {
-		return verbs
+// controlledVocabulary is the set of relation verbs pkg may use: the union
+// of distinct verbs declared by every package in chain (design.md's
+// "Implementation clarifications" — a base package adding a verb legalizes
+// it for everything below it in the chain, not just its immediate child),
+// or pkg's own verbs when chain is empty (pkg has no ancestors: it IS the
+// root establishing the vocabulary, matching "self included when linting
+// a root"). A package's own newly-declared verbs never count toward its
+// own vocabulary check: an extending package cannot introduce a verb on
+// its own, only a package above it in the chain can.
+func controlledVocabulary(pkg *Package, chain []*Package) map[string]bool {
+	sources := chain
+	if len(sources) == 0 {
+		sources = []*Package{pkg}
 	}
-	for _, e := range root.Elements {
-		if e.Kind == model.KindRelation {
-			verbs[e.Name()] = true
+	verbs := map[string]bool{}
+	for _, p := range sources {
+		for _, e := range p.Elements {
+			if e.Kind == model.KindRelation {
+				verbs[e.Name()] = true
+			}
 		}
 	}
 	return verbs

@@ -1,0 +1,7 @@
+# catalog.material-label matches chain-grandparent's attribute (two
+# layers up); catalog.product-sku matches this package's own attribute.
+# Proves KBF012's slot-usage check spans the full chain.
+- slot: catalog.material-label
+  source: ""
+- slot: catalog.product-sku
+  source: ""

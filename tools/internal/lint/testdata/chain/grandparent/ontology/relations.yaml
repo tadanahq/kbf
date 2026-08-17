@@ -1,0 +1,26 @@
+# Seeds the chain's root vocabulary with two verbs: sourced-from and
+# assembled-from. Only a root (or, at any layer, a package's own
+# ancestors) may establish a verb (design.md's "Implementation
+# clarifications": KBF007 unions ancestors' verbs, never a package's own
+# newly-declared ones except when it has no ancestors at all); a middle
+# layer may only reuse an inherited verb for a new pair, never invent one
+# from nothing. assembled-from's own pair here (batch/material) is
+# deliberately minimal: its only job is to exist so chain-parent has a
+# real, inherited verb to reuse for a *different* pair.
+kind: relation
+name: sourced-from
+from: material
+to: site
+cardinality: many-to-one
+join: [material_id, site_id]
+tier: source-synced
+temporal: false
+---
+kind: relation
+name: assembled-from
+from: batch
+to: material
+cardinality: many-to-many
+join: [batch_id, material_id]
+tier: source-synced
+temporal: false

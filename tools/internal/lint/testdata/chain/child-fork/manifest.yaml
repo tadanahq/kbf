@@ -1,0 +1,7 @@
+# Extends chain-parent, which never touches chain-grandparent's
+# `material` entity: this package's own redeclaration of `material` must
+# still be caught, against the grandparent by name, not the parent.
+name: chain-child-fork
+version: 0.1.0
+spec: v0
+extends: chain-parent

@@ -46,21 +46,27 @@ var matchable = map[model.Kind]bool{
 	model.KindAction:   true,
 }
 
-// matchExtendsRoot looks for elem's identity inside root's elements: (kind,
-// name) for entity/metric/action, (kind, name, from, to) for relation. root
-// may be elem's own package (a root package with no parent: see
-// isChildPackage) in which case matching is skipped entirely, since an
-// element trivially "matching itself" is not a fork candidate.
-func matchExtendsRoot(elem Element, root *Package) (Element, bool) {
-	if root == nil || !matchable[elem.Kind] {
-		return Element{}, false
+// matchInChain looks for elem's identity among chain's packages, nearest
+// ancestor first: (kind, name) for entity/metric/action, (kind, name,
+// from, to) for relation. Returns the first match found and which
+// ancestor it lives in, even when a farther ancestor also happens to
+// share the identity (a middle layer that already re-declared a
+// grandparent's element, say): the nearest one is what elem would be
+// extending or forking. chain is pkg's own ancestors (Universe.Chain),
+// never including pkg itself, so there is no self-match case to guard
+// against here.
+func matchInChain(elem Element, chain []*Package) (Element, *Package, bool) {
+	if !matchable[elem.Kind] {
+		return Element{}, nil, false
 	}
-	for _, cand := range root.Elements {
-		if cand.Kind == elem.Kind && sameIdentity(elem, cand) {
-			return cand, true
+	for _, ancestor := range chain {
+		for _, cand := range ancestor.Elements {
+			if cand.Kind == elem.Kind && sameIdentity(elem, cand) {
+				return cand, ancestor, true
+			}
 		}
 	}
-	return Element{}, false
+	return Element{}, nil, false
 }
 
 // sameIdentity compares two same-kind elements by identityKey.
@@ -77,13 +83,6 @@ func identityKey(e Element) string {
 		return r.Name + "\x00" + r.From + "\x00" + r.To
 	}
 	return e.Name()
-}
-
-// isChildPackage reports whether pkg genuinely extends a different package
-// (root != pkg): a root package's own elements never match against
-// themselves.
-func isChildPackage(pkg, root *Package) bool {
-	return root != nil && root != pkg
 }
 
 // isGlossaryOnly reports whether elem sets only Kind, Name, and its kind's
