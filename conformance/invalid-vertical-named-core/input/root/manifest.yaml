@@ -1,0 +1,9 @@
+# A valid root so bad-vertical's extends resolves cleanly: the fixture's
+# one deliberate violation is isolated to the vertical's name, not
+# tangled up with an unrelated KBF011. Generic fixture business (a small
+# library), never Demo Cafe or real names.
+name: core-library
+version: 0.1.0
+spec: v0
+extends: null
+layer: root

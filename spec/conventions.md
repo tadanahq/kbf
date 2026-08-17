@@ -23,6 +23,18 @@ they are usually one. Slot domains (`core`, `sales`, `catalog`, `crm`,
 are a convention, not a closed list; a core playbook or an extending
 playbook may introduce its own domain prefix.
 
+Playbook names carry one more rule, on top of kebab-case: a `root` or
+`base` playbook, together "core playbooks" (the foundation every vertical
+builds on: `spec/primitives/namespace.md`'s `layer` field), is named with
+a `core-` prefix; a `vertical` playbook is not. `kbf lint` enforces this
+(`KBF013`), not just documents it. Sorted alphabetically, this repo's
+five playbooks read `cafe-demo`, `core-operations`, `core-services`,
+`core-universal`, `studio-demo`: the three core playbooks sort together
+as one contiguous block, the two vertical leaves bookending them,
+exactly the point of the prefix: scan a sorted listing and the
+foundation layer is the block that shares a name, not five names you
+have to already know the architecture to sort by hand.
+
 ## The controlled verb vocabulary
 
 Relation names come from a small, shared vocabulary, not from whatever

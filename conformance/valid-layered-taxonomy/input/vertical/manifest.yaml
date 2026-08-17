@@ -1,0 +1,8 @@
+# layer: vertical, extending the base: KBF013 requires this to extend a
+# root-or-base playbook (it does, the base two hops from root is fine
+# too) and its name to NOT start with core- (it doesn't).
+name: downtown-branch
+version: 0.1.0
+spec: v0
+extends: core-lending
+layer: vertical

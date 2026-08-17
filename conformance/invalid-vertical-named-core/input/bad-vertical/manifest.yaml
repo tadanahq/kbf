@@ -1,0 +1,8 @@
+# The violation: layer: vertical with a name that starts with core-.
+# extends is a perfectly valid root, so KBF013's extends-target check
+# passes; only the name-prefix check fails. Fails KBF013.
+name: core-downtown-branch
+version: 0.1.0
+spec: v0
+extends: core-library
+layer: vertical

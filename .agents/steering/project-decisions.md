@@ -3,6 +3,28 @@
 Append-only. New entries on top. Project-level decisions only; feature detail
 stays in capsules.
 
+## 2026-08-17 - Playbook rename executed; the core/vertical taxonomy is machine-checked
+
+Owner decision, executing the 2026-08-13 "unit is a playbook" entry now that
+the layered-cores restructure is in: `packages/` → `playbooks/`,
+`universal-core`/`operations-core`/`services-core` →
+`core-universal`/`core-operations`/`core-services`. Category vocabulary is
+**"core playbooks"** (root and base layer, name matches `^core-`) and
+**"vertical playbooks"** (bare industry nouns, name must not); this
+supersedes the 2026-08-13 entry's "base playbooks" term, which is now stale
+prose, not the live vocabulary.
+
+New, not previously logged: the taxonomy is a manifest field, not just a
+naming habit. `manifest.yaml` gains `layer: root | base | vertical`;
+`KBF013` cross-checks it against `extends` (root ⇒ null; base/vertical ⇒
+must extend a root-or-base playbook) and against `name` (root/base ⇒
+`^core-`; vertical ⇒ not). Rationale: a convention nobody enforces drifts;
+this repo's own thesis (a broken ontology fails fast, machine-checked, not
+documentation) applies to its own package taxonomy the same way it applies
+to business content. Reversal: none foreseeable; if a future layer needs a
+different extends-target set than {root, base}, that is an addition to
+`KBF013`'s rule table, not a reason to drop the check.
+
 ## 2026-08-13 - The unit is a playbook; the folder is playbooks/
 
 Owner decision: the shipped unit's name is **playbook** (a runnable package of

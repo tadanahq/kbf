@@ -16,6 +16,7 @@ playbook belongs to the namespace `manifest.yaml` names.
 | `version` | yes | semver string | The playbook's own version, independent of the spec version it targets. |
 | `spec` | yes | `v0` (v0 scope) | Which version of the KBF Ontology Spec this playbook targets. See `spec/versioning.md`. |
 | `extends` | yes | playbook name, or `null` | `null` only for a root playbook (`core-universal`). Every other playbook names its immediate parent; the parent may itself extend something else, and `kbf` resolves the whole chain. An unresolved `extends` fails `KBF011`. |
+| `layer` | yes | `root \| base \| vertical` | Where this playbook sits in the taxonomy: `root` (the single universal floor), `base` (a core playbook other playbooks build on), or `vertical` (a business-specific leaf). Must be consistent with both `extends` and `name`: `KBF013`. Empty fails `KBF010`; a value outside the three fails `KBF002`. |
 
 `manifest.yaml` is a single flat document, not a `kind:`-discriminated one
 like entity, relation, metric, action, or competency-question: a playbook
@@ -30,6 +31,7 @@ name: core-universal
 version: 0.1.0
 spec: v0
 extends: null
+layer: root
 ```
 
 A core playbook extending the root, `playbooks/core-operations/manifest.yaml`:
@@ -39,6 +41,7 @@ name: core-operations
 version: 0.1.0
 spec: v0
 extends: core-universal
+layer: base
 ```
 
 A leaf two hops from the root, `examples/cafe-demo/manifest.yaml`:
@@ -48,7 +51,13 @@ name: cafe-demo
 version: 0.1.0
 spec: v0
 extends: core-operations
+layer: vertical
 ```
+
+The three examples above are also the three `layer` values: `core-universal`
+is `root`, `core-operations` is `base`, `cafe-demo` is `vertical`. Every
+playbook in this repository fits one of them; see "Layers" in
+`spec/conventions.md` for the naming rule that goes with each.
 
 `cafe-demo`'s full chain is `cafe-demo` → `core-operations` →
 `core-universal`; `kbf lint`/`coverage`/`compile` need every playbook in
@@ -81,3 +90,14 @@ repo's own `playbooks/` folder.
   extends-resolution silently (two playbooks both claiming to be
   `core-universal`, say). Playbook names are a flat space; keep them
   distinct.
+- **`layer` inconsistent with `extends`.** A `root` playbook must have
+  `extends: null`; a `base` or `vertical` playbook must extend a playbook
+  whose own `layer` is `root` or `base` (never another `vertical`). Fails
+  `KBF013`. Whether the `extends` name resolves at all is checked first,
+  as `KBF011`; the layer comparison only runs once there is an actual
+  parent to compare against.
+- **`layer` inconsistent with `name`.** `root` and `base` playbooks
+  (together, "core playbooks": see `spec/conventions.md`) must have a
+  name starting with `core-`; `vertical` playbooks must not. `core-widget`
+  as a `vertical` fails `KBF013` exactly like `widget` as a `base` does,
+  in opposite directions.

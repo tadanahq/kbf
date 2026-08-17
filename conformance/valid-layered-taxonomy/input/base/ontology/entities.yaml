@@ -1,0 +1,6 @@
+kind: entity
+name: loan
+meaning: A record of a book lent out from a branch.
+identity: [loan_id]
+resolution: identity-mapping
+tier: structural
