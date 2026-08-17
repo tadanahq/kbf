@@ -24,7 +24,7 @@ business for agents.
 
 A semantic layer maps tables and columns to friendly names, so a BI tool
 can build a chart without an analyst writing SQL by hand. That is not
-enough for an agent: an agent needs to know what a location *is*, what
+enough for an agent: an agent needs to know what a transaction *is*, what
 relations it can join through, which metrics are safe to add up, and what
 it is and is not allowed to do when it notices something wrong. The KBF
 Ontology is a versioned, YAML-authored contract that answers those
@@ -36,11 +36,10 @@ fails fast with a file, a line, a rule id, and the fix.
 LLM accuracy on enterprise questions roughly triples with a semantic
 layer, and improves again when the queries an agent generates are
 validated and repaired against an ontology before they run. A dashboard
-semantic layer gets an agent halfway there. The rest, what an order *is*
-versus what a purchase *is*, which relations actually exist, which
-metrics can be summed across locations, has to be declared somewhere an
-agent can read it and a linter can check it. That declaration is the KBF
-Ontology.
+semantic layer gets an agent halfway there. The rest, what a transaction
+*is* versus what a purchase *is*, which relations actually exist, which
+metrics can be safely summed, has to be declared somewhere an agent can
+read it and a linter can check it. That declaration is the KBF Ontology.
 
 ## What's here
 
@@ -48,8 +47,11 @@ Ontology.
 |---|---|
 | [`spec/`](spec/) | The prose spec: start at [`spec/index.md`](spec/index.md). |
 | [`schema/`](schema/) | Generated JSON Schema for `spec/`'s shapes, for editor support (`yaml-language-server`). Never hand-edited. |
-| [`packages/universal-core/`](packages/universal-core/) | Playbook Zero: the base ontology every business shares. |
-| [`examples/cafe-demo/`](examples/cafe-demo/) | A fictional single-location cafe extending `universal-core`, exercising every extension mechanic the spec allows. |
+| [`packages/universal-core/`](packages/universal-core/) | Playbook Zero (`extends: null`): the truly universal floor every business shares. |
+| [`packages/operations-core/`](packages/operations-core/) | Base package for site-based businesses (extends `universal-core`): adds location, shift. |
+| [`packages/services-core/`](packages/services-core/) | Base package for engagement-based businesses (extends `universal-core`): adds engagement, deliverable. |
+| [`examples/cafe-demo/`](examples/cafe-demo/) | A fictional cafe extending `operations-core`, exercising every extension mechanic the spec allows. |
+| [`examples/studio-demo/`](examples/studio-demo/) | A fictional marketing studio extending `services-core`: the other base chain, same teaching role. |
 | [`tools/`](tools/) | The `kbf` CLI: `lint`, `coverage`, `compile --to mermaid`, `schema`. |
 | [`conformance/`](conformance/) | Language-agnostic fixtures (YAML in, expected outcome out), so an implementation other than `kbf` can prove it matches the spec. |
 | [`rfcs/`](rfcs/) | How the spec itself changes once it is public. |
@@ -89,12 +91,13 @@ cd tools && go build -o ../bin/kbf ./cmd/kbf && cd ..
 ./bin/kbf lint packages/universal-core
 ```
 
-**4. Lint the demo.** `cafe-demo` extends `universal-core`, so pass both
-paths: `kbf` resolves `extends` against whatever packages you give it, not
+**4. Lint the demo.** `cafe-demo` extends `operations-core`, which extends
+`universal-core`: pass every package in the chain, not just the immediate
+parent. `kbf` resolves `extends` against whatever packages you give it, not
 against this repository's folder layout.
 
 ```sh
-./bin/kbf lint examples/cafe-demo packages/universal-core
+./bin/kbf lint examples/cafe-demo packages/operations-core packages/universal-core
 ```
 
 **5. See what's mapped.** Demo Cafe has no CRM yet; `coverage` should show
@@ -102,13 +105,13 @@ the three `crm.customer-*` slots unmapped and everything else mapped to
 `demopos` or `demobooks`.
 
 ```sh
-./bin/kbf coverage examples/cafe-demo packages/universal-core
+./bin/kbf coverage examples/cafe-demo packages/operations-core packages/universal-core
 ```
 
 **6. Render the ontology map.**
 
 ```sh
-./bin/kbf compile --to mermaid examples/cafe-demo packages/universal-core > cafe-demo.mmd
+./bin/kbf compile --to mermaid examples/cafe-demo packages/operations-core packages/universal-core > cafe-demo.mmd
 ```
 
 Open `cafe-demo.mmd` in an editor with Mermaid preview, or paste it into a
@@ -116,13 +119,16 @@ GitHub Markdown file: entities become nodes, relations become labeled
 edges.
 
 **7. Break something, on purpose.** Open
-`packages/universal-core/ontology/order.yaml`, delete the `identity:`
-line, and re-run step 3. The error names the file, the line, the rule
-(`KBF004`), and the fix, the same shape as every other `kbf lint` error.
-Put the line back when you're done.
+`packages/universal-core/ontology/transaction.yaml`, delete the
+`identity:` line, and re-run step 3. The error names the file, the line,
+the rule (`KBF004`), and the fix, the same shape as every other `kbf lint`
+error. Put the line back when you're done.
 
 That is the whole loop: author YAML against the primitives in
 [`spec/primitives/`](spec/primitives/), lint it, fix what it flags, ship.
+`examples/studio-demo` (extending `packages/services-core`) is the same
+loop on the other base chain: `./bin/kbf lint examples/studio-demo
+packages/services-core packages/universal-core` if you want to see it.
 
 ## Contributing
 
