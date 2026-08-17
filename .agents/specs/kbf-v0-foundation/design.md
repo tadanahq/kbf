@@ -409,3 +409,39 @@ diverge"; binds Batch 3/4 content authoring too.
     purpose: this is a judgment call for whoever owns the vocabulary
     policy, not something to silently pick a side on. Full readout in the
     implementer's report for this batch.
+  - **Reading C (content-agent proposal, not implemented, owner to
+    confirm or reject): self-inclusion is anchored to newly-declared
+    entities, not to the package as a whole.** A package's vocabulary
+    contribution is the set of verbs used on a relation where `from` or
+    `to` is an entity *that package itself declares* (not inherited),
+    ancestors' verbs still union in as before. Checked against a
+    universally-plausible pairing rejected above as contrived, this
+    reading rejects nothing that reading needed to: every one of
+    `operations-core`'s four verbs sits on a pair with a new entity on at
+    least one side (`located-at`: transaction→**location**; `works-at`:
+    employee→**location**; `staffed-by`: **shift**→employee; `sells`:
+    **location**→offering), so all four pass without `universal-core`
+    inventing a contrived non-location use of a verb whose entire reason
+    to exist is location. It is not vacuous the way Reading B is: a
+    relation between two *inherited* entities (both sides already
+    declared by an ancestor) still gets no self-inclusion at all, only
+    ancestor vocabulary, so a made-up verb on, say, `employee` to
+    `organization` inside `operations-core` would still fail exactly like
+    Reading A says it should — `invalid-relation-bad-verb` and
+    `chain-cousin` need checking against this reading specifically
+    (not assumed clean), but the shape of the argument survives because
+    neither fixture's premise depended on the bad relation touching a
+    newly-declared entity. Rationale, not just a fixture-passing hack: a
+    new entity is the unit of "new business concept" a package
+    introduces, and it makes sense that introducing one carries the
+    right to name the relationships it participates in without
+    pre-clearance; a relation between two concepts that already existed
+    in an ancestor has no comparable justification for inventing a new
+    way to connect them instead of reusing what is already expressible.
+    Content-side consequence if adopted: no change needed to
+    `packages/operations-core` as authored. Content-side consequence if
+    rejected in favor of Reading A as-is: `packages/universal-core` needs
+    a genuine reason to touch `located-at`/`works-at`/`staffed-by`/`sells`
+    itself, which the whole point of this restructure argues it should
+    not have — so rejecting this reading without a fourth alternative
+    reopens the question, it does not close it.
