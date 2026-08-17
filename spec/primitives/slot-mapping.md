@@ -24,18 +24,18 @@ be a checklist. Unlike the other primitives, it carries neither `tier` nor
 A playbook's `install/slots.yaml` covers only the slots declared by
 attributes in that playbook's own `ontology/`, not its ancestors': a core
 playbook (`playbooks/core-operations`, `playbooks/core-services`) templates
-only what it adds on top of `core-universal`, exactly as `core-universal`
+only what it adds on top of `core-business`, exactly as `core-business`
 templates its own. A leaf install (a teaching playbook like
 `examples/cafe-demo`, or a real deployment) is different: it covers the
 *full resolved chain*, because an install is mapping one business's whole
 ontology to its real systems, not documenting what one layer contributed.
 `examples/cafe-demo/install/slots.yaml` has all 27 slots across
-`core-universal` and `playbooks/core-operations` combined, even though
+`core-business` and `playbooks/core-operations` combined, even though
 `cafe-demo` itself declares no new attributes.
 
 ## Example
 
-The template form, one row from `playbooks/core-universal/install/slots.yaml`:
+The template form, one row from `playbooks/core-business/install/slots.yaml`:
 
 ```yaml
 - slot: catalog.offering-label

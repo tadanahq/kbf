@@ -43,8 +43,8 @@ build: $(BIN)
 
 .PHONY: dogfood-lint
 dogfood-lint: $(BIN)
-	./$(BIN) lint playbooks/core-universal playbooks/core-operations examples/cafe-demo
-	./$(BIN) lint playbooks/core-universal playbooks/core-services examples/studio-demo
+	./$(BIN) lint playbooks/core-business playbooks/core-operations examples/cafe-demo
+	./$(BIN) lint playbooks/core-business playbooks/core-services examples/studio-demo
 
 .PHONY: conformance
 conformance:

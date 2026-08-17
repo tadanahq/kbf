@@ -14,9 +14,9 @@ $defs:
       "on":
         type: string
         description: "On is the entity name this action targets. Must resolve to a declared entity: KBF009."
-      risk:
+      approval:
         type: string
-        description: "Risk states whether an agent may take this action unsupervised (auto) or must get confirmation first (confirm). This is Action's governance-equivalent tier: empty risk is KBF010."
+        description: "Approval states whether an agent may take this action unsupervised (automatic) or must get confirmation first (required). This is Action's governance-equivalent tier: empty approval is KBF010."
       writes:
         type: string
         description: "Writes names what the action produces, e.g. \"finding\". Free text in v0: the set of writable targets grows with the findings layer, not something the linter should freeze early."
@@ -26,9 +26,9 @@ $defs:
     - kind
     - name
     - "on"
-    - risk
+    - approval
     - writes
-    description: "Action is a verb an agent may execute against an entity: what it does, how risky it is to let an agent do it unsupervised, and what it writes. Risk is Action's governance-equivalent field (project-architecture.md's \"risk tier\"); Action has no separate Tier field, see design.md."
+    description: "Action is a verb an agent may execute against an entity: what it does, what it takes to let an agent do it unsupervised, and what it writes. Approval is Action's governance-equivalent field (project-architecture.md's \"risk tier\"); Action has no separate Tier field, see design.md."
   Attribute:
     properties:
       name:
@@ -171,13 +171,13 @@ $defs:
         description: Kind discriminates this document as a relation; always "relation".
       name:
         type: string
-        description: "Name is the relation's verb, e.g. \"contains\" or \"staffed-by\". Doubles as the controlled-vocabulary token: KBF007 checks it against the set of verbs already used in the extends-root package."
+        description: "Name is the relation's verb, e.g. \"contains\" or \"staffed-by\". Doubles as the controlled-vocabulary token: KBF007 checks it against the set of verbs already declared somewhere in the composition closure."
       from:
         type: string
-        description: "From is the source entity's name. Must resolve within the package or its extends-root: KBF006."
+        description: "From is the source entity's name. Must resolve within the package or its composition closure: KBF006."
       to:
         type: string
-        description: "To is the target entity's name. Must resolve within the package or its extends-root: KBF006."
+        description: "To is the target entity's name. Must resolve within the package or its composition closure: KBF006."
       cardinality:
         type: string
         description: "Cardinality states the shape of the join, needed before any query generation can be trusted to aggregate correctly: one-to-one, one-to-many, or many-to-many."
@@ -186,9 +186,9 @@ $defs:
           type: string
         type: array
         description: Join lists the key(s) that implement the relation at the data layer.
-      tier:
+      origin:
         type: string
-        description: "Tier states who populates this relation: source-synced (from a source system) or client-configured (per client install). This is NOT the governance tier vocabulary (structural/glossary/instance) that Entity and Metric use; see design.md's \"Implementation clarifications\"."
+        description: "Origin states who populates this relation: source-synced (from a source system) or client-configured (per client install). This is NOT the governance tier vocabulary (structural/glossary/instance) that Entity and Metric use; see design.md's \"Implementation clarifications\"."
       temporal:
         type: boolean
         description: "Temporal marks whether the relation carries a validity window (the join can change over time and old rows still matter). Defaults to false: most relations are point-in-time current-state only."
@@ -201,7 +201,7 @@ $defs:
     - to
     - cardinality
     - join
-    - tier
+    - origin
     description: "Relation is a directed, verb-named link between two entities: how they connect, at what cardinality, and through which join keys. The verb itself (Name) is drawn from a controlled vocabulary so agents can reason over relations without learning a new verb per package: see KBF007 and design.md's \"Implementation clarifications\" for where that vocabulary lives."
 oneOf:
 - $ref: "#/$defs/Entity"

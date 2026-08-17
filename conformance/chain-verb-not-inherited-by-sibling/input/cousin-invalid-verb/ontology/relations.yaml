@@ -11,5 +11,5 @@ from: gadget
 to: widget
 cardinality: many-to-many
 join: [gadget_id, widget_id]
-tier: source-synced
+origin: source-synced
 temporal: false

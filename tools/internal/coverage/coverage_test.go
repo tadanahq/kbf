@@ -55,9 +55,9 @@ var realChains = []struct {
 		paths: []string{
 			filepath.Join("..", "..", "..", "examples", "cafe-demo"),
 			filepath.Join("..", "..", "..", "playbooks", "core-operations"),
-			filepath.Join("..", "..", "..", "playbooks", "core-universal"),
+			filepath.Join("..", "..", "..", "playbooks", "core-business"),
 		},
-		// 27 slots: core-universal's 21 + core-operations' 6 (location
+		// 27 slots: core-business's 21 + core-operations' 6 (location
 		// x3, shift x3), the full resolved ontology across the chain.
 		declared: 27,
 		mapped:   24,
@@ -68,9 +68,9 @@ var realChains = []struct {
 		paths: []string{
 			filepath.Join("..", "..", "..", "examples", "studio-demo"),
 			filepath.Join("..", "..", "..", "playbooks", "core-services"),
-			filepath.Join("..", "..", "..", "playbooks", "core-universal"),
+			filepath.Join("..", "..", "..", "playbooks", "core-business"),
 		},
-		// 29 slots: core-universal's 21 + core-services' 8 (engagement
+		// 29 slots: core-business's 21 + core-services' 8 (engagement
 		// x5, deliverable x3).
 		declared: 29,
 		mapped:   27,
@@ -91,7 +91,7 @@ func TestComputeAgainstRealPlaybooks(t *testing.T) {
 
 			reports := coverage.Compute(universe)
 			if len(reports) != 1 {
-				t.Fatalf("got %d reports, want 1 (only the demo is a leaf; its core-playbook and core-universal ancestors are extends-context, not a subject): %+v", len(reports), reports)
+				t.Fatalf("got %d reports, want 1 (only the demo is a leaf; its core-playbook and core-business ancestors are extends-context, not a subject): %+v", len(reports), reports)
 			}
 
 			r := reports[0]
@@ -144,16 +144,16 @@ func TestRenderGolden(t *testing.T) {
 }
 
 func TestCoreUniversalAlone(t *testing.T) {
-	universe, _, err := lint.Load([]string{filepath.Join("..", "..", "..", "playbooks", "core-universal")})
+	universe, _, err := lint.Load([]string{filepath.Join("..", "..", "..", "playbooks", "core-business")})
 	if err != nil {
 		t.Fatalf("lint.Load: %v", err)
 	}
 	reports := coverage.Compute(universe)
 	if len(reports) != 1 {
-		t.Fatalf("got %d reports, want 1: linted alone, core-universal is trivially its own leaf", len(reports))
+		t.Fatalf("got %d reports, want 1: linted alone, core-business is trivially its own leaf", len(reports))
 	}
 	if reports[0].Mapped != 0 {
-		t.Errorf("Mapped = %d, want 0: core-universal's slots.yaml is a template, every source empty", reports[0].Mapped)
+		t.Errorf("Mapped = %d, want 0: core-business's slots.yaml is a template, every source empty", reports[0].Mapped)
 	}
 	if reports[0].Declared != 21 {
 		t.Errorf("Declared = %d, want 21", reports[0].Declared)

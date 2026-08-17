@@ -19,7 +19,7 @@ conventions are load-bearing: the linter's semantic rules assume them.
 
 Identity and join keys read like source-system column names on purpose:
 they are usually one. Slot domains (`core`, `sales`, `catalog`, `crm`,
-`hr`, `purchasing` in `core-universal`; `delivery` in `core-services`)
+`hr`, `purchasing` in `core-business`; `delivery` in `core-services`)
 are a convention, not a closed list; a core playbook or an extending
 playbook may introduce its own domain prefix.
 
@@ -29,7 +29,7 @@ builds on: `spec/primitives/namespace.md`'s `layer` field), is named with
 a `core-` prefix; a `vertical` playbook is not. `kbf lint` enforces this
 (`KBF013`), not just documents it. Sorted alphabetically, this repo's
 five playbooks read `cafe-demo`, `core-operations`, `core-services`,
-`core-universal`, `studio-demo`: the three core playbooks sort together
+`core-business`, `studio-demo`: the three core playbooks sort together
 as one contiguous block, the two vertical leaves bookending them,
 exactly the point of the prefix: scan a sorted listing and the
 foundation layer is the block that shares a name, not five names you
@@ -39,13 +39,14 @@ have to already know the architecture to sort by hand.
 
 Relation names come from a small, shared vocabulary, not from whatever
 reads best in the moment. **The vocabulary a playbook sees is the union of
-every `Relation.name` already declared anywhere in its extends chain**,
-not a single fixed list: `core-universal` seeds nine verbs available to
-everything; a core playbook may mint its own on top, available to that
-core playbook's own descendants (and only those), the same way
-`core-operations` mints four more for anything that extends it.
+every `Relation.name` already declared anywhere in its composition
+closure**, not a single fixed list: `core-business` seeds nine verbs
+available to everything; a core playbook may mint its own on top,
+available to everything that composes that core playbook (and only
+those), the same way `core-operations` mints four more for anything that
+builds on it.
 
-`core-universal`'s nine (`playbooks/core-universal/ontology/relations.yaml`):
+`core-business`'s nine (`playbooks/core-business/ontology/relations.yaml`):
 
 | Verb | Meaning |
 |---|---|
@@ -63,7 +64,7 @@ core playbook's own descendants (and only those), the same way
 (`playbooks/core-operations/ontology/relations.yaml`), all needing
 `location` or `shift`, which is exactly why they aren't universal:
 `located-at`, `works-at`, `staffed-by`, `sells`. `core-services` mints
-none: every relation it adds reuses one of `core-universal`'s nine on a
+none: every relation it adds reuses one of `core-business`'s nine on a
 new pair (`places` for customer-to-engagement, `contains` for
 engagement-to-deliverable, and so on), the RFC-reuse-first principle
 below taken as far as it goes.
@@ -99,15 +100,15 @@ answers a different question.
 | Kind | Field | Values | Question it answers |
 |---|---|---|---|
 | Entity, Metric | `tier` | `structural \| glossary \| instance` | Who owns this element's definition? |
-| Relation | `tier` | `source-synced \| client-configured` | Does a source system emit this relation, or does a person configure it? |
-| Action | `risk` | `auto \| confirm` | May an agent execute this unattended? |
+| Relation | `origin` | `source-synced \| client-configured` | Does a source system emit this relation, or does a person configure it? |
+| Action | `approval` | `automatic \| required` | May an agent execute this unattended? |
 | Competency question, Slot mapping | none | (n/a) | Neither applies: these are operational elements, not governed content. |
 
 `structural` is the default for anything a core playbook defines: the
 shared, non-negotiable shape of the business at that layer. `glossary` and
 `instance` exist in the vocabulary for content this spec does not populate
 in v0 (see `spec/versioning.md`); every entity and metric across
-`playbooks/core-universal`, `playbooks/core-operations`,
+`playbooks/core-business`, `playbooks/core-operations`,
 `playbooks/core-services`, and both teaching examples is `structural`.
 
 The tier that matters most for authoring is narrower than the table above:

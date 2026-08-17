@@ -8,5 +8,5 @@ from: material
 to: warehouse
 cardinality: many-to-one
 join: [material_id, warehouse_id]
-tier: source-synced
+origin: source-synced
 temporal: false

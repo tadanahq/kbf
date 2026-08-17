@@ -24,10 +24,10 @@ has exactly one namespace, so there is nothing to discriminate.
 
 ## Example
 
-The root playbook, `playbooks/core-universal/manifest.yaml`:
+The root playbook, `playbooks/core-business/manifest.yaml`:
 
 ```yaml
-name: core-universal
+name: core-business
 version: 0.1.0
 spec: v0
 builds-on: []
@@ -40,7 +40,7 @@ A core playbook composing the root, `playbooks/core-operations/manifest.yaml`:
 name: core-operations
 version: 0.1.0
 spec: v0
-builds-on: [core-universal]
+builds-on: [core-business]
 layer: core
 ```
 
@@ -54,17 +54,17 @@ builds-on: [core-operations]
 layer: vertical
 ```
 
-The three examples above are also the two `layer` values: `core-universal`
-and `core-operations` are both `core` (`core-universal`'s empty `builds-on`
+The three examples above are also the two `layer` values: `core-business`
+and `core-operations` are both `core` (`core-business`'s empty `builds-on`
 is what makes it the root; `core-operations` composing it is legal since a
 core playbook may build on other core playbooks), and `cafe-demo` is
 `vertical`. Every playbook in this repository is one or the other; see
 "Layers" in `spec/conventions.md` for the naming rule that goes with each.
 
-`cafe-demo`'s full composition closure is `{core-operations, core-universal}`;
+`cafe-demo`'s full composition closure is `{core-operations, core-business}`;
 `kbf lint`/`coverage`/`compile` need every playbook in the closure passed on
 the command line (`kbf lint examples/cafe-demo playbooks/core-operations
-playbooks/core-universal`), not just the one it names directly, since
+playbooks/core-business`), not just the one it names directly, since
 resolution isn't a filesystem lookup against this repo's own `playbooks/`
 folder. A playbook can build on more than one other playbook at once (the
 diamond case: two core playbooks that both compose the same root, then a
@@ -87,14 +87,14 @@ ancestor to one instance rather than loading it twice.
 - **Assuming `builds-on` is a single parent.** It isn't: a playbook can
   build on more than one other playbook, and each of those can build on
   more, arbitrarily deep. `examples/cafe-demo` builds on `core-operations`,
-  which builds on `core-universal`; `examples/studio-demo` is the same
+  which builds on `core-business`; `examples/studio-demo` is the same
   shape through `core-services`. A playbook's own vocabulary, overridable
   elements, and slot-mapping context all come from its whole closure, not
   just what it names directly: see `spec/conventions.md` and
   `spec/primitives/relation.md`.
 - **Reusing a `name` across playbooks.** Namespace collision breaks
   builds-on resolution silently (two playbooks both claiming to be
-  `core-universal`, say). Playbook names are a flat space; keep them
+  `core-business`, say). Playbook names are a flat space; keep them
   distinct.
 - **The same identity declared by two different playbooks in one closure.**
   Composition has no resolution order: unlike a single linear parent, where

@@ -12,5 +12,5 @@ from: component
 to: material
 cardinality: many-to-many
 join: [component_id, material_id]
-tier: source-synced
+origin: source-synced
 temporal: false

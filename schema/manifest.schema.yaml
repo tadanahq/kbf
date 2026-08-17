@@ -6,7 +6,7 @@ $defs:
     properties:
       name:
         type: string
-        description: "Name is the package's identifier, e.g. \"core-universal\". Doubles as its namespace: element uniqueness (KBF003) and fork detection (KBF008) are scoped by this name."
+        description: "Name is the package's identifier, e.g. \"core-business\". Doubles as its namespace: element uniqueness (KBF003) and fork detection (KBF008) are scoped by this name."
       version:
         type: string
         description: "Version is the package's own version, independent of the spec version it targets (project-standards.md: spec versioning is independent of tool/package versioning)."

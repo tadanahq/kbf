@@ -6,5 +6,5 @@ from: book
 to: branch
 cardinality: many-to-one
 join: [book_id, branch_id]
-tier: client-configured
+origin: client-configured
 temporal: false

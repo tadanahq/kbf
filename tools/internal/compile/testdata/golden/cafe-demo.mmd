@@ -29,10 +29,10 @@ flowchart LR
   transaction -->|located-at| location
   %% actions
   action_annotate(("annotate"))
-  action_annotate -.->|auto| customer
+  action_annotate -.->|automatic| customer
   action_propose_extension(("propose-extension"))
-  action_propose_extension -.->|confirm| organization
+  action_propose_extension -.->|required| organization
   action_request_sync(("request-sync"))
-  action_request_sync -.->|confirm| organization
+  action_request_sync -.->|required| organization
   action_flag_for_review(("flag-for-review"))
-  action_flag_for_review -.->|auto| transaction
+  action_flag_for_review -.->|automatic| transaction

@@ -55,7 +55,7 @@ func ToMermaid(g Graph) string {
 		for _, a := range g.Actions {
 			id := "action_" + nodeID(a.Name)
 			fmt.Fprintf(&b, "  %s((%q))\n", id, a.Name)
-			fmt.Fprintf(&b, "  %s -.->|%s| %s\n", id, a.Risk, nodeID(a.On))
+			fmt.Fprintf(&b, "  %s -.->|%s| %s\n", id, a.Approval, nodeID(a.On))
 		}
 	}
 

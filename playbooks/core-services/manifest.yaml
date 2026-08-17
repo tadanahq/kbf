@@ -1,8 +1,8 @@
 # core-services: the core playbook for businesses that sell scoped work
 # rather than physical goods (agencies, consultancies, studios). Adds
-# engagement and deliverable on top of core-universal; does not fork it.
+# engagement and deliverable on top of core-business; does not fork it.
 name: core-services
 version: 0.1.0
 spec: v0
-builds-on: [core-universal]
+builds-on: [core-business]
 layer: core

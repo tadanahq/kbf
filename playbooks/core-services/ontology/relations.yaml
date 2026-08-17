@@ -1,8 +1,8 @@
-# Every verb here already exists in core-universal; core-services mints
+# Every verb here already exists in core-business; core-services mints
 # none of its own, on purpose (RFC discipline: reuse an existing verb on
 # a new pair before proposing a new one). Relation identity is (name,
 # from, to), so each of these is a distinct relation from its
-# core-universal namesake, not a fork: see spec/conventions.md.
+# core-business namesake, not a fork: see spec/conventions.md.
 
 kind: relation
 name: places
@@ -10,7 +10,7 @@ from: customer
 to: engagement
 cardinality: one-to-many
 join: [customer_id, engagement_id]
-tier: source-synced
+origin: source-synced
 temporal: false
 ---
 kind: relation
@@ -19,7 +19,7 @@ from: engagement
 to: deliverable
 cardinality: one-to-many
 join: [engagement_id, deliverable_id]
-tier: source-synced
+origin: source-synced
 temporal: false
 ---
 # A transaction (an invoice) is billed against the engagement it funds.
@@ -29,7 +29,7 @@ from: transaction
 to: engagement
 cardinality: many-to-one
 join: [transaction_id, engagement_id]
-tier: source-synced
+origin: source-synced
 temporal: false
 ---
 # No PM tool feed emits "who owns this engagement": an owner assigns it
@@ -40,5 +40,5 @@ from: employee
 to: engagement
 cardinality: many-to-many
 join: [employee_id, engagement_id]
-tier: client-configured
+origin: client-configured
 temporal: true

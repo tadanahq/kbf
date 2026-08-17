@@ -15,8 +15,8 @@
 package model
 
 // Action is a verb an agent may execute against an entity: what it does,
-// how risky it is to let an agent do it unsupervised, and what it writes.
-// Risk is Action's governance-equivalent field (project-architecture.md's
+// what it takes to let an agent do it unsupervised, and what it writes.
+// Approval is Action's governance-equivalent field (project-architecture.md's
 // "risk tier"); Action has no separate Tier field, see design.md.
 type Action struct {
 	// Kind discriminates this document as an action; always "action".
@@ -27,10 +27,10 @@ type Action struct {
 	// On is the entity name this action targets. Must resolve to a
 	// declared entity: KBF009.
 	On string `yaml:"on" json:"on"`
-	// Risk states whether an agent may take this action unsupervised
-	// (auto) or must get confirmation first (confirm). This is Action's
-	// governance-equivalent tier: empty risk is KBF010.
-	Risk string `yaml:"risk" json:"risk"`
+	// Approval states whether an agent may take this action unsupervised
+	// (automatic) or must get confirmation first (required). This is
+	// Action's governance-equivalent tier: empty approval is KBF010.
+	Approval string `yaml:"approval" json:"approval"`
 	// Writes names what the action produces, e.g. "finding". Free text in
 	// v0: the set of writable targets grows with the findings layer, not
 	// something the linter should freeze early.

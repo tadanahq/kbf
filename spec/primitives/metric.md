@@ -28,7 +28,7 @@ zero-valued (see "Common mistakes").
 
 ## Example
 
-Copied from `playbooks/core-universal/ontology/metrics.yaml`:
+Copied from `playbooks/core-business/ontology/metrics.yaml`:
 
 ```yaml
 kind: metric
@@ -41,11 +41,11 @@ thresholds: {warn-below: 0.55}
 tier: structural
 ```
 
-`core-universal`'s own metrics stop at `[organization, business-date]`
+`core-business`'s own metrics stop at `[organization, business-date]`
 grain: `location` is not universal (`playbooks/core-operations` adds it).
 A core playbook that wants a location-grain sibling of an existing metric
 declares a new metric with its own name at that grain
-(`playbooks/core-operations`'s `average-ticket`, next to core-universal's
+(`playbooks/core-operations`'s `average-ticket`, next to core-business's
 `average-transaction-value`): grain is not glossary-eligible, so
 redeclaring an existing metric name at a different grain is a fork, not
 an override.

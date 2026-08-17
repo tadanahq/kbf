@@ -29,7 +29,7 @@ var update = flag.Bool("update", false, "write golden files instead of comparing
 // realChains: both demo chains this repo ships, dogfooded the same way
 // the linter is (design.md, coverage_test.go). design.md is explicit that
 // both exist so "one shared multi-vertical core" is checkable, not
-// asserted: core-universal is never exercised alone as "the" example,
+// asserted: core-business is never exercised alone as "the" example,
 // only as the common ancestor of two visibly different businesses, so
 // both get the same golden protection, not just cafe-demo. Each chain is
 // three levels (layered-playbooks restructure, 2026-08-13): all three
@@ -48,21 +48,21 @@ var realChains = []struct {
 		paths: []string{
 			filepath.Join("..", "..", "..", "examples", "cafe-demo"),
 			filepath.Join("..", "..", "..", "playbooks", "core-operations"),
-			filepath.Join("..", "..", "..", "playbooks", "core-universal"),
+			filepath.Join("..", "..", "..", "playbooks", "core-business"),
 		},
-		// 9 entities: core-universal's 7 (organization, customer,
+		// 9 entities: core-business's 7 (organization, customer,
 		// offering, transaction, employee, supplier, purchase) plus
 		// core-operations' 2 new ones (location, shift). cafe-demo
 		// introduces no entity of its own (its product fragment is a
 		// synonym-only override of offering).
 		wantEntities: 9,
-		// 17 relations: core-universal's own, plus core-operations' 6
+		// 17 relations: core-business's own, plus core-operations' 6
 		// (belongs-to and responsible-for reused on new pairs, plus the 4
 		// minted verbs located-at/staffed-by/works-at/sells), plus
 		// cafe-demo's one new (name,from,to) triple (location belongs-to
 		// location) that does not collide with anything up the chain.
 		wantRelations: 17,
-		// 4 actions: all from core-universal; core-operations and
+		// 4 actions: all from core-business; core-operations and
 		// cafe-demo add none.
 		wantActions: 4,
 	},
@@ -71,13 +71,13 @@ var realChains = []struct {
 		paths: []string{
 			filepath.Join("..", "..", "..", "examples", "studio-demo"),
 			filepath.Join("..", "..", "..", "playbooks", "core-services"),
-			filepath.Join("..", "..", "..", "playbooks", "core-universal"),
+			filepath.Join("..", "..", "..", "playbooks", "core-business"),
 		},
-		// 9 entities: core-universal's 7 plus core-services' 2 new ones
+		// 9 entities: core-business's 7 plus core-services' 2 new ones
 		// (engagement, deliverable). studio-demo introduces none of its
 		// own.
 		wantEntities: 9,
-		// 15 relations: core-universal's own, plus core-services' 5
+		// 15 relations: core-business's own, plus core-services' 5
 		// (places, contains, derived-from, responsible-for all reused on
 		// new pairs; core-services mints no new verb at all), plus
 		// studio-demo's one new triple (customer belongs-to customer).

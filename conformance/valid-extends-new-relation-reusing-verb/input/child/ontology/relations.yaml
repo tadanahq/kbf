@@ -8,5 +8,5 @@ from: author
 to: branch
 cardinality: many-to-one
 join: [author_id, branch_id]
-tier: client-configured
+origin: client-configured
 temporal: false

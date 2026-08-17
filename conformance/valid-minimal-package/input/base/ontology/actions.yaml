@@ -1,5 +1,5 @@
 kind: action
 name: flag-overdue
 on: book
-risk: auto
+approval: automatic
 writes: finding

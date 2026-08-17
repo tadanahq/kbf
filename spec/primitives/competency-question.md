@@ -20,14 +20,14 @@ questions it claims to, it is not done, no matter how complete the
 
 Competency question carries neither `tier` nor `risk`: `KBF010` does not
 apply to it. At least one per entity is the v0 floor
-(`playbooks/core-universal/evals/competency-questions.yaml` has seven, one
+(`playbooks/core-business/evals/competency-questions.yaml` has seven, one
 per entity; a core playbook or a leaf install adds more for what it adds,
 `playbooks/core-operations/evals/competency-questions.yaml` and
 `examples/cafe-demo/evals/competency-questions.yaml` among them).
 
 ## Example
 
-Copied from `playbooks/core-universal/evals/competency-questions.yaml`:
+Copied from `playbooks/core-business/evals/competency-questions.yaml`:
 
 ```yaml
 kind: competency-question
@@ -45,7 +45,7 @@ expects: [labor-cost-ratio]
   to)` pair (see `spec/primitives/relation.md`): nothing in the question
   says which one. Reference the metric or entity the question is really
   about instead, the way
-  `playbooks/core-universal/evals/competency-questions.yaml` asks about
+  `playbooks/core-business/evals/competency-questions.yaml` asks about
   suppliers with `expects: [supplier, purchase-cost]`, not
   `expects: [supplies]`.
 - **A question with no single right answer.** "How is the business doing?"

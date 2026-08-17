@@ -2,7 +2,7 @@
 # engagement and deliverable alone, without inventing capacity data
 # core-services does not have (a true utilization metric needs employee
 # available-hours, which is not a field this playbook can add to
-# core-universal's employee without forking it, so it is left out rather
+# core-business's employee without forking it, so it is left out rather
 # than faked).
 
 kind: metric

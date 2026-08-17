@@ -30,7 +30,7 @@ as a project-level change.
   regenerates and fails on drift.
 - **Conformance is data**: fixtures are plain YAML (valid/invalid + expected
   outcome), runnable by any implementation. The runner is thin.
-- **Extension, never fork**: playbooks extend `core-universal`; the linter
+- **Extension, never fork**: playbooks extend `core-business`; the linter
   fails a playbook that redefines an inherited element.
 - **Public hygiene (absolute)**: no client names, no internal project
   references, no private paths, no prices, in any file including fixtures and
@@ -45,10 +45,11 @@ as a project-level change.
 - Vocabulary: **semantic elements** (entities, relations, metrics) and
   **action elements**. Never "kinetic".
 - Relation verbs come from a small controlled vocabulary (target 10-20) defined
-  in `playbooks/core-universal`; playbooks may propose additions via RFC, not ad hoc.
+  in `playbooks/core-business`; playbooks may propose additions via RFC, not ad hoc.
 - Every metric declares grain and additivity. Every entity declares identity
-  keys. Every element carries a governance tier (structural / glossary /
-  instance).
+  keys. Every element carries a governance-equivalent field (`tier` for
+  entity/metric, `origin` for relation, `approval` for action); the
+  vocabulary is kind-specific, see `spec/conventions.md`.
 - Spec versioning is independent of tool versioning: `spec-v0.x` tags with
   migration notes; the tool README states which spec versions it understands.
 

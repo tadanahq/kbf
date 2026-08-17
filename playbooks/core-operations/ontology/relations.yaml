@@ -1,5 +1,5 @@
 # Relations that need `location` or `shift` to exist, so they live here,
-# not in core-universal. Two verbs are reused from core-universal on new
+# not in core-business. Two verbs are reused from core-business on new
 # pairs (belongs-to, responsible-for); four are minted here for the first
 # time (works-at, staffed-by, located-at, sells) and become available, by
 # the extends-chain union, to anything that extends core-operations (see
@@ -11,10 +11,10 @@ from: location
 to: organization
 cardinality: many-to-one
 join: [location_id, organization_id]
-tier: source-synced
+origin: source-synced
 temporal: false
 ---
-# Minted here: core-universal's `employed-by` (employee to organization) is
+# Minted here: core-business's `employed-by` (employee to organization) is
 # the location-free HR fact; this is the location-specific operational one,
 # and the two coexist without conflict on the same employee.
 kind: relation
@@ -23,7 +23,7 @@ from: employee
 to: location
 cardinality: many-to-one
 join: [employee_id, location_id]
-tier: source-synced
+origin: source-synced
 temporal: true
 ---
 kind: relation
@@ -32,7 +32,7 @@ from: shift
 to: employee
 cardinality: many-to-one
 join: [shift_id, employee_id]
-tier: source-synced
+origin: source-synced
 temporal: false
 ---
 kind: relation
@@ -41,7 +41,7 @@ from: transaction
 to: location
 cardinality: many-to-one
 join: [transaction_id, location_id]
-tier: source-synced
+origin: source-synced
 temporal: false
 ---
 kind: relation
@@ -50,7 +50,7 @@ from: location
 to: offering
 cardinality: many-to-many
 join: [location_id, offering_id]
-tier: source-synced
+origin: source-synced
 temporal: false
 ---
 # No POS or HR feed emits "who is accountable for this location": an
@@ -63,5 +63,5 @@ from: employee
 to: location
 cardinality: many-to-many
 join: [employee_id, location_id]
-tier: client-configured
+origin: client-configured
 temporal: true

@@ -8,7 +8,7 @@ from: workshop
 to: widget
 cardinality: one-to-many
 join: [workshop_id, widget_id]
-tier: source-synced
+origin: source-synced
 temporal: false
 ---
 kind: relation
@@ -17,5 +17,5 @@ from: workshop
 to: gizmo
 cardinality: one-to-many
 join: [workshop_id, gizmo_id]
-tier: source-synced
+origin: source-synced
 temporal: false

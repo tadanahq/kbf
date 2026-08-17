@@ -20,7 +20,7 @@ from: workshop
 to: widget
 cardinality: one-to-many
 join: [workshop_id, widget_id]
-tier: source-synced
+origin: source-synced
 temporal: false
 ---
 kind: metric
@@ -34,5 +34,5 @@ tier: structural
 kind: action
 name: flag-for-review
 on: widget
-risk: auto
+approval: automatic
 writes: finding

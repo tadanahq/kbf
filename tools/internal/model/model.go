@@ -43,27 +43,28 @@ const (
 )
 
 // GovernanceTiers is the default governance-tier vocabulary from
-// project-standards.md, used by Entity.Tier and Metric.Tier. Relation.Tier
-// and Action.Risk deliberately use their own, smaller vocabularies: see
-// RelationTiers and ActionRisks.
+// project-standards.md, used by Entity.Tier and Metric.Tier. Relation.Origin
+// and Action.Approval deliberately use their own, smaller vocabularies: see
+// RelationOrigins and ActionApprovals.
 var GovernanceTiers = []string{"structural", "glossary", "instance"}
 
-// RelationTiers is Relation.Tier's vocabulary: who populates the relation,
-// not who governs changes to its definition. Distinct from GovernanceTiers
-// on purpose; see design.md's "Implementation clarifications".
-var RelationTiers = []string{"source-synced", "client-configured"}
+// RelationOrigins is Relation.Origin's vocabulary: who populates the
+// relation, not who governs changes to its definition. Distinct from
+// GovernanceTiers on purpose; see design.md's "Implementation
+// clarifications".
+var RelationOrigins = []string{"source-synced", "client-configured"}
 
-// ActionRisks is Action.Risk's vocabulary: Action has no separate governance
-// tier field because risk plays that role (project-architecture.md calls it
-// "risk tier").
-var ActionRisks = []string{"auto", "confirm"}
+// ActionApprovals is Action.Approval's vocabulary: Action has no separate
+// governance tier field because approval plays that role
+// (project-architecture.md calls it "risk tier").
+var ActionApprovals = []string{"automatic", "required"}
 
 // Cardinalities is Relation.Cardinality's vocabulary. Four values, not
 // three: design.md's original example listed only one-to-one/one-to-many/
 // many-to-many, but from/to are directional and fixed by the relation, so
 // "many locations belong-to one organization" is genuinely many-to-one,
 // not restatable as one-to-many without reversing from/to. Found dogfooding
-// against playbooks/core-universal, which uses many-to-one 7 times for
+// against playbooks/core-business, which uses many-to-one 7 times for
 // exactly this shape (child-to-parent relations); see design.md.
 var Cardinalities = []string{"one-to-one", "one-to-many", "many-to-one", "many-to-many"}
 

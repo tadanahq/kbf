@@ -1,5 +1,5 @@
 # Slot-mapping template: one row per slot declared by an attribute in
-# this playbook's own ontology/*.yaml. core-universal ships every source
+# this playbook's own ontology/*.yaml. core-business ships every source
 # empty; a core playbook (core-operations, core-services) adds only its
 # own new slots the same way, and a leaf install (a teaching playbook like
 # examples/cafe-demo, or a real install) covers the full resolved chain

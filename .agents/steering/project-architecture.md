@@ -5,7 +5,7 @@
 ```
 spec/            # the prose spec: index, primitives/, playbook-format, conventions, versioning
 schema/          # GENERATED meta-schemas (ontology.schema.yaml, manifest.schema.yaml)
-playbooks/       # ontology content: core-universal (Playbook Zero); verticals later
+playbooks/       # ontology content: core-business (Playbook Zero); verticals later
 examples/        # cafe-demo: fictional, fully valid, teaching-first
 tools/           # Go module: the kbf CLI and libraries
 conformance/     # language-agnostic fixture suite (YAML in, expected outcome out)
@@ -18,12 +18,12 @@ scripts/         # repo gates (boundaries scan), invoked by make
 | Primitive | Carries |
 |---|---|
 | Entity | meaning, identity keys + resolution rule, attributes (typed, each with a source slot), synonyms, states where real |
-| Relation | verb (controlled vocabulary), from/to, cardinality, join keys, tier, temporal-validity flag |
+| Relation | verb (controlled vocabulary), from/to, cardinality, join keys, origin, temporal-validity flag |
 | Metric | formula, grain, additivity, unit, canonical filters, thresholds (glossary-editable) |
-| Action | per-entity verbs agents may execute, risk tier (auto/confirm), what it writes |
+| Action | per-entity verbs agents may execute, approval (automatic/required), what it writes |
 | Slot mapping | element → source system declaration; fill status (static in v0) |
 | Competency question | question + answer oracle; the acceptance suite |
-| Namespace | `core-universal` vs `<playbook>`; extension rules |
+| Namespace | `core-business` vs `<playbook>`; composition rules |
 
 Grouped in prose as **semantic elements** (entity, relation, metric),
 **action elements** (action), and **operational elements** (slot mapping,

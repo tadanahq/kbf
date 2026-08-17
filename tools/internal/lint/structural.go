@@ -47,11 +47,12 @@ func structuralFindings(pkg *Package, closure []*Package) []Finding {
 }
 
 // checkEnums is KBF002 for already-decoded elements: every closed-
-// vocabulary field (tier, cardinality, additivity, risk) that is
-// non-empty must hold one of its kind's allowed values. Empty is not
+// vocabulary field (tier, cardinality, additivity, origin, approval) that
+// is non-empty must hold one of its kind's allowed values. Empty is not
 // checked here: an absent value is KBF010 (entity/relation/metric tier,
-// action risk) or simply not required (relation cardinality/additivity
-// have no "missing" rule of their own in the 12-rule set), never KBF002.
+// action approval) or simply not required (relation cardinality/
+// additivity have no "missing" rule of their own in the 13-rule set),
+// never KBF002.
 func checkEnums(e Element) []Finding {
 	bad := func(field, value string, allowed []string) Finding {
 		return Finding{
@@ -75,15 +76,15 @@ func checkEnums(e Element) []Finding {
 			findings = append(findings, bad("additivity", v.Additivity, model.Additivities))
 		}
 	case *model.Relation:
-		if v.Tier != "" && !contains(model.RelationTiers, v.Tier) {
-			findings = append(findings, bad("tier", v.Tier, model.RelationTiers))
+		if v.Origin != "" && !contains(model.RelationOrigins, v.Origin) {
+			findings = append(findings, bad("origin", v.Origin, model.RelationOrigins))
 		}
 		if v.Cardinality != "" && !contains(model.Cardinalities, v.Cardinality) {
 			findings = append(findings, bad("cardinality", v.Cardinality, model.Cardinalities))
 		}
 	case *model.Action:
-		if v.Risk != "" && !contains(model.ActionRisks, v.Risk) {
-			findings = append(findings, bad("risk", v.Risk, model.ActionRisks))
+		if v.Approval != "" && !contains(model.ActionApprovals, v.Approval) {
+			findings = append(findings, bad("approval", v.Approval, model.ActionApprovals))
 		}
 	}
 	return findings
@@ -170,8 +171,8 @@ func describeKey(e Element) string {
 }
 
 // checkCompleteness is KBF004 (entity identity) and KBF010 (governance
-// tier, or risk for actions): the fields every *standalone* element of
-// that kind must carry.
+// tier, or approval for actions): the fields every *standalone* element
+// of that kind must carry.
 func checkCompleteness(e Element) []Finding {
 	var findings []Finding
 	switch v := e.Value.(type) {
@@ -183,16 +184,16 @@ func checkCompleteness(e Element) []Finding {
 			findings = append(findings, Finding{Rule: KBF010, File: e.File, Line: e.Line, Element: v.Name, Message: "entity has no governance tier", Fix: "add tier: structural, glossary, or instance"})
 		}
 	case *model.Relation:
-		if v.Tier == "" {
-			findings = append(findings, Finding{Rule: KBF010, File: e.File, Line: e.Line, Element: v.Name, Message: "relation has no tier", Fix: "add tier: source-synced or client-configured"})
+		if v.Origin == "" {
+			findings = append(findings, Finding{Rule: KBF010, File: e.File, Line: e.Line, Element: v.Name, Message: "relation has no origin", Fix: "add origin: source-synced or client-configured"})
 		}
 	case *model.Metric:
 		if v.Tier == "" {
 			findings = append(findings, Finding{Rule: KBF010, File: e.File, Line: e.Line, Element: v.Name, Message: "metric has no governance tier", Fix: "add tier: structural, glossary, or instance"})
 		}
 	case *model.Action:
-		if v.Risk == "" {
-			findings = append(findings, Finding{Rule: KBF010, File: e.File, Line: e.Line, Element: v.Name, Message: "action has no risk", Fix: "add risk: auto or confirm"})
+		if v.Approval == "" {
+			findings = append(findings, Finding{Rule: KBF010, File: e.File, Line: e.Line, Element: v.Name, Message: "action has no approval", Fix: "add approval: automatic or required"})
 		}
 	}
 	return findings

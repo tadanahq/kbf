@@ -20,7 +20,7 @@ package model
 // touching any ontology content, since builds-on drives cross-package
 // resolution (KBF006, KBF007, KBF008).
 type Manifest struct {
-	// Name is the package's identifier, e.g. "core-universal". Doubles as
+	// Name is the package's identifier, e.g. "core-business". Doubles as
 	// its namespace: element uniqueness (KBF003) and fork detection
 	// (KBF008) are scoped by this name.
 	Name string `yaml:"name" json:"name"`

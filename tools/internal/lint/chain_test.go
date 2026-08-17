@@ -21,7 +21,7 @@ import (
 	"github.com/tadanahq/kbf/tools/internal/lint"
 )
 
-// TestChainThreeLevelValid is the recursive-extends happy path: a
+// TestChainThreeLevelValid is the recursive-composition happy path: a
 // grandparent -> parent -> child chain where the child references
 // entities two layers up (KBF006/009), reuses two verbs the grandparent
 // (the only true root, hence the only layer allowed to establish one)
@@ -44,16 +44,16 @@ func TestChainThreeLevelValid(t *testing.T) {
 // TestChainVerbNotInheritedBySibling is design.md's "not for siblings of
 // another chain", and owner item (2) of the 2026-08-13 KBF007 adjudication
 // ("invalid: new verb over two inherited entities fires KBF007"):
-// chain-cousin extends chain-other-root, a genuinely unrelated root, not
+// chain-cousin builds on chain-other-root, a genuinely unrelated root, not
 // chain-grandparent's line at all. assembled-from is real (chain-
 // grandparent declares it) and chain-grandparent/chain-parent are loaded
-// in the very same universe, but chain-cousin's own chain never passes
-// through either, so KBF007's ancestor union (scoped to a package's
-// actual ancestors) must not see it. chain-cousin also declares no
-// entities of its own — both endpoints (gadget, widget) are inherited
+// in the very same universe, but chain-cousin's own closure never passes
+// through either, so KBF007's composed-verb union (scoped to a package's
+// actual composition) must not see it. chain-cousin also declares no
+// entities of its own — both endpoints (gadget, widget) are composed
 // from chain-other-root — so the owner-adjudicated own-entity minting
 // right does not open a back door either: merely being loaded together in
-// one kbf lint invocation, or redeclaring an inherited entity's name, is
+// one kbf lint invocation, or redeclaring a composed entity's name, is
 // not the same as genuinely introducing something new.
 func TestChainVerbNotInheritedBySibling(t *testing.T) {
 	result := mustRun(t,
@@ -85,12 +85,13 @@ func TestChainVerbNotInheritedBySibling(t *testing.T) {
 // adjudication ("valid: base playbook mints verb on own-entity pair"),
 // mirroring playbooks/core-operations minting located-at/staffed-by/
 // works-at/sells on pairs that touch location or shift. chain-mint-own-
-// entity extends chain-grandparent directly and mints stored-at, a verb
-// no ancestor declares, on a pair that touches warehouse (its own new
-// entity): must pass. The same package reuses stored-at on a second,
-// fully-inherited pair (material -> site, both chain-grandparent's): must
-// still fail, proving minting is evaluated per relation, not granted to
-// the whole package once the verb has been used anywhere in it.
+// entity builds on chain-grandparent directly and mints stored-at, a
+// verb nothing in its closure declares, on a pair that touches warehouse
+// (its own new entity): must pass. The same package reuses stored-at on
+// a second, fully-inherited pair (material -> site, both
+// chain-grandparent's): must still fail, proving minting is evaluated
+// per relation, not granted to the whole package once the verb has been
+// used anywhere in it.
 func TestChainMintOnOwnEntity(t *testing.T) {
 	result := mustRun(t,
 		"testdata/chain/grandparent",
@@ -109,11 +110,12 @@ func TestChainMintOnOwnEntity(t *testing.T) {
 }
 
 // TestChainForkAgainstGrandparent is design.md's "nearest ancestor that
-// has the identity": chain-child-fork extends chain-parent, which never
-// touches chain-grandparent's `material` entity, so the fork must still
-// be caught, reported against chain-grandparent by name specifically
-// (not "chain-parent", which never declared it, and not a generic "the
-// chain").
+// has the identity" (now: whichever closure member matchInClosure finds
+// the collision in): chain-child-fork builds on chain-parent, which
+// never touches chain-grandparent's `material` entity, so the fork must
+// still be caught, reported against chain-grandparent by name
+// specifically (not "chain-parent", which never declared it, and not a
+// generic "the closure").
 func TestChainForkAgainstGrandparent(t *testing.T) {
 	result := mustRun(t,
 		"testdata/chain/grandparent",

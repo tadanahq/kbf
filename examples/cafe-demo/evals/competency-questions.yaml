@@ -1,5 +1,5 @@
 # Competency questions specific to Demo Cafe's extensions. Universal
-# competency questions are inherited from core-universal.
+# competency questions are inherited from core-business.
 
 kind: competency-question
 question: Which menu items have the highest waste ratio this month?

@@ -41,14 +41,14 @@ type RelationEdge struct {
 }
 
 // ActionEdge is one action, drawn as an annotation on the entity it
-// targets: Name -risk-> On.
+// targets: Name -approval-> On.
 type ActionEdge struct {
-	Name, On, Risk string
+	Name, On, Approval string
 }
 
 // BuildGraph unions every package in u: for the common case (one leaf
 // package plus the playbook(s) it builds on, e.g. cafe-demo +
-// core-universal), this is exactly the resolved map a reader wants: the
+// core-business), this is exactly the resolved map a reader wants: the
 // whole picture, not just the leaf's own incremental additions. Unlike
 // coverage, compile has no reason to exclude a parent given as context:
 // showing the same picture "again" from union is harmless (dedup is by
@@ -69,7 +69,7 @@ func BuildGraph(u *lint.Universe) Graph {
 				edge := RelationEdge{From: v.From, To: v.To, Verb: v.Name}
 				relations[v.From+"\x00"+v.Name+"\x00"+v.To] = edge
 			case *model.Action:
-				actions[v.Name] = ActionEdge{Name: v.Name, On: v.On, Risk: v.Risk}
+				actions[v.Name] = ActionEdge{Name: v.Name, On: v.On, Approval: v.Approval}
 			}
 		}
 	}

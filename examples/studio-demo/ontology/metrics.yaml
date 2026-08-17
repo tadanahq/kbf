@@ -6,7 +6,7 @@
 #    glossary-eligible field) is set, tightened from core-services' 0.85
 #    to 0.90: Demo Studio holds itself to a stricter bar.
 # 2. repeat-engagement-rate: a net-new vertical metric, not present in
-#    core-services or core-universal, so it is declared in full. A classic
+#    core-services or core-business, so it is declared in full. A classic
 #    agency health signal (client loyalty), expressible from customer and
 #    engagement counts alone, no attributes beyond what core-services
 #    already declares.

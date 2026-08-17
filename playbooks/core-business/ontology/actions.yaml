@@ -10,23 +10,23 @@
 kind: action
 name: flag-for-review
 "on": transaction
-risk: auto
+approval: automatic
 writes: finding
 ---
 kind: action
 name: annotate
 "on": customer
-risk: auto
+approval: automatic
 writes: finding
 ---
 kind: action
 name: request-sync
 "on": organization
-risk: confirm
+approval: required
 writes: sync-request
 ---
 kind: action
 name: propose-extension
 "on": organization
-risk: confirm
+approval: required
 writes: extension-proposal

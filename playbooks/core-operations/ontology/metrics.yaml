@@ -1,6 +1,6 @@
-# location-grain metrics: core-universal stops at [organization,
+# location-grain metrics: core-business stops at [organization,
 # business-date] because location is not universal. These add the
-# location dimension on top of core-universal's own metrics; they are net
+# location dimension on top of core-business's own metrics; they are net
 # new names, not overrides (a metric's grain is not glossary-eligible, so
 # a same-name redeclaration at a different grain would be a fork).
 

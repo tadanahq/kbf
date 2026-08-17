@@ -4,5 +4,5 @@ from: book
 to: author
 cardinality: many-to-one
 join: [book_id, author_id]
-tier: source-synced
+origin: source-synced
 temporal: false

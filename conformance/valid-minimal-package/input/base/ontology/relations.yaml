@@ -4,7 +4,7 @@ from: book
 to: author
 cardinality: many-to-one
 join: [book_id, author_id]
-tier: source-synced
+origin: source-synced
 temporal: false
 ---
 kind: relation
@@ -13,5 +13,5 @@ from: book
 to: branch
 cardinality: many-to-one
 join: [book_id, branch_id]
-tier: source-synced
+origin: source-synced
 temporal: false

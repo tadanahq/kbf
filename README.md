@@ -47,9 +47,9 @@ read it and a linter can check it. That declaration is the KBF Ontology.
 |---|---|
 | [`spec/`](spec/) | The prose spec: start at [`spec/index.md`](spec/index.md). |
 | [`schema/`](schema/) | Generated JSON Schema for `spec/`'s shapes, for editor support (`yaml-language-server`). Never hand-edited. |
-| [`playbooks/core-universal/`](playbooks/core-universal/) | Playbook Zero (`extends: null`): the truly universal floor every business shares. |
-| [`playbooks/core-operations/`](playbooks/core-operations/) | Core playbook for site-based businesses (extends `core-universal`): adds location, shift. |
-| [`playbooks/core-services/`](playbooks/core-services/) | Core playbook for engagement-based businesses (extends `core-universal`): adds engagement, deliverable. |
+| [`playbooks/core-business/`](playbooks/core-business/) | Playbook Zero (`extends: null`): the truly universal floor every business shares. |
+| [`playbooks/core-operations/`](playbooks/core-operations/) | Core playbook for site-based businesses (extends `core-business`): adds location, shift. |
+| [`playbooks/core-services/`](playbooks/core-services/) | Core playbook for engagement-based businesses (extends `core-business`): adds engagement, deliverable. |
 | [`examples/cafe-demo/`](examples/cafe-demo/) | A fictional cafe extending `core-operations`, exercising every extension mechanic the spec allows. |
 | [`examples/studio-demo/`](examples/studio-demo/) | A fictional marketing studio extending `core-services`: the other core chain, same teaching role. |
 | [`tools/`](tools/) | The `kbf` CLI: `lint`, `coverage`, `compile --to mermaid`, `schema`. |
@@ -88,16 +88,16 @@ cd tools && go build -o ../bin/kbf ./cmd/kbf && cd ..
 **3. Lint the core ontology.**
 
 ```sh
-./bin/kbf lint playbooks/core-universal
+./bin/kbf lint playbooks/core-business
 ```
 
 **4. Lint the demo.** `cafe-demo` extends `core-operations`, which extends
-`core-universal`: pass every playbook in the chain, not just the immediate
+`core-business`: pass every playbook in the chain, not just the immediate
 parent. `kbf` resolves `extends` against whatever playbooks you give it, not
 against this repository's folder layout.
 
 ```sh
-./bin/kbf lint examples/cafe-demo playbooks/core-operations playbooks/core-universal
+./bin/kbf lint examples/cafe-demo playbooks/core-operations playbooks/core-business
 ```
 
 **5. See what's mapped.** Demo Cafe has no CRM yet; `coverage` should show
@@ -105,13 +105,13 @@ the three `crm.customer-*` slots unmapped and everything else mapped to
 `demopos` or `demobooks`.
 
 ```sh
-./bin/kbf coverage examples/cafe-demo playbooks/core-operations playbooks/core-universal
+./bin/kbf coverage examples/cafe-demo playbooks/core-operations playbooks/core-business
 ```
 
 **6. Render the ontology map.**
 
 ```sh
-./bin/kbf compile --to mermaid examples/cafe-demo playbooks/core-operations playbooks/core-universal > cafe-demo.mmd
+./bin/kbf compile --to mermaid examples/cafe-demo playbooks/core-operations playbooks/core-business > cafe-demo.mmd
 ```
 
 Open `cafe-demo.mmd` in an editor with Mermaid preview, or paste it into a
@@ -119,7 +119,7 @@ GitHub Markdown file: entities become nodes, relations become labeled
 edges.
 
 **7. Break something, on purpose.** Open
-`playbooks/core-universal/ontology/transaction.yaml`, delete the
+`playbooks/core-business/ontology/transaction.yaml`, delete the
 `identity:` line, and re-run step 3. The error names the file, the line,
 the rule (`KBF004`), and the fix, the same shape as every other `kbf lint`
 error. Put the line back when you're done.
@@ -128,7 +128,7 @@ That is the whole loop: author YAML against the primitives in
 [`spec/primitives/`](spec/primitives/), lint it, fix what it flags, ship.
 `examples/studio-demo` (extending `playbooks/core-services`) is the same
 loop on the other core chain: `./bin/kbf lint examples/studio-demo
-playbooks/core-services playbooks/core-universal` if you want to see it.
+playbooks/core-services playbooks/core-business` if you want to see it.
 
 ## Contributing
 

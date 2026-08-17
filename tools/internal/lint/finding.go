@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Package lint validates a KBF package (or an extends chain of them)
+// Package lint validates a KBF package (or a composition closure of them)
 // against internal/model: structural shape first, then semantic rules that
 // need cross-references resolved. Rule ids are public API (design.md): once
 // assigned, a rule id's meaning does not change.

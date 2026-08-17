@@ -4,7 +4,7 @@
 # it is tier: client-configured, not source-synced (see the three-tier
 # governance model in spec/conventions.md). This reuses the `belongs-to`
 # verb already declared, on other pairs, by both ancestors in this
-# playbook's chain (core-universal's offering-to-organization,
+# playbook's chain (core-business's offering-to-organization,
 # core-operations' location-to-organization): relation identity is
 # (name, from, to), and (belongs-to, location, location) is a distinct
 # relation from either of those, so this is a new relation, not a fork.
@@ -17,5 +17,5 @@ from: location
 to: location
 cardinality: many-to-one
 join: [location_id, parent_location_id]
-tier: client-configured
+origin: client-configured
 temporal: false

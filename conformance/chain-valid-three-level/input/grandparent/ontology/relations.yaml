@@ -13,7 +13,7 @@ from: material
 to: site
 cardinality: many-to-one
 join: [material_id, site_id]
-tier: source-synced
+origin: source-synced
 temporal: false
 ---
 kind: relation
@@ -22,5 +22,5 @@ from: batch
 to: material
 cardinality: many-to-many
 join: [batch_id, material_id]
-tier: source-synced
+origin: source-synced
 temporal: false

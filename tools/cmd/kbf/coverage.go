@@ -31,7 +31,7 @@ var coverageCmd = &cobra.Command{
 	Long: `coverage loads one or more playbook directories the same way lint does
 (builds-on resolved by manifest name across exactly the paths given), then
 reports install/slots.yaml completeness for each leaf playbook: a playbook
-given only as composition context (e.g. core-universal alongside cafe-demo)
+given only as composition context (e.g. core-business alongside cafe-demo)
 is not itself reported on, since its slots.yaml is a template by definition.`,
 	Args: cobra.MinimumNArgs(1),
 	RunE: runCoverage,

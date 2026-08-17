@@ -3,9 +3,9 @@
 # regional office belonging to a global parent account). No source system
 # emits that grouping, so it is tier: client-configured, not source-synced
 # (see the three-tier governance model in spec/conventions.md). This
-# reuses the `belongs-to` verb core-universal already declares on another
+# reuses the `belongs-to` verb core-business already declares on another
 # pair (offering-to-organization), the one ancestor studio-demo actually
-# has in its chain (studio-demo -> core-services -> core-universal;
+# has in its chain (studio-demo -> core-services -> core-business;
 # core-operations is a sibling core playbook, not an ancestor, so its own
 # use of `belongs-to` does not reach here). Relation identity is (name,
 # from, to), so (belongs-to, customer, customer) is a new relation, not a
@@ -20,5 +20,5 @@ from: customer
 to: customer
 cardinality: many-to-one
 join: [customer_id, parent_customer_id]
-tier: client-configured
+origin: client-configured
 temporal: false

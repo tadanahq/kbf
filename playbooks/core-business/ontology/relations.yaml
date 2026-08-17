@@ -1,9 +1,10 @@
 # Core relations, grouped by kind. Each document below is a complete
 # `kind: relation` element; `---` separates them. Verbs come from the
 # controlled vocabulary in spec/conventions.md, whose scope in v0 is the
-# union of every Relation.name declared anywhere along an extends chain
+# union of every Relation.name declared anywhere in a composition closure
 # (see the "Layered base packages" decision, 2026-08-13): a core playbook
-# may mint a verb its own descendants can then use, not only core-universal.
+# may mint a verb everything that composes it can then use, not only
+# core-business.
 # A verb may recur across different entity pairs: relation identity is
 # (name, from, to), not name alone (see "Relation identity" in
 # spec/conventions.md).
@@ -18,7 +19,7 @@ from: customer
 to: transaction
 cardinality: one-to-many
 join: [customer_id, transaction_id]
-tier: source-synced
+origin: source-synced
 temporal: false
 ---
 kind: relation
@@ -27,7 +28,7 @@ from: transaction
 to: offering
 cardinality: many-to-many
 join: [transaction_id, offering_id]
-tier: source-synced
+origin: source-synced
 temporal: false
 ---
 kind: relation
@@ -36,7 +37,7 @@ from: supplier
 to: offering
 cardinality: many-to-many
 join: [supplier_id, offering_id]
-tier: source-synced
+origin: source-synced
 temporal: true
 ---
 kind: relation
@@ -45,7 +46,7 @@ from: supplier
 to: purchase
 cardinality: one-to-many
 join: [supplier_id, purchase_id]
-tier: source-synced
+origin: source-synced
 temporal: false
 ---
 kind: relation
@@ -54,7 +55,7 @@ from: purchase
 to: organization
 cardinality: many-to-one
 join: [purchase_id, organization_id]
-tier: source-synced
+origin: source-synced
 temporal: false
 ---
 # Every employee is employed by an organization, regardless of vertical.
@@ -66,7 +67,7 @@ from: employee
 to: organization
 cardinality: many-to-one
 join: [employee_id, organization_id]
-tier: source-synced
+origin: source-synced
 temporal: true
 ---
 # An offering belongs to the organization that sells it. Also available
@@ -78,7 +79,7 @@ from: offering
 to: organization
 cardinality: many-to-one
 join: [offering_id, organization_id]
-tier: source-synced
+origin: source-synced
 temporal: false
 ---
 # A refund or adjustment transaction references the original sale it
@@ -89,7 +90,7 @@ from: transaction
 to: transaction
 cardinality: many-to-one
 join: [transaction_id, original_transaction_id]
-tier: source-synced
+origin: source-synced
 temporal: false
 ---
 # A catalog refresh retires one offering in favor of a direct replacement.
@@ -99,17 +100,17 @@ from: offering
 to: offering
 cardinality: one-to-one
 join: [offering_id, superseded_offering_id]
-tier: source-synced
+origin: source-synced
 temporal: false
 ---
 # No source feed emits "who owns this customer relationship": an owner
 # assigns it by hand, so it sits at client-configured tier even though it
-# lives in core-universal.
+# lives in core-business.
 kind: relation
 name: responsible-for
 from: employee
 to: customer
 cardinality: many-to-many
 join: [employee_id, customer_id]
-tier: client-configured
+origin: client-configured
 temporal: true

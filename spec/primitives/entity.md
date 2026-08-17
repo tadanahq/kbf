@@ -28,7 +28,7 @@ that an extending playbook is allowed to touch: see "Common mistakes" below.
 
 ## Example
 
-Copied from `playbooks/core-universal/ontology/organization.yaml`:
+Copied from `playbooks/core-business/ontology/organization.yaml`:
 
 ```yaml
 kind: entity
@@ -64,7 +64,7 @@ states: [active, inactive]
   ```yaml
   # Only the glossary-eligible field is set. See
   # examples/cafe-demo/ontology/entities.yaml for the real file. `offering`
-  # is declared two levels up this playbook's chain, at core-universal, not
+  # is declared two levels up this playbook's chain, at core-business, not
   # at its immediate parent (core-operations): KBF008 matches against the
   # nearest ancestor that has the identity, wherever that is in the chain.
   kind: entity

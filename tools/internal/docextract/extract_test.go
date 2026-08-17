@@ -30,8 +30,8 @@ import (
 // attributionPattern matches a repo-relative-looking path ending in .yaml
 // or .yml: the one stable signal across every way spec/ docs name the real
 // file an example is copied from ("Copied from
-// `playbooks/core-universal/ontology/metrics.yaml`:", "The root playbook,
-// `playbooks/core-universal/manifest.yaml`:", "...from
+// `playbooks/core-business/ontology/metrics.yaml`:", "The root playbook,
+// `playbooks/core-business/manifest.yaml`:", "...from
 // `examples/cafe-demo/install/slots.yaml`:", or a plain comment inside the
 // fence itself, "# See examples/cafe-demo/ontology/entities.yaml for the
 // real file."). Wording and backtick-quoting both vary; the path shape does

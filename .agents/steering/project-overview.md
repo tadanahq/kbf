@@ -36,13 +36,15 @@ machine-validated, versioned, with acceptance tests: not documentation.
    `kbf coverage` (static), `kbf compile --to mermaid`. Runtime enforcement (the
    query gate) is deliberately out of v0: see the public roadmap section in
    README when it lands.
-4. **Playbooks** (`playbooks/`), layered: `core-universal` is the
+4. **Playbooks** (`playbooks/`), layered: `core-business` is the
    truly-universal minimal floor (only what EVERY business shares: the
    revenue event, customers, offerings, people, purchases); **core playbooks**
    (`core-operations` for physical-operations businesses, `core-services` for
-   engagement businesses) extend it; verticals extend a core playbook.
-   Extension, never fork, at every layer, and the extends-root is a
-   parameter: any organization can author its own core.
+   engagement businesses) build on it; verticals build on one or more core
+   playbooks (composition, a DAG, not a single parent). Composition, never
+   fork, at every layer; root-ness is derived (a core playbook with an
+   empty `builds-on`), never a hardcoded package: any organization can
+   author its own core.
 5. **Teaching content** (`examples/`): `cafe-demo` (operations chain) and
    `studio-demo` (services chain), each small, fictional, fully valid, every
    primitive used at least once. Two demos on two chains is the visible proof
@@ -60,6 +62,6 @@ machine-validated, versioned, with acceptance tests: not documentation.
 ## v0 definition of done
 
 A stranger can: read README + spec in one sitting, run `kbf lint` on
-`examples/cafe-demo` and `playbooks/core-universal`, break a file and get a
+`examples/cafe-demo` and `playbooks/core-business`, break a file and get a
 file:line error that teaches the rule, and render the demo's ontology map with
 `kbf compile --to mermaid`.

@@ -48,7 +48,7 @@ type Report struct {
 
 // Compute returns one Report per leaf package in u (see
 // lint.Universe.IsLeaf): a parent given only for composition-resolution
-// context, e.g. core-universal alongside cafe-demo, is not itself
+// context, e.g. core-business alongside cafe-demo, is not itself
 // reported on, since its slots.yaml is a template by definition (every
 // source empty) and would only be noise next to the package actually
 // being evaluated. Linting a root package alone still reports on it:

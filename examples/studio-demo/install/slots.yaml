@@ -1,5 +1,5 @@
 # Demo Studio's install: the full resolved slot set across its chain
-# (core-universal's 21 + core-services' 8 = 29; studio-demo adds no new
+# (core-business's 21 + core-services' 8 = 29; studio-demo adds no new
 # attributes of its own), mapped to two fictional sources: demopm (the
 # project-management tool) and demobooks (the accounting system). Demo
 # Studio has no formal purchasing system yet, so the two purchasing.supplier-*

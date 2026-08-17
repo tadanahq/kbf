@@ -20,7 +20,7 @@ each file in `spec/primitives/` covers one element's shape.
 ```
 
 Every playbook in this repository follows this anatomy exactly (three core
-playbooks, `core-universal`, `core-operations`, `core-services`, and two
+playbooks, `core-business`, `core-operations`, `core-services`, and two
 teaching leaves, `cafe-demo`, `studio-demo`); they are the reference, not
 just an illustration of it.
 
@@ -44,7 +44,7 @@ playbook:
   metric, or action) is a complete, independent `kind:`-tagged document,
   separated by `---`.
 
-`playbooks/core-universal` uses one file per entity for its seven
+`playbooks/core-business` uses one file per entity for its seven
 entities, and one grouped file each for relations, metrics, and actions,
 because a dozen small relation documents in a dozen separate files would
 be harder to scan than one file sorted by verb. Either layout, or a mix,
@@ -81,24 +81,24 @@ scope, not part of this spec.
   its immediate parent; that parent may itself extend something else, and
   `kbf` resolves the whole line back to a root (`extends: null`). This
   repository has two-hop chains today: `examples/cafe-demo` →
-  `playbooks/core-operations` → `playbooks/core-universal`, and
+  `playbooks/core-operations` → `playbooks/core-business`, and
   `examples/studio-demo` → `playbooks/core-services` →
-  `playbooks/core-universal`. There is no depth limit; the linter walks
+  `playbooks/core-business`. There is no depth limit; the linter walks
   however far the chain goes and fails with `KBF011` on a cycle rather
   than hanging. `kbf lint`/`coverage`/`compile` need every playbook in the
   chain passed as an argument, not only the immediate parent.
 - **The root is a parameter, not a hardcoded playbook.** Nothing in `kbf`
-  privileges `core-universal` by name: it is a root only because its own
+  privileges `core-business` by name: it is a root only because its own
   `manifest.yaml` says `extends: null`, the same way any other
   organization's own root would be. Any team may publish its own core
   playbook (a `retail-core`, a `healthcare-core`) that extends this
-  repository's `core-universal`, or a root of its own that doesn't extend
+  repository's `core-business`, or a root of its own that doesn't extend
   anything here at all; `kbf` resolves whatever chain the manifests
   describe, this repository's own playbooks included only as one worked
   example of the pattern, not as the only legal shape of one.
 - **A core playbook's own vocabulary and elements belong only to its own
   descendants.** `playbooks/core-operations` and `playbooks/core-services`
-  both extend `playbooks/core-universal` directly; they are siblings, not
+  both extend `playbooks/core-business` directly; they are siblings, not
   ancestors of each other. A verb `core-operations` mints, or a relation
   it adds, is available to anything that extends `core-operations`
   (`examples/cafe-demo` among them), never to `core-services` or its own
@@ -112,7 +112,7 @@ scope, not part of this spec.
   zero-valued, is a glossary edit, not a fork. The linter matches against
   the *nearest* ancestor that declares the identity, wherever in the chain
   that is: `examples/cafe-demo`'s `offering` synonym fragment matches
-  `playbooks/core-universal`, two hops up, because `core-operations` (its
+  `playbooks/core-business`, two hops up, because `core-operations` (its
   immediate parent) never redeclares `offering` itself. Everything else
   that repeats an ancestor element's identity fails `KBF008`. See "Common
   mistakes" in `spec/primitives/entity.md` and `spec/primitives/metric.md`

@@ -78,18 +78,18 @@ it extends, and what version of the spec it targets.
 Reading the primitives in the abstract only goes so far. Five playbooks in
 this repository, in three layers, are the worked answer key:
 
-- [`playbooks/core-universal`](../playbooks/core-universal) (`extends:
+- [`playbooks/core-business`](../playbooks/core-business) (`extends:
   null`): the truly universal floor, every primitive in its root form.
   Organization, customer, offering, transaction, employee, supplier,
   purchase: nothing here assumes a physical location or a scoped
   engagement, because not every business has either.
 - [`playbooks/core-operations`](../playbooks/core-operations) and
   [`playbooks/core-services`](../playbooks/core-services) (both `extends:
-  core-universal`): the core-playbook layer, one per shape of business.
+  core-business`): the core-playbook layer, one per shape of business.
   `core-operations` adds location and shift, for businesses that operate
   from a site. `core-services` adds engagement and deliverable, for
   businesses that sell scoped work instead. Neither extends the other;
-  both extend `core-universal` directly.
+  both extend `core-business` directly.
 - [`examples/cafe-demo`](../examples/cafe-demo) (`extends:
   core-operations`) and [`examples/studio-demo`](../examples/studio-demo)
   (`extends: core-services`): a fictional cafe and a fictional marketing

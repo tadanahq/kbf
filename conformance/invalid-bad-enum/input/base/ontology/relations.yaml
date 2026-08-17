@@ -4,5 +4,5 @@ from: book
 to: branch
 cardinality: several-to-many
 join: [book_id, branch_id]
-tier: source-synced
+origin: source-synced
 temporal: false

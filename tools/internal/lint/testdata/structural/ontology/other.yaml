@@ -15,11 +15,11 @@ from: widget
 to: gadget
 cardinality: many-to-many
 join: [widget_id, gadget_id]
-tier: source-synced
+origin: source-synced
 temporal: false
 ---
 kind: action
 name: flag-for-review
 on: widget
-risk: auto
+approval: automatic
 writes: finding

@@ -8,7 +8,7 @@ from: product
 to: material
 cardinality: many-to-many
 join: [product_id, material_id]
-tier: source-synced
+origin: source-synced
 temporal: false
 ---
 kind: relation
@@ -17,5 +17,5 @@ from: product
 to: site
 cardinality: many-to-one
 join: [product_id, site_id]
-tier: client-configured
+origin: client-configured
 temporal: false
