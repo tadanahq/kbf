@@ -84,13 +84,15 @@ reference without declaration. Human render: lipgloss table grouped by file.
 
 ## Controlled verb vocabulary
 
-No fixed seed list anymore: superseded by the "Implementation clarifications"
-entry on chain-wide union (below). `universal-core`'s original nine
+No fixed seed list anymore: superseded by the "Implementation
+clarifications" entries on chain-wide union and the KBF007 final rule
+(below, owner-adjudicated 2026-08-13). `universal-core`'s original nine
 (`contains, belongs-to, supplies, places, billed-to, employed-by,
 derived-from, supersedes, responsible-for`) plus each base package's own
 mint (`operations-core`: `located-at, sells, staffed-by, works-at`) are
-what exist today; any package may mint a new one on a new pair, RFC
-discipline still applies (reuse first), see `spec/conventions.md`.
+what exist today; any package may mint a new one on a pair that touches
+an entity it declares itself, RFC discipline still applies for anything
+broader (reuse first), see `spec/conventions.md`.
 
 ## Package architecture (layered, owner correction 2026-08-13)
 
@@ -203,12 +205,12 @@ diverge"; binds Batch 3/4 content authoring too.
   risk per above, are closed vocabularies; `resolution`, `formula`, `unit`,
   `attributes[].type` stay opaque strings in v0 (matches the documented
   "formula and resolution are opaque strings" intent, generalized).
-- **KBF007 vocabulary source**: no separate declaration file. The controlled
-  verb vocabulary is the *set of distinct Relation.name values already
-  declared in the extends-root package* (universal-core, or self when linting
-  universal-core itself). Adding a verb means adding a relation to
-  universal-core (RFC), which then unlocks it for extending packages. No new
-  primitive, no `kind: verb-vocabulary`.
+- **KBF007 vocabulary source**: no separate declaration file, no new
+  primitive, no `kind: verb-vocabulary`. (Superseded twice below, kept for
+  the "no declaration file" fact, which is still true: first by chain-wide
+  union when `extends` went recursive, then by the owner-adjudicated
+  own-entity minting rule — see "KBF007 final rule" further down for the
+  current, exact test.)
 - **KBF008 fork detection**: an extending package redeclaring an element with
   a name+kind that exists in its extends-root is a fork UNLESS every
   non-glossary field on the child's copy is zero-valued, i.e. the child only
@@ -361,9 +363,11 @@ diverge"; binds Batch 3/4 content authoring too.
   now `"on":`. Not a `kbf lint` gap (goccy/go-yaml was never wrong), but
   worth a rule anyway: if `internal/lint` ever gains a style/portability
   pass, "unquoted `on:` key" is a clean candidate.
-- **Open question for the owner: does a "base package" (operations-core,
+- **RESOLVED by owner, 2026-08-13 — see the entry below this one for the
+  exact adopted rule and what changed in the implementation.** Kept below
+  as-is for the reasoning trail: does a "base package" (operations-core,
   services-core) get to introduce a verb itself, or only reuse one
-  universal-core already declares?** Found dogfooding against the
+  universal-core already declares? Found dogfooding against the
   in-progress restructure, not resolved by guessing either way, because
   the two readings are mutually exclusive and each breaks something real:
   - **Reading A (implemented): only a true root (`extends: null`) is
@@ -445,3 +449,62 @@ diverge"; binds Batch 3/4 content authoring too.
     itself, which the whole point of this restructure argues it should
     not have — so rejecting this reading without a fourth alternative
     reopens the question, it does not close it.
+- **KBF007 final rule (owner adjudication, 2026-08-13, binding): Reading C
+  adopted, stated precisely as a per-relation test, not a package-wide
+  vocabulary set.** A relation's verb passes if EITHER (a) the verb is
+  declared by any ancestor in the package's resolved extends chain
+  (unchanged from Reading A: ordinary reuse), OR (b) the relation's `from`
+  or `to` entity is declared by the *same package* that declares the
+  relation (minting rights come with introducing new entities). Fails
+  KBF007 otherwise, fix hint pointing to reuse-or-RFC. Statically
+  evaluable, no declaration ordering involved: unlike Reading A, self
+  gets no special-case carve-out for "linting a root alone" — a root's
+  own relations pass via (b) automatically, because a root necessarily
+  declares every entity it references (nothing above it to inherit from).
+  Confirmed against real content: `operations-core`'s four minted verbs
+  (`located-at`, `works-at`, `staffed-by`, `sells`) each touch `location`
+  or `shift`, both of which it declares, so all four pass; `services-core`
+  mints nothing, so it passes trivially via (a) alone. Implementation
+  notes beyond what Reading C's prose above specified, found while coding
+  it precisely:
+  - **Evaluated per relation, not per package.** A package minting a verb
+    on one pair does not blanket-legalize that verb for a *different*,
+    fully-inherited pair elsewhere in the same package: each relation
+    independently needs (a) or its own (b). `internal/lint/testdata/chain
+    /mint-own-entity` is exactly this shape (two relations, same verb,
+    one passes, one fails) and is unit-tested directly
+    (`TestChainMintOnOwnEntity`), since conformance's binary ok/not-ok
+    verdict can't express "one relation in this fixture should fail and
+    another shouldn't" as cleanly as a Go test's per-finding assertions.
+  - **"Declared by the same package" means genuinely new, not merely
+    textually present.** A package redeclaring an inherited entity's name
+    (fork or legitimate glossary override alike, KBF008) does not gain
+    minting rights from that redeclaration: nothing new was actually
+    introduced. `internal/lint/testdata/semantic/child`'s `invented-verb`
+    relation (`workshop -> widget`) is the fixture that forced this
+    distinction: `widget` is textually present in the child's own
+    `entities.yaml`, but only as a fork of the parent's `widget`, so it
+    must not count. `internal/lint/semantic.go`'s `mintedEntities` builds
+    the package's own entity names, then subtracts every name that
+    already exists in any ancestor, rather than testing raw presence in
+    `pkg.Elements`.
+  - **Code**: `internal/lint/semantic.go` — `controlledVocabulary(chain)`
+    is condition (a) alone now (ancestor-only, the old empty-chain
+    self-fallback removed: subsumed automatically by (b) as noted above);
+    `mintedEntities(pkg, chain)` is condition (b); `checkGrainAndVocabulary`
+    checks `!ancestorVerbs[v.Name] && !minted[v.From] && !minted[v.To]`.
+  - **Tests added**: `internal/lint/chain_test.go`'s
+    `TestChainMintOnOwnEntity` (valid mint + the per-relation invalid
+    reuse, both in `testdata/chain/mint-own-entity`);
+    `TestChainVerbNotInheritedBySibling` reworked (`testdata/chain/
+    cousin-invalid-verb` no longer declares its own entities — they moved
+    to `testdata/chain/other-root` — so the fixture is genuinely "new verb
+    over two inherited entities", the shape Reading B would have let
+    through by accident before this precision was added). Conformance:
+    `chain-mint-own-entity` (new, valid) and `chain-verb-not-inherited-by-
+    sibling` (existing, same entity-ownership fix applied to its `input/`
+    copy). Real dogfood: `kbf lint` on both full chains
+    (`packages/universal-core packages/operations-core examples/cafe-demo`
+    and the `services-core`/`studio-demo` equivalent) is green — confirmed
+    after this rule landed, was 4 KBF007 findings on `operations-core`
+    under Reading A before it.
