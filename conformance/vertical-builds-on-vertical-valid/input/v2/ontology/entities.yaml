@@ -1,0 +1,9 @@
+# A genuinely new entity v2 itself introduces (KBF007 condition (b)):
+# gives it minting rights for verbs on relations that touch it, regardless
+# of which layer the *other* endpoint comes from.
+kind: entity
+name: reading-club
+meaning: A recurring group that meets to discuss a book.
+identity: [reading_club_id]
+resolution: identity-mapping
+tier: structural

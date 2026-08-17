@@ -1,10 +1,10 @@
 # Demo Cafe operates one location today but wants location groupings
 # available before it opens a second one (e.g. a future satellite
 # belonging to this flagship). No source system emits that grouping, so
-# it is tier: client-configured, not source-synced (see the three-tier
-# governance model in spec/conventions.md). This reuses the `belongs-to`
-# verb already declared, on other pairs, by both ancestors in this
-# playbook's chain (core-business's offering-to-organization,
+# it is origin: client-configured, not source-synced (see the governance
+# model in spec/conventions.md). This reuses the `belongs-to` verb
+# already declared, on other pairs, by both other playbooks in this
+# playbook's closure (core-business's offering-to-organization,
 # core-operations' location-to-organization): relation identity is
 # (name, from, to), and (belongs-to, location, location) is a distinct
 # relation from either of those, so this is a new relation, not a fork.

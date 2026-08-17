@@ -1,0 +1,23 @@
+# reading-club is v2's own new entity, so both verbs below are minted
+# here (KBF007 condition (b)) even though one endpoint each comes from a
+# different layer: book is core-library's (two hops up), reading-room is
+# downtown-branch's (one hop up, v2's immediate composed playbook).
+# Proves a vertical-on-vertical composition resolves its whole closure,
+# not just its immediate parent.
+kind: relation
+name: discusses
+from: reading-club
+to: book
+cardinality: many-to-one
+join: [reading_club_id, book_id]
+origin: client-configured
+temporal: false
+---
+kind: relation
+name: meets-at
+from: reading-club
+to: reading-room
+cardinality: many-to-one
+join: [reading_club_id, reading_room_id]
+origin: client-configured
+temporal: false

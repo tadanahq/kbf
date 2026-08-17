@@ -51,7 +51,7 @@ competency question, namespace).
 
 ```
 <playbook>/
-  manifest.yaml        # name, version, spec version, extends
+  manifest.yaml        # name, version, spec version, builds-on, layer
   ontology/            # *.yaml: entities, relations, metrics, actions
   evals/               # competency questions
   install/             # slot-mapping templates, defaults

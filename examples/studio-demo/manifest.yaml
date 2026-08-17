@@ -1,9 +1,9 @@
 # Demo Studio: a fictional single-team marketing agency. Teaching content
 # only, fully valid, exercising every KBF primitive at least once (directly
-# or by inheritance through `extends`). Chain: studio-demo -> core-services
-# -> core-business (`kbf lint`/`coverage`/`compile` need all three paths).
+# or through composition). Builds on core-services, which builds on
+# core-business (`kbf lint`/`coverage`/`compile` need all three paths).
 # The sibling of examples/cafe-demo: same teaching role, the other core
-# chain, proof core-business is shared, not operations-flavored.
+# playbook, proof core-business is shared, not operations-flavored.
 name: studio-demo
 version: 0.1.0
 spec: v0

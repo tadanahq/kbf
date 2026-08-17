@@ -2,7 +2,7 @@
 # not in core-business. Two verbs are reused from core-business on new
 # pairs (belongs-to, responsible-for); four are minted here for the first
 # time (works-at, staffed-by, located-at, sells) and become available, by
-# the extends-chain union, to anything that extends core-operations (see
+# the closure union, to anything that builds on core-operations (see
 # spec/conventions.md).
 
 kind: relation

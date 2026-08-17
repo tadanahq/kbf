@@ -1,0 +1,6 @@
+kind: entity
+name: venue
+meaning: A place where an event is held.
+identity: [venue_id]
+resolution: identity-mapping
+tier: structural

@@ -47,11 +47,12 @@ read it and a linter can check it. That declaration is the KBF Ontology.
 |---|---|
 | [`spec/`](spec/) | The prose spec: start at [`spec/index.md`](spec/index.md). |
 | [`schema/`](schema/) | Generated JSON Schema for `spec/`'s shapes, for editor support (`yaml-language-server`). Never hand-edited. |
-| [`playbooks/core-business/`](playbooks/core-business/) | Playbook Zero (`extends: null`): the truly universal floor every business shares. |
-| [`playbooks/core-operations/`](playbooks/core-operations/) | Core playbook for site-based businesses (extends `core-business`): adds location, shift. |
-| [`playbooks/core-services/`](playbooks/core-services/) | Core playbook for engagement-based businesses (extends `core-business`): adds engagement, deliverable. |
-| [`examples/cafe-demo/`](examples/cafe-demo/) | A fictional cafe extending `core-operations`, exercising every extension mechanic the spec allows. |
-| [`examples/studio-demo/`](examples/studio-demo/) | A fictional marketing studio extending `core-services`: the other core chain, same teaching role. |
+| [`playbooks/core-business/`](playbooks/core-business/) | Playbook Zero (`builds-on: []`, `layer: core`): the truly universal floor every business shares. |
+| [`playbooks/core-operations/`](playbooks/core-operations/) | Core playbook for site-based businesses (builds on `core-business`): adds location, shift. |
+| [`playbooks/core-services/`](playbooks/core-services/) | Core playbook for engagement-based businesses (builds on `core-business`): adds engagement, deliverable. |
+| [`examples/cafe-demo/`](examples/cafe-demo/) | A fictional cafe building on `core-operations`, exercising every composition mechanic the spec allows. |
+| [`examples/studio-demo/`](examples/studio-demo/) | A fictional marketing studio building on `core-services`: the other core playbook, same teaching role. |
+| [`examples/bistro-demo/`](examples/bistro-demo/) | A fictional cafe that also runs events, building on both `core-operations` and `core-services` at once: the diamond and hybrid case. |
 | [`tools/`](tools/) | The `kbf` CLI: `lint`, `coverage`, `compile --to mermaid`, `schema`. |
 | [`conformance/`](conformance/) | Language-agnostic fixtures (YAML in, expected outcome out), so an implementation other than `kbf` can prove it matches the spec. |
 | [`rfcs/`](rfcs/) | How the spec itself changes once it is public. |
@@ -91,10 +92,10 @@ cd tools && go build -o ../bin/kbf ./cmd/kbf && cd ..
 ./bin/kbf lint playbooks/core-business
 ```
 
-**4. Lint the demo.** `cafe-demo` extends `core-operations`, which extends
-`core-business`: pass every playbook in the chain, not just the immediate
-parent. `kbf` resolves `extends` against whatever playbooks you give it, not
-against this repository's folder layout.
+**4. Lint the demo.** `cafe-demo` builds on `core-operations`, which builds
+on `core-business`: pass every playbook in the composition closure, not
+just the immediate parent. `kbf` resolves `builds-on` against whatever
+playbooks you give it, not against this repository's folder layout.
 
 ```sh
 ./bin/kbf lint examples/cafe-demo playbooks/core-operations playbooks/core-business
@@ -126,9 +127,22 @@ error. Put the line back when you're done.
 
 That is the whole loop: author YAML against the primitives in
 [`spec/primitives/`](spec/primitives/), lint it, fix what it flags, ship.
-`examples/studio-demo` (extending `playbooks/core-services`) is the same
-loop on the other core chain: `./bin/kbf lint examples/studio-demo
-playbooks/core-services playbooks/core-business` if you want to see it.
+`examples/studio-demo` (building on `playbooks/core-services`) is the same
+loop on the other core playbook:
+
+```sh
+./bin/kbf lint examples/studio-demo playbooks/core-services playbooks/core-business
+```
+
+`examples/bistro-demo` builds on both `core-operations` and `core-services`
+at once: the diamond case (both reach `core-business` and dedup to one
+instance) and the hybrid case (it sees both core playbooks' vocabulary) in
+one demo. Its composition closure is four playbooks deep; pass all four on
+one command line, not just the two it names directly:
+
+```sh
+./bin/kbf lint playbooks/core-business playbooks/core-operations playbooks/core-services examples/bistro-demo
+```
 
 ## Contributing
 

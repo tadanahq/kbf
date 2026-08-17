@@ -18,8 +18,8 @@ questions it claims to, it is not done, no matter how complete the
 | `question` | yes | plain-language sentence | Specific enough that there is one right family of answer, not a vague prompt. |
 | `expects` | yes | list of element names | The entities, relations, or metrics the answer must exercise. Every name must resolve, or fails `KBF009`. |
 
-Competency question carries neither `tier` nor `risk`: `KBF010` does not
-apply to it. At least one per entity is the v0 floor
+Competency question carries neither `tier` nor `approval`: `KBF010` does
+not apply to it. At least one per entity is the v0 floor
 (`playbooks/core-business/evals/competency-questions.yaml` has seven, one
 per entity; a core playbook or a leaf install adds more for what it adds,
 `playbooks/core-operations/evals/competency-questions.yaml` and

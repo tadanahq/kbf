@@ -1,0 +1,9 @@
+# The violation: layer: core building on downtown-branch (layer:
+# vertical). A core playbook may only build on other core playbooks; the
+# foundation must stay a closed set that never becomes load-bearing on
+# something business-specific.
+name: core-something
+version: 0.1.0
+spec: v0
+builds-on: [downtown-branch]
+layer: core

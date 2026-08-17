@@ -1,0 +1,21 @@
+# session is hybrid's own new entity (KBF007 condition (b): minting
+# rights come with introducing it), so held-at may be minted here even
+# though neither endpoint below is book or venue directly — both
+# relations touch session, which hybrid declares itself.
+kind: relation
+name: held-at
+from: session
+to: venue
+cardinality: many-to-one
+join: [session_id, venue_id]
+origin: client-configured
+temporal: false
+---
+kind: relation
+name: features
+from: session
+to: book
+cardinality: many-to-one
+join: [session_id, book_id]
+origin: client-configured
+temporal: false

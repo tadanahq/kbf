@@ -1,0 +1,9 @@
+# The common root two different core playbooks both build on
+# (mid-a, mid-b): reached twice in top's composition closure, must be
+# deduped to one instance, not double-loaded or double-counted. Generic
+# fixture business (a small library), never Demo Cafe or real names.
+name: core-library
+version: 0.1.0
+spec: v0
+builds-on: []
+layer: core

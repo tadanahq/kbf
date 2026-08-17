@@ -1,7 +1,7 @@
 # Slot-mapping template for core-operations' own new attributes only
 # (location, shift). core-business's 21 slots are declared in its own
-# install/slots.yaml; a leaf install extending this chain maps the full
-# resolved set. See spec/primitives/slot-mapping.md.
+# install/slots.yaml; a leaf install building on this playbook maps the
+# full resolved set. See spec/primitives/slot-mapping.md.
 
 - slot: core.location-label
   source: ""

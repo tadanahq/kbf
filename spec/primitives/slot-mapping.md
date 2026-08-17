@@ -19,16 +19,17 @@ Slot mapping rows live in one file, `install/slots.yaml`, as a flat YAML
 list, not as `kind:`-discriminated documents like the other primitives:
 there is exactly one row per declared slot, and the file's only job is to
 be a checklist. Unlike the other primitives, it carries neither `tier` nor
-`risk`: `KBF010` does not apply to it.
+`approval`: `KBF010` does not apply to it.
 
 A playbook's `install/slots.yaml` covers only the slots declared by
-attributes in that playbook's own `ontology/`, not its ancestors': a core
-playbook (`playbooks/core-operations`, `playbooks/core-services`) templates
-only what it adds on top of `core-business`, exactly as `core-business`
-templates its own. A leaf install (a teaching playbook like
-`examples/cafe-demo`, or a real deployment) is different: it covers the
-*full resolved chain*, because an install is mapping one business's whole
-ontology to its real systems, not documenting what one layer contributed.
+attributes in that playbook's own `ontology/`, not the rest of its
+composition closure: a core playbook (`playbooks/core-operations`,
+`playbooks/core-services`) templates only what it adds on top of
+`core-business`, exactly as `core-business` templates its own. A leaf
+install (a teaching playbook like `examples/cafe-demo`, or a real
+deployment) is different: it covers the *full resolved closure*, because
+an install is mapping one business's whole ontology to its real systems,
+not documenting what one playbook contributed.
 `examples/cafe-demo/install/slots.yaml` has all 27 slots across
 `core-business` and `playbooks/core-operations` combined, even though
 `cafe-demo` itself declares no new attributes.

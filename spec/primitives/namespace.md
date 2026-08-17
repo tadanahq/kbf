@@ -68,8 +68,8 @@ playbooks/core-business`), not just the one it names directly, since
 resolution isn't a filesystem lookup against this repo's own `playbooks/`
 folder. A playbook can build on more than one other playbook at once (the
 diamond case: two core playbooks that both compose the same root, then a
-third playbook composing both of them); the closure dedupes a shared
-ancestor to one instance rather than loading it twice.
+third playbook composing both of them); the closure dedupes the playbook
+they share to one instance rather than loading it twice.
 
 ## Common mistakes
 
@@ -82,8 +82,8 @@ ancestor to one instance rather than loading it twice.
 - **A cycle.** If `builds-on` eventually points back to a playbook already
   on its own composition path, that is a cycle: `kbf` detects it and fails
   every playbook on the cycle with `KBF011`, rather than hanging or
-  crashing. A shared ancestor reached through two different paths (the
-  diamond case) is not a cycle; only a genuine loop is.
+  crashing. A playbook reached through two different paths (the diamond
+  case) is not a cycle; only a genuine loop is.
 - **Assuming `builds-on` is a single parent.** It isn't: a playbook can
   build on more than one other playbook, and each of those can build on
   more, arbitrarily deep. `examples/cafe-demo` builds on `core-operations`,
@@ -97,11 +97,11 @@ ancestor to one instance rather than loading it twice.
   `core-business`, say). Playbook names are a flat space; keep them
   distinct.
 - **The same identity declared by two different playbooks in one closure.**
-  Composition has no resolution order: unlike a single linear parent, where
-  "nearest ancestor wins" was unambiguous, a closure with more than one
-  immediate parent has no such tie-break, so if two composed playbooks both
-  declare the same entity, relation, metric, or action, that is always an
-  error, `KBF003`, reported against both files.
+  Composition has no resolution order: unlike single-parent inheritance,
+  where the closer parent would unambiguously win, a closure with more
+  than one immediate parent has no such tie-break, so if two composed
+  playbooks both declare the same entity, relation, metric, or action,
+  that is always an error, `KBF003`, reported against both files.
 - **`layer` inconsistent with `builds-on`.** A `core` playbook may only
   build on other `core` playbooks (an empty `builds-on` is fine: that is
   what makes it a root); a `vertical` playbook must build on at least one

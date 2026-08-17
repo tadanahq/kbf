@@ -3,6 +3,56 @@
 Append-only. New entries on top. Project-level decisions only; feature detail
 stays in capsules.
 
+## 2026-08-17 - Composition (DAG closure) replaces single-parent extends; core-business rename; origin/approval field renames
+
+Owner-approved Batch 7, dispatched mid-Batch-6-report. Supersedes this
+file's own entry directly below ("Playbook rename executed; the
+core/vertical taxonomy is machine-checked") on every point where the two
+disagree: that entry's `layer: root | base | vertical` is now `layer:
+core | vertical` (root-ness derived from an empty `builds-on`, never a
+declared value); its `extends` (single nullable parent) is now
+`builds-on` (a list, resolved as a DAG closure, not a chain); its
+`KBF013` cross-check table (root ⇒ null; base/vertical ⇒ must extend a
+root-or-base playbook) is replaced by a two-value build-target table
+(core ⇒ core only; vertical ⇒ core or vertical, at least one). What that
+entry got right and this one keeps: the `^core-` naming rule, and KBF013
+as a machine gate rather than a documented-only convention.
+
+New in this decision, not previously logged:
+
+1. Composition is a DAG, not a chain: a playbook can build on more than
+   one other playbook at once (the diamond case; `examples/bistro-demo`
+   composes both `core-operations` and `core-services` directly),
+   resolved transitively and deduped by name.
+2. Cross-playbook identity collision (two different closure members
+   declaring the same entity/relation/metric/action, neither one forking
+   the other) is a new `KBF003` variant: composition has no resolution
+   order, so this is always an error, reported symmetrically, never a
+   silent first-loaded-wins.
+3. `core-universal` renames to `core-business` ("Playbook Zero" nickname
+   unchanged).
+4. `Relation.tier` renames to `Relation.origin` (values unchanged);
+   `Action.risk` renames to `Action.approval` (`auto|confirm` becomes
+   `automatic|required`), since `approval` names what the field actually
+   gates (whether a human confirms before it runs), which `risk` only
+   implied.
+
+Rationale: real content demanded the composition change immediately.
+`examples/bistro-demo` (a business that operates from a site and sells
+scoped work, needing both `core-operations` and `core-services` at once)
+has no expression under single-parent `extends` at all. The taxonomy
+simplification and the two field renames rode the same batch because the
+schema change was already breaking; a second breaking pass later just to
+fix `core-universal`'s and `risk`'s naming would have cost more than
+doing it once, in the same pull request, while every manifest was already
+being touched.
+
+Reversal: none foreseeable for the composition mechanics, a DAG is a
+strict superset of what a chain could express, so no real content shape
+this forecloses. The field renames could in principle reverse if
+`origin`/`approval` prove confusing in practice, but that would need real
+authoring friction to show up, not a preference, to reopen.
+
 ## 2026-08-17 - Playbook rename executed; the core/vertical taxonomy is machine-checked
 
 Owner decision, executing the 2026-08-13 "unit is a playbook" entry now that

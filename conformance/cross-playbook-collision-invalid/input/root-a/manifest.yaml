@@ -1,0 +1,8 @@
+# Declares `book`, independently of root-b's own `book`. Neither builds
+# on the other, so on their own they never collide; composer builds on
+# both, which is where the ambiguity becomes visible.
+name: core-catalog-a
+version: 0.1.0
+spec: v0
+builds-on: []
+layer: core

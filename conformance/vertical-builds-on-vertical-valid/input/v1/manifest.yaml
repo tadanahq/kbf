@@ -1,0 +1,6 @@
+# A vertical building on the core root: the ordinary case.
+name: downtown-branch
+version: 0.1.0
+spec: v0
+builds-on: [core-library]
+layer: vertical

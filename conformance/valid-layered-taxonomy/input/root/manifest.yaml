@@ -1,8 +1,8 @@
-# A three-layer chain (root -> base -> vertical) where every layer/
-# extends/name combination is exactly what KBF013 requires: proof the
-# rule stays silent on a genuinely correct taxonomy, not just that it
-# fires on a broken one. Generic fixture business (a small library),
-# never Demo Cafe or real names.
+# A three-level composition (core -> core -> vertical, two composition
+# hops deep) where every layer/builds-on/name combination is exactly what
+# KBF013 requires: proof the rule stays silent on a genuinely correct
+# taxonomy, not just that it fires on a broken one. Generic fixture
+# business (a small library), never Demo Cafe or real names.
 name: core-library
 version: 0.1.0
 spec: v0

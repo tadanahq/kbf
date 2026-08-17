@@ -1,0 +1,6 @@
+kind: entity
+name: branch
+meaning: A physical library location that holds books.
+identity: [branch_id]
+resolution: identity-mapping
+tier: structural

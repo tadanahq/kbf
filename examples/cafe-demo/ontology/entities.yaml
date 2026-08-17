@@ -3,11 +3,12 @@
 # leave every non-glossary field zero-valued: meaning, identity,
 # resolution, tier, attributes and states are omitted here on purpose,
 # not repeated. Only `synonyms` (Entity's one glossary-eligible field) is
-# set. `offering` is declared in core-business, two levels above
-# cafe-demo in the chain (cafe-demo -> core-operations -> core-business);
-# KBF008 checks forks against every ancestor, not just the immediate
-# parent, so this still matches and layers correctly. See "Extension, not
-# fork" in spec/conventions.md.
+# set. `offering` is declared in core-business, two composition hops from
+# cafe-demo (cafe-demo builds on core-operations, which builds on
+# core-business); KBF008 checks forks against the whole composition
+# closure, not just the immediate parent, so this still matches and
+# layers correctly. See "Composition, never fork" in
+# spec/playbook-format.md.
 
 kind: entity
 name: offering

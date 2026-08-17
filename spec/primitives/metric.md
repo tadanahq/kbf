@@ -18,11 +18,11 @@ without an agent guessing whether that is safe.
 | `grain` | yes (root only) | list of entity names and/or dimensions | The level at which one row of this metric is true. `business-date` is the standard time dimension. |
 | `additivity` | yes (root only) | `additive \| semi-additive \| non-additive` | Whether the metric can be summed across its grain. Empty or invalid fails `KBF005` / `KBF002`. |
 | `unit` | yes (root only) | free text | Opaque string in v0 (common values: `currency`, `count`, `ratio`), not a closed vocabulary. |
-| `thresholds` | no | map of named bounds | Glossary tier by definition: the one field an extending playbook may set without forking the metric. |
+| `thresholds` | no | map of named bounds | Glossary tier by definition: the one field a composing playbook may set without forking the metric. |
 | `tier` | yes (root only) | `structural \| glossary \| instance` | Governance tier for the metric definition itself (separate from a threshold's own glossary status). Empty fails `KBF010`. |
 
 "Root only" fields are required when a metric is defined for the first
-time. `thresholds` is the exception: it is the one field an extending
+time. `thresholds` is the exception: it is the one field a composing
 playbook may set on its own, in a fragment that leaves everything else
 zero-valued (see "Common mistakes").
 

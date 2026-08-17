@@ -14,7 +14,7 @@ landing as a surprise in a pull request.
 - Adding a verb to the controlled relation vocabulary
   (`spec/conventions.md`).
 - Adding, removing, or changing what a `kbf lint` rule id checks.
-- Any change to `package-format.md` or `versioning.md`'s policies.
+- Any change to `playbook-format.md` or `versioning.md`'s policies.
 
 A typo fix, a clarifying sentence, or a new example that does not change
 what's valid does not need an RFC: open a pull request directly.

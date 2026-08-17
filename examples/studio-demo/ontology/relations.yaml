@@ -1,18 +1,18 @@
 # Demo Studio serves subsidiaries of the same parent company as separate
 # customer accounts, and wants to group them for reporting (e.g. a
 # regional office belonging to a global parent account). No source system
-# emits that grouping, so it is tier: client-configured, not source-synced
-# (see the three-tier governance model in spec/conventions.md). This
+# emits that grouping, so it is origin: client-configured, not
+# source-synced (see the governance model in spec/conventions.md). This
 # reuses the `belongs-to` verb core-business already declares on another
-# pair (offering-to-organization), the one ancestor studio-demo actually
-# has in its chain (studio-demo -> core-services -> core-business;
-# core-operations is a sibling core playbook, not an ancestor, so its own
-# use of `belongs-to` does not reach here). Relation identity is (name,
-# from, to), so (belongs-to, customer, customer) is a new relation, not a
-# fork, and mirrors examples/cafe-demo's location-to-location grouping on
-# the other core chain. `parent_customer_id` is a role-qualified alias for
-# customer's own identity key, the standard shape for a self-referencing
-# join.
+# pair (offering-to-organization), the one other core playbook in
+# studio-demo's closure (studio-demo builds on core-services, which builds
+# on core-business; core-operations is a sibling core playbook, not in
+# this closure, so its own use of `belongs-to` does not reach here).
+# Relation identity is (name, from, to), so (belongs-to, customer,
+# customer) is a new relation, not a fork, and mirrors
+# examples/cafe-demo's location-to-location grouping on the other core
+# playbook. `parent_customer_id` is a role-qualified alias for customer's
+# own identity key, the standard shape for a self-referencing join.
 
 kind: relation
 name: belongs-to

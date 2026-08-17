@@ -1,0 +1,9 @@
+# Two independent core playbooks (no common root between them, unlike
+# diamond-valid's mid-a/mid-b): hybrid composes both directly. Generic
+# fixture business (a small library that also runs events), never Demo
+# Cafe or real names.
+name: core-catalog
+version: 0.1.0
+spec: v0
+builds-on: []
+layer: core

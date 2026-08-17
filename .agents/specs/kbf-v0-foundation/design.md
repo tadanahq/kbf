@@ -509,3 +509,62 @@ diverge"; binds Batch 3/4 content authoring too.
     and the `services-core`/`studio-demo` equivalent) is green — confirmed
     after this rule landed, was 4 KBF007 findings on `operations-core`
     under Reading A before it.
+
+- **Composition closure supersedes single-parent chain (Batch 7).** Every
+  "nearest ancestor"/"chain" rule recorded above generalizes as follows;
+  this entry is the binding reference going forward, the earlier entries
+  stay as historical record of the single-parent-era reasoning they were
+  resolved against.
+  - **`builds-on` (was `extends`) is a list, resolved as a DAG closure,
+    not a chain.** `Universe.Closure` walks every `builds-on` entry
+    transitively, dedupes by playbook name, and sorts the result: a
+    playbook can have more than one immediate parent, and each of those
+    can have more, arbitrarily deep. The diamond case (two playbooks that
+    both compose the same root, then a third composing both of them) is
+    the normal shape this exists to support, not an edge case bolted on.
+  - **Diamond vs. cycle is path-relative, not set-membership.** A shared
+    root reached through two different paths is deduped to one instance
+    and is not a cycle; only a playbook that appears twice on the *same*
+    path (`onPath`, reset per branch, distinct from the permanent `seen`
+    set used for dedup) is a cycle. Getting this distinction wrong either
+    direction breaks either diamonds (false cycle) or real cycles (missed
+    detection), so the two tracking structures are deliberately separate,
+    not one map doing both jobs.
+  - **KBF008 fork-matching has no "nearest" tie-break once composition can
+    branch.** It matches whichever closure member declares the identity.
+    In the well-formed case there is exactly one such member (composition
+    forbids two closure members from declaring the same identity in the
+    first place, see the next bullet), so this is not a resolution-order
+    rule, just a lookup across a set instead of a walk up a line.
+  - **New: `KBF003`'s cross-playbook variant.** Two *different* playbooks
+    in the same closure declaring the same entity/relation/metric/action
+    identity, with neither one a fork of the other (no composing playbook
+    is doing the redeclaring itself), has no correct winner: composition
+    has no resolution order, so this is always an error, reported
+    symmetrically against every file involved, never a silent "first one
+    loaded wins". This did not exist, and could not have existed, under
+    single-parent `extends`, where two colliding definitions could only
+    ever arise from an actual fork.
+  - **KBF007 vocabulary union is closure-wide, not chain-wide.** Same
+    principle as the chain-era union (every verb declared anywhere
+    upstream is available), regenerated to the DAG case: a playbook
+    composing two unrelated core playbooks directly (`examples/bistro-demo`
+    composing both `core-operations` and `core-services`) sees both of
+    their minted verbs at once, which is exactly what lets it mint a
+    relation neither core playbook alone has both entities to declare.
+    Own-entity minting (`mintedEntities`) is unchanged in mechanics, only
+    closure-scoped instead of chain-scoped.
+  - **Layer taxonomy collapsed from three values to two.** `root | base |
+    vertical` (Batch 6) becomes `core | vertical` (Batch 7): a `core`
+    playbook may build on other `core` playbooks only (`[]` allowed, and
+    that emptiness is what makes a playbook a root); a `vertical` must
+    build on at least one playbook, core or vertical. Root-ness is
+    derived from an empty `builds-on`, never its own declared value:
+    there is no `root: true` field, and nothing privileges
+    `core-business` by name over any other core playbook with an empty
+    `builds-on`. `checkNamePrefix` needed no logic change for the
+    collapse (`layer == "core"` under two values is the same predicate
+    `layer != "vertical"` was under three); only `checkBuildsOnLayer`
+    (was `checkExtendsLayer`) changed, since the build-target table
+    itself is genuinely different (root/base/vertical's three-way table
+    collapses to core/vertical's two-way one).

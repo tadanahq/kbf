@@ -42,8 +42,12 @@ A breaking change to the meta-model ships with a migration note in the
 same pull request that makes the change: what broke, and the mechanical
 fix for a playbook that hits it. Notes accumulate per major version; there
 is no separate changelog to keep in sync by hand. Until the spec reaches
-1.0, breaking changes are expected between `spec-v0.x` tags; after 1.0,
-they gate on the RFC process in `rfcs/README.md`.
+1.0, breaking changes are expected between `spec-v0.x` tags and are free:
+no deprecation window, no dual-field transition period, just the fix
+applied everywhere in the same change (`extends` becoming `builds-on`,
+`Relation.tier` becoming `origin`, and `Action.risk` becoming `approval`
+all landed this way). After 1.0, breaking changes gate on the RFC process
+in `rfcs/README.md` instead.
 
 ## What v0 leaves opaque, and why
 
