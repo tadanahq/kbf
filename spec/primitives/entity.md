@@ -4,9 +4,9 @@ type: spec-doc
 
 # Entity
 
-An entity is a thing the business has: an organization, a location, an
-order. It carries what the thing means, how it is identified, what it is
-called in conversation, and what data it has.
+An entity is a thing the business has: an organization, a customer, an
+offering. It carries what the thing means, how it is identified, what it
+is called in conversation, and what data it has.
 
 ## Fields
 
@@ -63,10 +63,13 @@ states: [active, inactive]
 
   ```yaml
   # Only the glossary-eligible field is set. See
-  # examples/cafe-demo/ontology/entities.yaml for the real file.
+  # examples/cafe-demo/ontology/entities.yaml for the real file. `offering`
+  # is declared two levels up this package's chain, at universal-core, not
+  # at its immediate parent (operations-core): KBF008 matches against the
+  # nearest ancestor that has the identity, wherever that is in the chain.
   kind: entity
-  name: product
-  synonyms: {en: [item, sku, menu-item], es: [producto, articulo]}
+  name: offering
+  synonyms: {en: [item, menu-item], es: [articulo]}
   ```
 
 - **Assuming `type` on an attribute is validated.** It is a free-form string

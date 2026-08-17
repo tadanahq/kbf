@@ -20,8 +20,10 @@ questions it claims to, it is not done, no matter how complete the
 
 Competency question carries neither `tier` nor `risk`: `KBF010` does not
 apply to it. At least one per entity is the v0 floor
-(`packages/universal-core/evals/competency-questions.yaml` has nine, one
-per entity).
+(`packages/universal-core/evals/competency-questions.yaml` has seven, one
+per entity; a base package or a leaf install adds more for what it adds,
+`packages/operations-core/evals/competency-questions.yaml` and
+`examples/cafe-demo/evals/competency-questions.yaml` among them).
 
 ## Example
 
@@ -29,7 +31,7 @@ Copied from `packages/universal-core/evals/competency-questions.yaml`:
 
 ```yaml
 kind: competency-question
-question: What is the labor cost ratio per location this month, and which locations are over threshold?
+question: What is the labor cost ratio for the organization this month?
 expects: [labor-cost-ratio]
 ```
 

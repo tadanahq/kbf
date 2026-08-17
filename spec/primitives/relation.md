@@ -5,8 +5,9 @@ type: spec-doc
 # Relation
 
 A relation is a typed connection between two entities: a customer *places*
-an order, an employee *works at* a location. The verb is never invented
-ad hoc; it comes from the controlled vocabulary in `conventions.md`.
+a transaction, an employee *works at* a location. The verb is never
+invented ad hoc; it comes from the controlled vocabulary in
+`conventions.md`.
 
 ## Fields
 
@@ -26,11 +27,14 @@ ad hoc; it comes from the controlled vocabulary in `conventions.md`.
 A relation's identity for uniqueness and fork-detection purposes is the
 triple `(name, from, to)`, not `name` alone. The controlled vocabulary is
 deliberately small (10 to 20 verbs, see `conventions.md`), meant to recur
-across many unrelated entity pairs: `packages/universal-core` legitimately
-declares `contains` twice (`order` to `product`, and `purchase` to
-`product`) and `supplies` twice (`supplier` to `product`, and `supplier` to
-`purchase`). Two relations sharing a verb are only in conflict if they also
-share the same `from` and `to`.
+across many unrelated entity pairs, both within one package and across a
+package's extends chain: `packages/universal-core` legitimately declares
+`supplies` twice (`supplier` to `offering`, and `supplier` to `purchase`),
+and `contains` shows up again, on a different pair, in
+`packages/services-core` (`engagement` to `deliverable`) without
+conflicting with universal-core's own `transaction` to `offering` use of
+the same verb. Two relations sharing a verb are only in conflict if they
+also share the same `from` and `to`.
 
 ## Example
 
@@ -38,11 +42,11 @@ Copied from `packages/universal-core/ontology/relations.yaml`:
 
 ```yaml
 kind: relation
-name: works-at
+name: employed-by
 from: employee
-to: location
+to: organization
 cardinality: many-to-one
-join: [employee_id, location_id]
+join: [employee_id, organization_id]
 tier: source-synced
 temporal: true
 ```
@@ -50,21 +54,25 @@ temporal: true
 ## Common mistakes
 
 - **Verb outside the controlled vocabulary.** `name: assigned-to` fails
-  `KBF007` if `assigned-to` is not a verb already declared somewhere in the
-  extends-root package. Propose new verbs through `rfcs/`, not by using them
-  first and asking later.
-- **Undeclared endpoint.** A typo in `from` or `to` (`orderr`, `custmer`)
-  fails `KBF006`, since it does not resolve to any declared entity.
+  `KBF007` if `assigned-to` is not a verb already declared somewhere in
+  the package's extends chain (its own ancestors, not the whole spec).
+  Propose new verbs through `rfcs/`, not by using them first and asking
+  later; prefer reusing an existing verb on a new pair before proposing
+  one (see `packages/services-core`, which mints none of its own).
+- **Undeclared endpoint.** A typo in `from` or `to` (`transactionn`,
+  `custmer`) fails `KBF006`, since it does not resolve to any declared
+  entity.
 - **Bad cardinality value.** Anything outside `one-to-one`, `one-to-many`,
-  `many-to-one`, `many-to-many` fails `KBF002`. `many-to-one` exists because
-  child-to-parent is the most common declared direction (`works-at`,
-  `belongs-to`): write the relation in the direction the business says it,
-  not inverted to avoid the value.
+  `many-to-one`, `many-to-many` fails `KBF002`. `many-to-one` exists
+  because child-to-parent is the most common declared direction
+  (`employed-by`, `belongs-to`): write the relation in the direction the
+  business says it, not inverted to avoid the value.
 - **Redeclaring a relation to change one field.** Unlike entity and metric,
   relation has no glossary carve-out: if a `(name, from, to)` triple already
-  exists in the extends-root package, restating it for any reason, even to
-  change only `tier` or `temporal`, is a fork and fails `KBF008`. A
-  different pairing (same verb, different `from`/`to`) is a new relation,
-  not a redeclaration, and is exactly how an extending package is expected
-  to add relations: see the client-configured `belongs-to` between two
-  locations in `examples/cafe-demo/ontology/relations.yaml`.
+  exists anywhere in the package's chain, restating it for any reason, even
+  to change only `tier` or `temporal`, is a fork and fails `KBF008`,
+  wherever in the chain the match is found. A different pairing (same verb,
+  different `from`/`to`) is a new relation, not a redeclaration, and is
+  exactly how an extending package is expected to add relations: see the
+  client-configured `belongs-to` between two locations in
+  `examples/cafe-demo/ontology/relations.yaml`.

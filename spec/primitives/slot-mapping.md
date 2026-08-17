@@ -21,20 +21,32 @@ there is exactly one row per declared slot, and the file's only job is to
 be a checklist. Unlike the other primitives, it carries neither `tier` nor
 `risk`: `KBF010` does not apply to it.
 
+A package's `install/slots.yaml` covers only the slots declared by
+attributes in that package's own `ontology/`, not its ancestors': a base
+package (`packages/operations-core`, `packages/services-core`) templates
+only what it adds on top of `universal-core`, exactly as `universal-core`
+templates its own. A leaf install (a teaching package like
+`examples/cafe-demo`, or a real deployment) is different: it covers the
+*full resolved chain*, because an install is mapping one business's whole
+ontology to its real systems, not documenting what one layer contributed.
+`examples/cafe-demo/install/slots.yaml` has all 27 slots across
+`universal-core` and `packages/operations-core` combined, even though
+`cafe-demo` itself declares no new attributes.
+
 ## Example
 
-Copied from `packages/universal-core/install/slots.yaml`:
+The template form, one row from `packages/universal-core/install/slots.yaml`:
 
 ```yaml
-- slot: catalog.product-label
+- slot: catalog.offering-label
   source: ""
 ```
 
-The same row, filled in by an install, from
+The same row, filled in by a leaf install, from
 `examples/cafe-demo/install/slots.yaml`:
 
 ```yaml
-- slot: catalog.product-label
+- slot: catalog.offering-label
   source: demopos
 ```
 

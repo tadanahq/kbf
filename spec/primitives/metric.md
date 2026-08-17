@@ -34,12 +34,21 @@ Copied from `packages/universal-core/ontology/metrics.yaml`:
 kind: metric
 name: gross-margin
 formula: (revenue - purchase-cost) / revenue
-grain: [location, business-date]
+grain: [organization, business-date]
 additivity: non-additive
 unit: ratio
 thresholds: {warn-below: 0.55}
 tier: structural
 ```
+
+`universal-core`'s own metrics stop at `[organization, business-date]`
+grain: `location` is not universal (`packages/operations-core` adds it).
+A base package that wants a location-grain sibling of an existing metric
+declares a new metric with its own name at that grain
+(`packages/operations-core`'s `average-ticket`, next to universal-core's
+`average-transaction-value`): grain is not glossary-eligible, so
+redeclaring an existing metric name at a different grain is a fork, not
+an override.
 
 Metric formulas may reference other metric names directly (`revenue`,
 `purchase-cost` above); this is a documentation convention, not something
@@ -64,7 +73,7 @@ Metric formulas may reference other metric names directly (`revenue`,
   # Right: repeats nothing but the glossary-eligible field. See
   # examples/cafe-demo/ontology/metrics.yaml for the real file.
   kind: metric
-  name: labor-cost-ratio
+  name: location-labor-cost-ratio
   thresholds: {warn-above: 0.32}
   ```
 

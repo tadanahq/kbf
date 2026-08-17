@@ -14,57 +14,70 @@ conventions are load-bearing: the linter's semantic rules assume them.
 |---|---|---|
 | Element `name` (entity, relation, metric, action, package) | kebab-case | `labor-cost-ratio`, `flag-for-review` |
 | Attribute `name` | kebab-case | `unit-price`, `hired-at` |
-| Identity keys, `join` keys | snake_case | `product_id`, `parent_location_id` |
-| Slot ids | dotted lowercase, `<domain>.<concept>` | `catalog.product-label` |
+| Identity keys, `join` keys | snake_case | `offering_id`, `parent_location_id` |
+| Slot ids | dotted lowercase, `<domain>.<concept>` | `catalog.offering-label` |
 
 Identity and join keys read like source-system column names on purpose:
 they are usually one. Slot domains (`core`, `sales`, `catalog`, `crm`,
-`hr`, `purchasing` in `universal-core`) are a convention, not a closed
-list; an extending package may introduce its own domain prefix.
+`hr`, `purchasing` in `universal-core`; `delivery` in `services-core`)
+are a convention, not a closed list; a base package or an extending
+package may introduce its own domain prefix.
 
 ## The controlled verb vocabulary
 
 Relation names come from a small, shared vocabulary, not from whatever
-reads best in the moment. The v0 seed, declared in
-`packages/universal-core/ontology/relations.yaml`:
+reads best in the moment. **The vocabulary a package sees is the union of
+every `Relation.name` already declared anywhere in its extends chain**,
+not a single fixed list: `universal-core` seeds nine verbs available to
+everything; a base package may mint its own on top, available to that
+base package's own descendants (and only those), the same way
+`operations-core` mints four more for anything that extends it.
+
+`universal-core`'s nine (`packages/universal-core/ontology/relations.yaml`):
 
 | Verb | Meaning |
 |---|---|
 | `contains` | The `from` entity is composed of, or line-items, the `to` entity. |
-| `belongs-to` | The `from` entity is owned or grouped by the `to` entity. |
-| `located-at` | The `from` entity happened, or is situated, at the `to` location. |
-| `works-at` | The `from` employee is assigned to the `to` location. |
+| `places` | The `from` entity initiates the `to` transaction (or engagement). |
 | `supplies` | The `from` supplier provides the `to` entity. |
-| `sells` | The `from` location offers the `to` product. |
-| `places` | The `from` entity initiates the `to` transaction. |
-| `staffed-by` | The `from` shift is worked by the `to` employee. |
 | `billed-to` | The `from` transaction is charged to the `to` organization. |
+| `employed-by` | The `from` employee is employed by the `to` organization. |
+| `belongs-to` | The `from` entity is owned or grouped by the `to` entity. |
 | `derived-from` | The `from` entity originates from, or corrects, the `to` entity. |
 | `supersedes` | The `from` entity replaces the `to` entity of the same kind. |
 | `responsible-for` | The `from` employee is accountable for the `to` entity, by human assignment rather than a source feed. |
 
-**The vocabulary is exactly what `universal-core` declares, nothing more.**
-There is no separate list to keep in sync: the controlled vocabulary *is*
-the set of distinct `Relation.name` values already present in a package's
-extends-root. Adding a twelfth, thirteenth, or later verb means adding a
-relation that uses it to `universal-core` itself, through an RFC (see
-`rfcs/README.md`), which then unlocks that verb for every package that
-extends it. An extending package cannot introduce a new verb on its own,
-by design: the vocabulary stays small only if it is genuinely shared.
+`operations-core` mints four more, available to anything that extends it
+(`packages/operations-core/ontology/relations.yaml`), all needing
+`location` or `shift`, which is exactly why they aren't universal:
+`located-at`, `works-at`, `staffed-by`, `sells`. `services-core` mints
+none: every relation it adds reuses one of `universal-core`'s nine on a
+new pair (`places` for customer-to-engagement, `contains` for
+engagement-to-deliverable, and so on), the RFC-reuse-first principle
+below taken as far as it goes.
 
-A verb is meant to recur across unrelated entity pairs; a small vocabulary
-covering dozens of relations cannot work any other way. Relation identity
-for uniqueness and fork-detection is the triple `(name, from, to)`, not
-`name` alone: see `spec/primitives/relation.md`.
+Adding a genuinely new verb means adding a relation that uses it to the
+package meant to own it, through an RFC (see `rfcs/README.md`), which
+then unlocks that verb for that package's own descendants, never
+retroactively for an unrelated chain that happens to share a distant
+ancestor. Prefer reusing an existing verb on a new entity pair before
+proposing a new one: a verb is meant to recur across unrelated pairs, and
+a small vocabulary covering dozens of relations cannot work any other way.
+Relation identity for uniqueness and fork-detection is the triple `(name,
+from, to)`, not `name` alone: see `spec/primitives/relation.md`.
 
 ## Synonyms
 
 Every entity may declare `synonyms: {en: [...], es: [...]}`: alternate
 words an agent should treat as referring to the same entity ("menu item"
-for `product`, "ticket" for `order"). Synonyms exist so that a business's
-own vocabulary reaches the ontology without forking it: adding one is a
-glossary edit (see below), always available to an extending package even
-when nothing else about the entity may change.
+for `offering`, "invoice line" for `transaction`). Synonyms exist so that
+a business's own vocabulary reaches the ontology without forking it:
+adding one is a glossary edit (see below), always available to an
+extending package even when nothing else about the entity may change,
+and layerable across more than one hop: `operations-core` could add
+"product" to `offering`'s synonyms, and `examples/cafe-demo` (extending
+`operations-core`) could add "menu item" on top of that, without either
+layer touching what the one before it set.
 
 ## Governance tiers
 
@@ -78,11 +91,12 @@ answers a different question.
 | Action | `risk` | `auto \| confirm` | May an agent execute this unattended? |
 | Competency question, Slot mapping | none | (n/a) | Neither applies: these are operational elements, not governed content. |
 
-`structural` is the default for anything `universal-core` defines: the
-shared, non-negotiable shape of the business. `glossary` and `instance`
-exist in the vocabulary for content this spec does not populate in v0 (see
-`spec/versioning.md`); every element in `packages/universal-core` and
-`examples/cafe-demo` is `structural`.
+`structural` is the default for anything a base package defines: the
+shared, non-negotiable shape of the business at that layer. `glossary` and
+`instance` exist in the vocabulary for content this spec does not populate
+in v0 (see `spec/versioning.md`); every entity and metric across
+`packages/universal-core`, `packages/operations-core`,
+`packages/services-core`, and both teaching examples is `structural`.
 
 The tier that matters most for authoring is narrower than the table above:
 which *fields*, not which *elements*, an extending package may set without
