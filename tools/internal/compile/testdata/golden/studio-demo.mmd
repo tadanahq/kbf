@@ -1,32 +1,30 @@
 flowchart LR
   %% entities
   customer["customer"]
+  deliverable["deliverable"]
   employee["employee"]
-  location["location"]
+  engagement["engagement"]
   offering["offering"]
   organization["organization"]
   purchase["purchase"]
-  shift["shift"]
   supplier["supplier"]
   transaction["transaction"]
   %% relations
+  customer -->|belongs-to| customer
+  customer -->|places| engagement
   customer -->|places| transaction
   employee -->|employed-by| organization
   employee -->|responsible-for| customer
-  employee -->|responsible-for| location
-  employee -->|works-at| location
-  location -->|belongs-to| location
-  location -->|belongs-to| organization
-  location -->|sells| offering
+  employee -->|responsible-for| engagement
+  engagement -->|contains| deliverable
   offering -->|belongs-to| organization
   offering -->|supersedes| offering
   purchase -->|billed-to| organization
-  shift -->|staffed-by| employee
   supplier -->|supplies| offering
   supplier -->|supplies| purchase
   transaction -->|contains| offering
+  transaction -->|derived-from| engagement
   transaction -->|derived-from| transaction
-  transaction -->|located-at| location
   %% actions
   action_annotate(("annotate"))
   action_annotate -.->|auto| customer

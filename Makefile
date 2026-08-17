@@ -43,7 +43,8 @@ build: $(BIN)
 
 .PHONY: dogfood-lint
 dogfood-lint: $(BIN)
-	./$(BIN) lint packages/universal-core examples/cafe-demo
+	./$(BIN) lint packages/universal-core packages/operations-core examples/cafe-demo
+	./$(BIN) lint packages/universal-core packages/services-core examples/studio-demo
 
 .PHONY: conformance
 conformance:

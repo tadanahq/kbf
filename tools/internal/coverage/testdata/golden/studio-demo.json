@@ -1,25 +1,43 @@
 {
   "packages": [
     {
-      "package": "cafe-demo",
+      "package": "studio-demo",
       "rows": [
         {
           "entity": "customer",
           "slot": "crm.customer-contact",
-          "source": "",
-          "mapped": false
+          "source": "demopm",
+          "mapped": true
         },
         {
           "entity": "customer",
           "slot": "crm.customer-joined-date",
-          "source": "",
-          "mapped": false
+          "source": "demopm",
+          "mapped": true
         },
         {
           "entity": "customer",
           "slot": "crm.customer-name",
-          "source": "",
-          "mapped": false
+          "source": "demopm",
+          "mapped": true
+        },
+        {
+          "entity": "deliverable",
+          "slot": "delivery.deliverable-due",
+          "source": "demopm",
+          "mapped": true
+        },
+        {
+          "entity": "deliverable",
+          "slot": "delivery.deliverable-label",
+          "source": "demopm",
+          "mapped": true
+        },
+        {
+          "entity": "deliverable",
+          "slot": "delivery.deliverable-status",
+          "source": "demopm",
+          "mapped": true
         },
         {
           "entity": "employee",
@@ -46,39 +64,51 @@
           "mapped": true
         },
         {
-          "entity": "location",
-          "slot": "core.location-address",
-          "source": "demopos",
+          "entity": "engagement",
+          "slot": "delivery.engagement-billed-hours",
+          "source": "demopm",
           "mapped": true
         },
         {
-          "entity": "location",
-          "slot": "core.location-label",
-          "source": "demopos",
+          "entity": "engagement",
+          "slot": "delivery.engagement-end",
+          "source": "demopm",
           "mapped": true
         },
         {
-          "entity": "location",
-          "slot": "core.location-timezone",
-          "source": "demopos",
+          "entity": "engagement",
+          "slot": "delivery.engagement-label",
+          "source": "demopm",
+          "mapped": true
+        },
+        {
+          "entity": "engagement",
+          "slot": "delivery.engagement-start",
+          "source": "demopm",
+          "mapped": true
+        },
+        {
+          "entity": "engagement",
+          "slot": "delivery.engagement-status",
+          "source": "demopm",
           "mapped": true
         },
         {
           "entity": "offering",
           "slot": "catalog.offering-category",
-          "source": "demopos",
+          "source": "demopm",
           "mapped": true
         },
         {
           "entity": "offering",
           "slot": "catalog.offering-label",
-          "source": "demopos",
+          "source": "demopm",
           "mapped": true
         },
         {
           "entity": "offering",
           "slot": "catalog.offering-price",
-          "source": "demopos",
+          "source": "demopm",
           "mapped": true
         },
         {
@@ -118,56 +148,38 @@
           "mapped": true
         },
         {
-          "entity": "shift",
-          "slot": "hr.shift-end",
-          "source": "demobooks",
-          "mapped": true
-        },
-        {
-          "entity": "shift",
-          "slot": "hr.shift-labor-cost",
-          "source": "demobooks",
-          "mapped": true
-        },
-        {
-          "entity": "shift",
-          "slot": "hr.shift-start",
-          "source": "demobooks",
-          "mapped": true
-        },
-        {
           "entity": "supplier",
           "slot": "purchasing.supplier-contact",
-          "source": "demobooks",
-          "mapped": true
+          "source": "",
+          "mapped": false
         },
         {
           "entity": "supplier",
           "slot": "purchasing.supplier-name",
-          "source": "demobooks",
-          "mapped": true
+          "source": "",
+          "mapped": false
         },
         {
           "entity": "transaction",
           "slot": "sales.transaction-status",
-          "source": "demopos",
+          "source": "demobooks",
           "mapped": true
         },
         {
           "entity": "transaction",
           "slot": "sales.transaction-timestamp",
-          "source": "demopos",
+          "source": "demobooks",
           "mapped": true
         },
         {
           "entity": "transaction",
           "slot": "sales.transaction-total",
-          "source": "demopos",
+          "source": "demobooks",
           "mapped": true
         }
       ],
-      "declared": 27,
-      "mapped": 24
+      "declared": 29,
+      "mapped": 27
     }
   ]
 }

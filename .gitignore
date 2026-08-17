@@ -10,7 +10,10 @@ coverage.out
 
 # `kbf compile --to mermaid` output: the README tour's step 6 generates
 # this exact file; it's a regeneratable byproduct, not source content.
+# Golden test fixtures are the deliberate exception: they're committed,
+# intentional content, not byproduct (internal/compile/testdata/golden/).
 *.mmd
+!**/testdata/**/*.mmd
 
 # Editors / OS
 .DS_Store

@@ -36,71 +36,111 @@ func init() {
 
 var update = flag.Bool("update", false, "write golden files instead of comparing against them")
 
-// realPackages resolves the actual packages/examples this repo ships,
-// relative to this test file: coverage is meant to be dogfooded against
-// real content, the same way the linter is (see design.md and tasks.md's
-// "Implementation clarifications").
-var realPackages = []string{
-	filepath.Join("..", "..", "..", "examples", "cafe-demo"),
-	filepath.Join("..", "..", "..", "packages", "universal-core"),
+// realChains: both demo chains this repo ships, dogfooded the same way
+// the linter is (design.md and tasks.md's "Implementation
+// clarifications"). design.md is explicit that both exist so "one shared
+// multi-vertical core" is checkable, not asserted, so both get the same
+// golden protection, not just cafe-demo. Each chain is three levels
+// (layered-packages restructure, 2026-08-13): all three paths must be
+// passed or the leaf's own extends fails to resolve (KBF011).
+var realChains = []struct {
+	name     string // also the golden files' basename
+	paths    []string
+	declared int
+	mapped   int
+	unmapped []string
+}{
+	{
+		name: "cafe-demo",
+		paths: []string{
+			filepath.Join("..", "..", "..", "examples", "cafe-demo"),
+			filepath.Join("..", "..", "..", "packages", "operations-core"),
+			filepath.Join("..", "..", "..", "packages", "universal-core"),
+		},
+		// 27 slots: universal-core's 21 + operations-core's 6 (location
+		// x3, shift x3), the full resolved ontology across the chain.
+		declared: 27,
+		mapped:   24,
+		unmapped: []string{"crm.customer-contact", "crm.customer-joined-date", "crm.customer-name"},
+	},
+	{
+		name: "studio-demo",
+		paths: []string{
+			filepath.Join("..", "..", "..", "examples", "studio-demo"),
+			filepath.Join("..", "..", "..", "packages", "services-core"),
+			filepath.Join("..", "..", "..", "packages", "universal-core"),
+		},
+		// 29 slots: universal-core's 21 + services-core's 8 (engagement
+		// x5, deliverable x3).
+		declared: 29,
+		mapped:   27,
+		unmapped: []string{"purchasing.supplier-contact", "purchasing.supplier-name"},
+	},
 }
 
 func TestComputeAgainstRealPackages(t *testing.T) {
-	universe, findings, err := lint.Load(realPackages)
-	if err != nil {
-		t.Fatalf("lint.Load: %v", err)
-	}
-	if len(findings) != 0 {
-		t.Fatalf("lint.Load produced findings, want none (packages/examples are expected to lint clean): %+v", findings)
-	}
+	for _, c := range realChains {
+		t.Run(c.name, func(t *testing.T) {
+			universe, findings, err := lint.Load(c.paths)
+			if err != nil {
+				t.Fatalf("lint.Load: %v", err)
+			}
+			if len(findings) != 0 {
+				t.Fatalf("lint.Load produced findings, want none (packages/examples are expected to lint clean): %+v", findings)
+			}
 
-	reports := coverage.Compute(universe)
-	if len(reports) != 1 {
-		t.Fatalf("got %d reports, want 1 (only cafe-demo is a leaf; universal-core is extends-context, not a subject): %+v", len(reports), reports)
-	}
+			reports := coverage.Compute(universe)
+			if len(reports) != 1 {
+				t.Fatalf("got %d reports, want 1 (only the demo is a leaf; its base/universal-core ancestors are extends-context, not a subject): %+v", len(reports), reports)
+			}
 
-	r := reports[0]
-	if r.Package != "cafe-demo" {
-		t.Errorf("report.Package = %q, want cafe-demo", r.Package)
-	}
-	if r.Declared != 26 {
-		t.Errorf("Declared = %d, want 26", r.Declared)
-	}
-	if r.Mapped != 23 {
-		t.Errorf("Mapped = %d, want 23 (3 crm.customer-* rows are deliberately unmapped)", r.Mapped)
-	}
+			r := reports[0]
+			if r.Package != c.name {
+				t.Errorf("report.Package = %q, want %s", r.Package, c.name)
+			}
+			if r.Declared != c.declared {
+				t.Errorf("Declared = %d, want %d", r.Declared, c.declared)
+			}
+			if r.Mapped != c.mapped {
+				t.Errorf("Mapped = %d, want %d", r.Mapped, c.mapped)
+			}
 
-	unmapped := map[string]bool{}
-	for _, row := range r.Rows {
-		if !row.Mapped {
-			unmapped[row.Slot] = true
-		}
-	}
-	want := []string{"crm.customer-contact", "crm.customer-joined-date", "crm.customer-name"}
-	for _, slot := range want {
-		if !unmapped[slot] {
-			t.Errorf("expected %s to be unmapped, it wasn't", slot)
-		}
-	}
-	if len(unmapped) != len(want) {
-		t.Errorf("got %d unmapped slots, want exactly %d: %v", len(unmapped), len(want), unmapped)
+			unmapped := map[string]bool{}
+			for _, row := range r.Rows {
+				if !row.Mapped {
+					unmapped[row.Slot] = true
+				}
+			}
+			for _, slot := range c.unmapped {
+				if !unmapped[slot] {
+					t.Errorf("expected %s to be unmapped, it wasn't", slot)
+				}
+			}
+			if len(unmapped) != len(c.unmapped) {
+				t.Errorf("got %d unmapped slots, want exactly %d: %v", len(unmapped), len(c.unmapped), unmapped)
+			}
+		})
 	}
 }
 
 func TestRenderGolden(t *testing.T) {
-	universe, _, err := lint.Load(realPackages)
-	if err != nil {
-		t.Fatalf("lint.Load: %v", err)
-	}
-	reports := coverage.Compute(universe)
+	for _, c := range realChains {
+		t.Run(c.name, func(t *testing.T) {
+			universe, _, err := lint.Load(c.paths)
+			if err != nil {
+				t.Fatalf("lint.Load: %v", err)
+			}
+			reports := coverage.Compute(universe)
 
-	checkGolden(t, filepath.Join("testdata", "golden", "cafe-demo.human.txt"), coverage.RenderHuman(reports))
+			checkGolden(t, filepath.Join("testdata", "golden", c.name+".human.txt"), coverage.RenderHuman(reports))
 
-	out, err := coverage.RenderJSON(reports)
-	if err != nil {
-		t.Fatalf("RenderJSON: %v", err)
+			out, err := coverage.RenderJSON(reports)
+			if err != nil {
+				t.Fatalf("RenderJSON: %v", err)
+			}
+			checkGolden(t, filepath.Join("testdata", "golden", c.name+".json"), string(out)+"\n")
+		})
 	}
-	checkGolden(t, filepath.Join("testdata", "golden", "cafe-demo.json"), string(out)+"\n")
 }
 
 func TestUniversalCoreAlone(t *testing.T) {
@@ -115,8 +155,8 @@ func TestUniversalCoreAlone(t *testing.T) {
 	if reports[0].Mapped != 0 {
 		t.Errorf("Mapped = %d, want 0: universal-core's slots.yaml is a template, every source empty", reports[0].Mapped)
 	}
-	if reports[0].Declared != 26 {
-		t.Errorf("Declared = %d, want 26", reports[0].Declared)
+	if reports[0].Declared != 21 {
+		t.Errorf("Declared = %d, want 21", reports[0].Declared)
 	}
 }
 
