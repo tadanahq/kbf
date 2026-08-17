@@ -15,7 +15,11 @@ coverage.out
 *.mmd
 !**/testdata/**/*.mmd
 
-# Editors / OS
+# Editors / OS. Personal editor state stays out, but the two committed
+# settings files are project intent: they pin our published schemas and
+# disable schemastore auto-matching, which otherwise misdetects
+# playbooks/**/*.yaml as Ansible.
 .DS_Store
-.vscode/
 .idea/
+.vscode/*
+!.vscode/settings.json

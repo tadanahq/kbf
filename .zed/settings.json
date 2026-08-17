@@ -1,0 +1,21 @@
+{
+  "lsp": {
+    "yaml-language-server": {
+      "settings": {
+        "yaml": {
+          "schemaStore": {
+            "enable": false
+          },
+          "schemas": {
+            "schema/manifest.schema.yaml": ["**/manifest.yaml"],
+            "schema/ontology.schema.yaml": [
+              "**/ontology/*.yaml",
+              "**/evals/*.yaml",
+              "**/install/*.yaml"
+            ]
+          }
+        }
+      }
+    }
+  }
+}
