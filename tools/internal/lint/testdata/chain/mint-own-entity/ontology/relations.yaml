@@ -1,0 +1,26 @@
+# stored-at is a brand-new verb: no ancestor declares it (chain-grandparent
+# only has sourced-from and assembled-from). Legal on the first relation
+# because it touches warehouse, an entity this package declares itself
+# (KBF007 condition (b)). Illegal on the second: same verb, same package,
+# but material and site both belong to chain-grandparent, so neither this
+# relation nor the package-wide precedent of the first one carries it —
+# minting rights are evaluated per relation, not a standing grant once
+# used anywhere in the package (design.md, "statically evaluable, no
+# declaration ordering involved").
+kind: relation
+name: stored-at
+from: material
+to: warehouse
+cardinality: many-to-one
+join: [material_id, warehouse_id]
+tier: source-synced
+temporal: false
+---
+kind: relation
+name: stored-at
+from: material
+to: site
+cardinality: many-to-one
+join: [material_id, site_id]
+tier: source-synced
+temporal: false

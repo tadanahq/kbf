@@ -42,13 +42,19 @@ func TestChainThreeLevelValid(t *testing.T) {
 }
 
 // TestChainVerbNotInheritedBySibling is design.md's "not for siblings of
-// another chain": chain-cousin extends chain-other-root, a genuinely
-// unrelated root, not chain-grandparent's line at all. assembled-from is
-// real (chain-grandparent declares it) and chain-grandparent/chain-parent
-// are loaded in the very same universe, but chain-cousin's own chain
-// never passes through either, so KBF007's union (scoped to a package's
-// actual ancestors) must not see it: merely being loaded together in one
-// kbf lint invocation is not the same as being related.
+// another chain", and owner item (2) of the 2026-08-13 KBF007 adjudication
+// ("invalid: new verb over two inherited entities fires KBF007"):
+// chain-cousin extends chain-other-root, a genuinely unrelated root, not
+// chain-grandparent's line at all. assembled-from is real (chain-
+// grandparent declares it) and chain-grandparent/chain-parent are loaded
+// in the very same universe, but chain-cousin's own chain never passes
+// through either, so KBF007's ancestor union (scoped to a package's
+// actual ancestors) must not see it. chain-cousin also declares no
+// entities of its own — both endpoints (gadget, widget) are inherited
+// from chain-other-root — so the owner-adjudicated own-entity minting
+// right does not open a back door either: merely being loaded together in
+// one kbf lint invocation, or redeclaring an inherited entity's name, is
+// not the same as genuinely introducing something new.
 func TestChainVerbNotInheritedBySibling(t *testing.T) {
 	result := mustRun(t,
 		"testdata/chain/grandparent",
@@ -72,6 +78,33 @@ func TestChainVerbNotInheritedBySibling(t *testing.T) {
 		if !strings.Contains(f.File, "cousin") {
 			t.Errorf("unexpected finding outside the cousin package: %+v", f)
 		}
+	}
+}
+
+// TestChainMintOnOwnEntity is owner item (1) of the 2026-08-13 KBF007
+// adjudication ("valid: base playbook mints verb on own-entity pair"),
+// mirroring packages/operations-core minting located-at/staffed-by/
+// works-at/sells on pairs that touch location or shift. chain-mint-own-
+// entity extends chain-grandparent directly and mints stored-at, a verb
+// no ancestor declares, on a pair that touches warehouse (its own new
+// entity): must pass. The same package reuses stored-at on a second,
+// fully-inherited pair (material -> site, both chain-grandparent's): must
+// still fail, proving minting is evaluated per relation, not granted to
+// the whole package once the verb has been used anywhere in it.
+func TestChainMintOnOwnEntity(t *testing.T) {
+	result := mustRun(t,
+		"testdata/chain/grandparent",
+		"testdata/chain/mint-own-entity",
+	)
+	got := find(result.Findings, lint.KBF007)
+	if len(got) != 1 {
+		t.Fatalf("KBF007: got %d findings, want 1 (only the fully-inherited pair): %+v", len(got), result.Findings)
+	}
+	if got[0].Element != "stored-at" {
+		t.Errorf("KBF007 element = %q, want stored-at", got[0].Element)
+	}
+	if !strings.Contains(got[0].File, "mint-own-entity") {
+		t.Errorf("KBF007 file %q, want the mint-own-entity package's relations.yaml", got[0].File)
 	}
 }
 

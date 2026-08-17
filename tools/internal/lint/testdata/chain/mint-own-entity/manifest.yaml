@@ -1,0 +1,10 @@
+# Mirrors packages/operations-core minting a verb on a pair that touches
+# an entity it declares itself, extending the true root directly (not
+# through chain-parent): owner-adjudicated KBF007 condition (b),
+# design.md's "Implementation clarifications". Also proves the check is
+# per relation, not per package: this same package reuses its own freshly
+# minted verb on a second, fully-inherited pair, which must still fail.
+name: chain-mint-own-entity
+version: 0.1.0
+spec: v0
+extends: chain-grandparent

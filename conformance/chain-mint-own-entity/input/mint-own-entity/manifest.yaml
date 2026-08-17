@@ -1,0 +1,15 @@
+# Mirrors packages/operations-core minting a verb on a pair that touches
+# an entity it declares itself, extending the true root directly (not
+# through chain-parent): owner-adjudicated KBF007 condition (b),
+# design.md's "Implementation clarifications", owner item (1) of the
+# 2026-08-13 adjudication ("valid: base playbook mints verb on own-entity
+# pair"). The finer edge case this rule implies (minting a verb on one
+# pair does not blanket-legalize it package-wide for a *different*,
+# fully-inherited pair) is unit-tested directly in
+# internal/lint/chain_test.go's TestChainMintOnOwnEntity, where per-rule
+# finding counts are easy to assert; this fixture stays a clean, wholly
+# valid case, matching conformance's binary ok/not-ok verdict.
+name: chain-mint-own-entity
+version: 0.1.0
+spec: v0
+extends: chain-grandparent

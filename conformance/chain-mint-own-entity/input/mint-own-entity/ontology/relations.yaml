@@ -1,0 +1,12 @@
+# stored-at is a brand-new verb: no ancestor declares it (chain-grandparent
+# only has sourced-from and assembled-from). Legal because it touches
+# warehouse, an entity this package declares itself: minting rights come
+# with introducing a new entity (owner adjudication, design.md).
+kind: relation
+name: stored-at
+from: material
+to: warehouse
+cardinality: many-to-one
+join: [material_id, warehouse_id]
+tier: source-synced
+temporal: false

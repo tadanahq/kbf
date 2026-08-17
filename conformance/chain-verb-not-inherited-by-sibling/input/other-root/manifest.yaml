@@ -1,8 +1,11 @@
 # A root package genuinely unrelated to chain-grandparent's line: exists
-# so chain-cousin-invalid-verb can prove KBF007's union is scoped to a
-# package's actual ancestors, not to "everything passed to kbf lint in
-# the same invocation". No ontology content of its own: an empty
-# vocabulary is exactly the point.
+# so chain-cousin-invalid-verb can prove KBF007's ancestor-union AND the
+# owner-adjudicated own-entity minting right are both scoped to a
+# package's actual ancestors and its own declarations, not to "everything
+# passed to kbf lint in the same invocation". Declares the two entities
+# chain-cousin's bad relation connects, so that relation is fully
+# inherited on both ends: neither the verb nor the entities give
+# chain-cousin a legal way in.
 name: chain-other-root
 version: 0.1.0
 spec: v0

@@ -29,7 +29,7 @@ var recognizedDimensions = map[string]bool{"business-date": true}
 // semanticFindings runs the rules that need cross-references resolved:
 // KBF005 (metric completeness, grouped here per tasks.md's batch split,
 // not structural.go's), KBF006 (relation endpoints), KBF007 (verb
-// vocabulary), KBF008 (fork detection), KBF009 (dangling references), and
+// legality), KBF008 (fork detection), KBF009 (dangling references), and
 // KBF012 (slot declarations without a matching attribute). chain is pkg's
 // full ancestor line, nearest first (Universe.Chain); empty means pkg is a
 // root package. A missing or cyclic link partway up the chain still
@@ -41,7 +41,8 @@ func semanticFindings(pkg *Package, chain []*Package) []Finding {
 	var findings []Finding
 
 	entities := knownNames(pkg, chain, model.KindEntity)
-	vocabulary := controlledVocabulary(pkg, chain)
+	ancestorVerbs := controlledVocabulary(chain)
+	minted := mintedEntities(pkg, chain)
 	anyName := knownNames(pkg, chain, model.KindEntity, model.KindMetric, model.KindAction, model.KindRelation)
 
 	for _, e := range pkg.Elements {
@@ -49,7 +50,7 @@ func semanticFindings(pkg *Package, chain []*Package) []Finding {
 			findings = append(findings, checkFork(e, ancestor)...)
 			continue // KBF008 is the whole story for a matched element; see structuralFindings.
 		}
-		findings = append(findings, checkGrainAndVocabulary(e, vocabulary)...)
+		findings = append(findings, checkGrainAndVocabulary(e, ancestorVerbs, minted)...)
 		findings = append(findings, checkReferences(e, entities, anyName)...)
 	}
 
@@ -58,17 +59,25 @@ func semanticFindings(pkg *Package, chain []*Package) []Finding {
 }
 
 // checkGrainAndVocabulary is KBF005 (metric grain/additivity presence) and
-// KBF007 (relation verb in the controlled vocabulary). Grain's *entries*
-// (are they declared entities?) is a reference check: see checkReferences.
-func checkGrainAndVocabulary(e Element, vocabulary map[string]bool) []Finding {
+// KBF007 (relation verb legality, owner-adjudicated 2026-08-13: see
+// design.md's "Implementation clarifications"). A relation's verb passes
+// if EITHER an ancestor already declares it (ancestorVerbs: ordinary
+// reuse), OR the relation touches an entity pkg itself mints (minted:
+// introducing a new entity carries the right to name the relationships it
+// participates in, without pre-clearing the verb upstream first).
+// Evaluated per relation, not per package: minting a verb once does not
+// blanket-legalize it for a *different*, fully-inherited pair elsewhere in
+// the same package. Grain's *entries* (are they declared entities?) is a
+// reference check: see checkReferences.
+func checkGrainAndVocabulary(e Element, ancestorVerbs, minted map[string]bool) []Finding {
 	switch v := e.Value.(type) {
 	case *model.Metric:
 		if len(v.Grain) == 0 || v.Additivity == "" {
 			return []Finding{{Rule: KBF005, File: e.File, Line: e.Line, Element: v.Name, Message: "metric has no grain and/or additivity", Fix: "add grain: [<entity>, ...] and additivity: additive|semi-additive|non-additive"}}
 		}
 	case *model.Relation:
-		if !vocabulary[v.Name] {
-			return []Finding{{Rule: KBF007, File: e.File, Line: e.Line, Element: v.Name, Message: fmt.Sprintf("verb %q is outside the controlled vocabulary", v.Name), Fix: "use an existing verb, or add it to a base package in this package's extends chain via RFC first"}}
+		if !ancestorVerbs[v.Name] && !minted[v.From] && !minted[v.To] {
+			return []Finding{{Rule: KBF007, File: e.File, Line: e.Line, Element: v.Name, Message: fmt.Sprintf("verb %q is outside the controlled vocabulary", v.Name), Fix: "reuse a verb an ancestor already declares, mint it on a relation that touches an entity this package introduces, or add it upstream via RFC first"}}
 		}
 	}
 	return nil
@@ -202,22 +211,18 @@ func knownNames(pkg *Package, chain []*Package, kinds ...model.Kind) map[string]
 	return names
 }
 
-// controlledVocabulary is the set of relation verbs pkg may use: the union
-// of distinct verbs declared by every package in chain (design.md's
-// "Implementation clarifications" — a base package adding a verb legalizes
-// it for everything below it in the chain, not just its immediate child),
-// or pkg's own verbs when chain is empty (pkg has no ancestors: it IS the
-// root establishing the vocabulary, matching "self included when linting
-// a root"). A package's own newly-declared verbs never count toward its
-// own vocabulary check: an extending package cannot introduce a verb on
-// its own, only a package above it in the chain can.
-func controlledVocabulary(pkg *Package, chain []*Package) map[string]bool {
-	sources := chain
-	if len(sources) == 0 {
-		sources = []*Package{pkg}
-	}
+// controlledVocabulary is KBF007 condition (a): the set of relation verbs
+// any ancestor in chain already declares (design.md's "Implementation
+// clarifications" — a base package adding a verb legalizes it for
+// everything below it in the chain, not just its immediate child). Empty
+// when chain is empty: a root has no ancestors to inherit vocabulary
+// from, so every one of its own relations instead passes through
+// condition (b) (mintedEntities), which it always does — a root
+// necessarily declares every entity it references, since it has nothing
+// to inherit from.
+func controlledVocabulary(chain []*Package) map[string]bool {
 	verbs := map[string]bool{}
-	for _, p := range sources {
+	for _, p := range chain {
 		for _, e := range p.Elements {
 			if e.Kind == model.KindRelation {
 				verbs[e.Name()] = true
@@ -225,4 +230,30 @@ func controlledVocabulary(pkg *Package, chain []*Package) map[string]bool {
 		}
 	}
 	return verbs
+}
+
+// mintedEntities is KBF007 condition (b): the set of entity names pkg
+// declares that do NOT already exist, by name, in any ancestor —
+// genuinely new concepts this package introduces, as opposed to a
+// glossary override or fork of an inherited entity (same name, but not
+// new: KBF008 handles whether that redeclaration is itself legitimate).
+// Only a genuinely new entity carries minting rights (owner adjudication,
+// design.md, 2026-08-13): a relation that only touches an entity already
+// declared by an ancestor gets no self-inclusion, even if pkg happens to
+// redeclare that same name on its own copy.
+func mintedEntities(pkg *Package, chain []*Package) map[string]bool {
+	minted := map[string]bool{}
+	for _, e := range pkg.Elements {
+		if e.Kind == model.KindEntity {
+			minted[e.Name()] = true
+		}
+	}
+	for _, ancestor := range chain {
+		for _, e := range ancestor.Elements {
+			if e.Kind == model.KindEntity {
+				delete(minted, e.Name())
+			}
+		}
+	}
+	return minted
 }

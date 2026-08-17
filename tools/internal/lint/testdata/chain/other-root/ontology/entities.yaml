@@ -8,8 +8,9 @@ tier: structural
 kind: entity
 name: widget
 meaning: >-
-  The other end of this package's own relation, so the only violation
-  below is the verb itself, not an unrelated dangling endpoint.
+  The other end of chain-cousin's bad relation: both endpoints inherited
+  from here, so the owner-adjudicated own-entity minting right does not
+  apply either.
 identity: [widget_id]
 resolution: identity-mapping
 tier: structural

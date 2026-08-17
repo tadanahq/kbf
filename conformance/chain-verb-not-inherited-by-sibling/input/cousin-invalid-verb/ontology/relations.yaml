@@ -1,7 +1,10 @@
 # assembled-from is real (chain-grandparent declares it), but this
-# package's only ancestor is chain-other-root, which has no relations at
-# all: illegal here, KBF007. Both endpoints are this package's own
-# entities so the only violation is the verb, not a dangling endpoint.
+# package's only ancestor is chain-other-root, which declares no
+# relations at all: illegal here, KBF007 condition (a). Both endpoints
+# (gadget, widget) are inherited from chain-other-root, not declared by
+# this package, so the owner-adjudicated own-entity minting right
+# (condition (b)) does not apply either: this is deliberately the "new
+# verb over two fully-inherited entities" shape.
 kind: relation
 name: assembled-from
 from: gadget
