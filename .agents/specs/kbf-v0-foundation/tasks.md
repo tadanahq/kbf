@@ -131,4 +131,163 @@ with `builds-on: []`); `core-universal` renames to `core-business`
 
 - [x] `skills/kbf-authoring/SKILL.md` — thin-router design: ground-truth reading order (onboarding.md, cli.md, schemas), prerequisites check (binary + closure on disk), conduct rules layered over the 8 onboarding steps (one question at a time, triage verbatim, homonym probe, both-words-before-naming, skip-or-buy), the lint-JSON authoring loop with its stop condition, prohibitions (no fork, verb reuse, schema/ untouchable, client privacy), exit criteria. Deliberately restates NO spec content: routes to it.
 - [x] `skills/README.md` — what a skill is, install instructions (copy/symlink into `.claude/skills/`), portability note.
+
+## Batch 9: batteries-included distribution
+
+Owner-approved, coordinator-dispatched mid-Batch-8-report. Goal: `go
+install github.com/tadanahq/kbf/tools/cmd/kbf@latest` is the whole
+install, no clone required to compose against the public core playbooks,
+run the kbf-authoring skill, or read the spec. Steering conflict resolved
+first, deliberately, before any code: `project-architecture.md`'s
+Boundaries entry "tools/ may not embed playbook content; playbooks are
+always inputs" is evolved (not dropped) to allow embedding the *public*
+core playbooks, the kbf-authoring skill, and the prose spec strictly as a
+resolution fallback, local paths always overriding, `kbf vendor` always
+able to materialize it back to a real directory; `project-decisions.md`
+gained the "Batteries-included binary" entry recording why and the
+reversal condition, both landed in the same first commit as the embed
+mechanics themselves. 4 commits: `f7d5bbc` (embed mechanics), `e0296b0`
+(commands), `3f878e8` (tests), `0586245` (docs).
+
+- [x] Embed mechanics (`f7d5bbc`): `scripts/embedsync` (new sibling program
+  to `boundaries.go`, same module, mirrors `kbf schema`'s own
+  copy-and-check shape) syncs `playbooks/core-*`, `skills/kbf-authoring/`,
+  and `spec/*.md` (+ `spec/primitives/*.md`) into
+  `tools/internal/embedded/data/`, a DO-NOT-EDIT header injected per file
+  (a leading YAML comment for `.yaml`, an HTML comment placed after
+  frontmatter, never before, for `.md`, verified safe against all 14
+  synced docs by hand: each has exactly two bare `---` lines, both the
+  frontmatter delimiter, none a horizontal rule). `make embed-sync`
+  writes it, `make embed-freshness` verifies (wipes and rewrites in
+  memory, diffs both directions: stale content AND orphaned files with no
+  source anymore), wired into `make check`; CI gets it for free (CI only
+  ever runs `make check`). New `tools/internal/embedded` package:
+  `//go:embed all:data`, `CorePlaybookNames`/`Playbook`,
+  `SkillNames`/`Skill`, `DocNames`/`Doc` (doc names derived by walking the
+  embedded tree, not a hardcoded list, so they can't drift from what got
+  synced).
+- [x] Resolution precedence (`f7d5bbc`): `tools/internal/lint/loader.go`
+  made `fs.FS`-generic (`loadPackage(fsys fs.FS, display string)`, was
+  `loadPackage(root string)`), so a real disk directory (`os.DirFS`) and
+  an embedded playbook share exactly one loader, never two. New
+  `lint.LoadWithEmbedded`/`RunWithEmbedded` (embedded_resolve.go): resolve
+  any `builds-on` name still missing after explicit paths load, from a
+  `PlaybookSource` fallback, transitively (a package resolved from
+  fallback can itself need more fallback, e.g. `core-operations` needing
+  `core-business`), to a fixed point. Plain `Load`/`Run` are completely
+  unchanged (still call the same `loadPackage`, just via `os.DirFS`
+  directly, no fallback param at all): conformance and every existing
+  `internal/lint`/`internal/coverage`/`internal/compile` test keep their
+  exact prior behavior, byte for byte, confirmed by the full suite
+  passing unmodified except for the one call site
+  (`coverage_test.go`'s golden test) that needed a signature update for
+  the new `RenderHuman` parameter. Precedence itself: local paths load
+  first (by construction: `Load` runs before `resolveEmbedded`), so a
+  name already in `Universe.Packages` is never touched by fallback,
+  which only ever fills a genuine gap. Verified by hand with a local
+  override carrying a deliberately broken manifest field: the resulting
+  finding named the local file, not the clean fallback copy sitting
+  behind it, proving precedence rather than assuming it. `cmd/kbf`'s
+  `lint`/`coverage`/`compile` all call the `WithEmbedded` variants now.
+  Human-readable `lint`/`coverage` output gains a footer
+  (`resolved from embedded: core-business, core-operations`) when
+  fallback was used; `--format json` is unchanged both by design and
+  structurally (`RenderJSON` already marshals through a separate struct
+  that never touches the new `Result.EmbeddedUsed` field). `compile`
+  resolves via fallback too (the functionality) but never appends a
+  footer to its stdout (would corrupt valid mermaid).
+- [x] `kbf vendor [--to <dir>]` (`e0296b0`): materializes all three
+  embedded core playbooks under `--to` (default `./playbooks`), refuses
+  to overwrite any existing target directory without `--force`, checked
+  atomically up front (names every conflicting directory in one error,
+  not a partial-vendor half state).
+- [x] `kbf skill install [--force]` (`e0296b0`): writes the embedded
+  `kbf-authoring` skill to `.claude/skills/kbf-authoring/`, same overwrite
+  guard, prints what it wrote and a one-line next step that assumes no
+  clone (points the agent at `kbf docs`, not a checked-out spec/).
+- [x] `kbf docs [name]` (`e0296b0`): no argument lists every embedded doc
+  name (`spec/`-relative path minus `.md`, e.g. `onboarding`,
+  `primitives/entity`); a name prints that doc's raw content to stdout.
+  Unknown name is a teachable error listing valid names, not a silent
+  empty print.
+- [x] `kbf init <name> [--builds-on a,b] [--layer core|vertical]`
+  (`e0296b0`): scaffolds `manifest.yaml` (`spec: v0`, `version: 0.1.0`,
+  the given `builds-on`/`layer`), empty `ontology/`/`evals/`, and an
+  `install/slots.yaml` template (header comment only, explaining the row
+  shape). `--layer` defaults to `vertical`, which then requires
+  `--builds-on` (a vertical must build on at least one playbook):
+  omitting it is a hard error naming the three embedded cores as the fix,
+  never a silent default to one of them. No `--force`: unlike vendor and
+  skill install, whose targets are safely re-derivable from the embedded
+  copy, an `init`-then-authored playbook can hold real, irreplaceable
+  work in `ontology/`, so a second `init` over the same directory is
+  always refused. **Bugfix found while proving the scaffold lints clean**:
+  `loadSlots` treated a comment-only `install/slots.yaml` (exactly what a
+  fresh `init` produces before any row exists) as `KBF001` "not a bare
+  YAML list", since goccy/go-yaml parses a comment-only document to a
+  `CommentGroupNode`, not an empty `SequenceNode`; fixed at the loader
+  (any comment-only `install/slots.yaml` is now legitimately zero rows),
+  not papered over with a placeholder `[]` in the scaffold a human reading
+  the file would have to wonder about. A second bug caught the same way,
+  by actually running the code rather than trusting it: `defer
+  sort.Strings(u.EmbeddedNames)` evaluated the (still-nil) slice as the
+  deferred call's argument immediately, not at return; fixed by wrapping
+  in a closure. Both would have shipped invisibly without a real
+  end-to-end smoke test before wiring the CLI.
+- [x] Docs/skill updates (`0586245`): `skills/kbf-authoring/SKILL.md`'s
+  "Ground truth first, always" and "Prerequisites check" rewritten around
+  `kbf docs onboarding`/`kbf docs cli` and `go install`, explicit "no
+  clone needed anywhere"; the authoring-loop example no longer implies
+  closure paths are always required. `skills/README.md`'s install section
+  rewritten around `kbf skill install` (manual `cp -r` kept as a
+  documented alternative for repo contributors). `spec/cli.md`: eight-row
+  command table (was four), a new `kbf init` section, a new "Embedded
+  content" section (the precedence rule, `kbf vendor`/`skill
+  install`/`docs` subsections), `kbf schema`'s own section now states
+  explicitly that `schema/` is *not* embedded (still needs a clone or
+  GitHub). `README.md` gains "Quickstart (no clone)" before the
+  five-minute tour (`go install`, `kbf init`, `kbf lint`, `kbf skill
+  install`, four commands) and an updated `tools/` row in "What's here".
+  Also fixed in passing (same class of drift my Batch-7 vocabulary sweep
+  should have caught): `finding.go`'s KBF008/KBF010/KBF013 rule comments
+  still named pre-Batch-7 risk/extends vocabulary;
+  `project-standards.md`'s "Extension, never fork" line; SKILL.md's own
+  residual "the fix is to extend" and a bare `spec/onboarding.md`
+  filename reference. `make embed-sync` re-run in the same commit (both
+  edited docs are embedded sources; their mirrored copies would otherwise
+  go stale and fail `embed-freshness`).
+- [x] Tests: `tools/internal/lint/embedded_resolve_test.go` (precedence,
+  proven with a synthetic `fstest.MapFS` fallback so the test never
+  depends on the real embedded playbooks' exact shape, plus the
+  nil-fallback-is-unchanged guarantee); `scripts/embedsync/embedsync_test.go`
+  (embed-freshness both directions on a minimal fake repo root: a source
+  edited without re-syncing is "stale", a file in `data/` no source
+  justifies anymore is "orphaned", plus the baseline clean-after-sync and
+  missing-file cases); `tools/cmd/kbf/{init,skill,vendor,docs}_test.go`
+  (new test infrastructure for this package, zero prior test files: a
+  shared `runCLI` executing `rootCmd` with captured stdout/stderr, a
+  `testdataDir` resolved before any test's `t.Chdir` moves the working
+  directory) covering init's golden scaffold content, the batch's own
+  proof requirement made permanent (a freshly-inited playbook lints clean
+  via embedded resolution alone), the `--builds-on`-required guard, the
+  never-overwrites guard; skill install's and vendor's idempotency/
+  `--force` behavior; docs' list/print/unknown-name behavior. Verified
+  go-install-equivalent by hand: built from a genuinely fresh `git clone`
+  of this repository (then deleted entirely), the binary ran `kbf init` +
+  `kbf lint` from an empty directory with zero access to any checkout,
+  proving the embedded data is truly committed, not just present in a
+  working tree that happened to have it synced.
+- [x] Proof: `make check` green from a genuinely clean rebuild (`rm -rf
+  bin`, `go clean -testcache`). In a temp directory outside the repo,
+  `PATH` restricted to that directory plus basic system utilities (no
+  access to `go`, `git`, or anything else): `kbf init demo-biz
+  --builds-on core-operations` → `wrote demo-biz`; `kbf lint demo-biz` →
+  `kbf lint: no findings` / `resolved from embedded: core-business,
+  core-operations`; `kbf skill install` → wrote the skill + the one-line
+  next step; `kbf docs onboarding | head` → real frontmatter, the
+  DO-NOT-EDIT header, and the doc's real opening paragraph. The existing
+  README tour re-run from the repo root, every step still green (24/27
+  slots, 88%, the 38-line mermaid output, both the studio-demo and
+  bistro-demo closing-paragraph commands): nothing about the embedded
+  fallback changed local-path behavior when local paths are what's given.
 - [x] README "What's here" row for `skills/`.
