@@ -1,0 +1,13 @@
+kind: entity
+name: deliverable
+meaning: >-
+  A discrete unit of work produced within an engagement.
+identity: [deliverable_id]
+resolution: identity-mapping
+tier: structural
+synonyms: {en: [milestone, output], es: [entregable]}
+attributes:
+  - {name: label, type: text, slot: delivery.deliverable-label}
+  - {name: due-at, type: date, slot: delivery.deliverable-due}
+  - {name: status, type: text, slot: delivery.deliverable-status}
+states: [pending, in-progress, delivered, approved]

@@ -1,0 +1,13 @@
+kind: entity
+name: transaction
+meaning: >-
+  The revenue-generating event between the business and a customer.
+identity: [transaction_id]
+resolution: identity-mapping
+tier: structural
+synonyms: {en: [sale, order, invoice-line], es: [venta, pedido, linea-de-factura]}
+attributes:
+  - {name: placed-at, type: timestamp, slot: sales.transaction-timestamp}
+  - {name: status, type: text, slot: sales.transaction-status}
+  - {name: total, type: currency, slot: sales.transaction-total}
+states: [open, completed, cancelled, refunded]

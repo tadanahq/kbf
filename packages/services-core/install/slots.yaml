@@ -1,0 +1,21 @@
+# Slot-mapping template for services-core's own new attributes only
+# (engagement, deliverable). universal-core's 21 slots are declared in
+# its own install/slots.yaml; a leaf install extending this chain maps
+# the full resolved set. See spec/primitives/slot-mapping.md.
+
+- slot: delivery.engagement-label
+  source: ""
+- slot: delivery.engagement-start
+  source: ""
+- slot: delivery.engagement-end
+  source: ""
+- slot: delivery.engagement-status
+  source: ""
+- slot: delivery.engagement-billed-hours
+  source: ""
+- slot: delivery.deliverable-label
+  source: ""
+- slot: delivery.deliverable-due
+  source: ""
+- slot: delivery.deliverable-status
+  source: ""

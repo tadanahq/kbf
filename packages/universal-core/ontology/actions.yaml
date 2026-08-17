@@ -1,27 +1,32 @@
 # Base actions, grouped by kind. `writes` names what the action produces;
 # in v0 every action writes to the findings layer or to a proposal queue,
-# never directly to a mart (see spec/primitives/action.md).
+# never directly to a mart (see spec/primitives/action.md). `on` is always
+# quoted: unquoted `on`/`off`/`yes`/`no` are legacy YAML 1.1 booleans, and
+# while goccy/go-yaml parses this repo's YAML 1.2-style (a bare `on:` key
+# decodes as the string "on", not a boolean), a third-party conformance
+# implementation using a YAML 1.1 parser would silently misread it. Quoting
+# costs nothing and removes the ambiguity for every implementation.
 
 kind: action
 name: flag-for-review
-on: order
+"on": transaction
 risk: auto
 writes: finding
 ---
 kind: action
 name: annotate
-on: customer
+"on": customer
 risk: auto
 writes: finding
 ---
 kind: action
 name: request-sync
-on: location
+"on": organization
 risk: confirm
 writes: sync-request
 ---
 kind: action
 name: propose-extension
-on: organization
+"on": organization
 risk: confirm
 writes: extension-proposal

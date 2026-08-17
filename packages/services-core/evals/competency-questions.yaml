@@ -1,0 +1,23 @@
+# Competency questions for services-core's own additions (engagement,
+# deliverable, effective-rate, on-time-delivery-rate). Universal-core's
+# questions are inherited. `expects` avoids every verb reused from
+# universal-core (places, contains, derived-from, responsible-for all
+# recur on a services-core pair): a bare verb reference would be
+# ambiguous about which pair, so these reference entities and metrics
+# instead, per spec/primitives/competency-question.md.
+
+kind: competency-question
+question: Which customers has the organization engaged with, and how many engagements has each commissioned?
+expects: [customer, engagement]
+---
+kind: competency-question
+question: What deliverables does each engagement contain?
+expects: [deliverable]
+---
+kind: competency-question
+question: What is the effective rate for the organization this month?
+expects: [effective-rate]
+---
+kind: competency-question
+question: What share of deliverables were delivered on time this month?
+expects: [on-time-delivery-rate]

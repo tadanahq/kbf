@@ -1,91 +1,41 @@
-# Base relations, grouped by kind (design's "grouped files per kind" layout).
-# Each document below is a complete `kind: relation` element; `---`
-# separates them. Verbs come only from the controlled vocabulary in
-# spec/conventions.md. A verb may recur across different entity pairs:
-# relation identity is (name, from, to), not name alone (see "Relation
-# identity" in spec/conventions.md). Per design.md's "Implementation
-# clarifications" (KBF007), the controlled vocabulary IS the set of
-# distinct Relation.name values declared here, so all twelve seed verbs
-# are used at least once below, not just the ones a minimal graph needs.
+# Base relations, grouped by kind. Each document below is a complete
+# `kind: relation` element; `---` separates them. Verbs come from the
+# controlled vocabulary in spec/conventions.md, whose scope in v0 is the
+# union of every Relation.name declared anywhere along an extends chain
+# (see the "Layered base packages" decision, 2026-08-13): a base package
+# may mint a verb its own descendants can then use, not only universal-core.
+# A verb may recur across different entity pairs: relation identity is
+# (name, from, to), not name alone (see "Relation identity" in
+# spec/conventions.md).
+#
+# `location` and `shift` are deliberately absent here: they are not
+# universal (packages/operations-core owns them). `works-at` is absent for
+# the same reason; `employed-by` below is its location-free replacement.
 
-kind: relation
-name: belongs-to
-from: location
-to: organization
-cardinality: many-to-one
-join: [location_id, organization_id]
-tier: source-synced
-temporal: false
----
-kind: relation
-name: works-at
-from: employee
-to: location
-cardinality: many-to-one
-join: [employee_id, location_id]
-tier: source-synced
-temporal: true
----
-kind: relation
-name: staffed-by
-from: shift
-to: employee
-cardinality: many-to-one
-join: [shift_id, employee_id]
-tier: source-synced
-temporal: false
----
-kind: relation
-name: located-at
-from: shift
-to: location
-cardinality: many-to-one
-join: [shift_id, location_id]
-tier: source-synced
-temporal: false
----
-kind: relation
-name: located-at
-from: order
-to: location
-cardinality: many-to-one
-join: [order_id, location_id]
-tier: source-synced
-temporal: false
----
 kind: relation
 name: places
 from: customer
-to: order
+to: transaction
 cardinality: one-to-many
-join: [customer_id, order_id]
+join: [customer_id, transaction_id]
 tier: source-synced
 temporal: false
 ---
 kind: relation
 name: contains
-from: order
-to: product
+from: transaction
+to: offering
 cardinality: many-to-many
-join: [order_id, product_id]
-tier: source-synced
-temporal: false
----
-kind: relation
-name: sells
-from: location
-to: product
-cardinality: many-to-many
-join: [location_id, product_id]
+join: [transaction_id, offering_id]
 tier: source-synced
 temporal: false
 ---
 kind: relation
 name: supplies
 from: supplier
-to: product
+to: offering
 cardinality: many-to-many
-join: [supplier_id, product_id]
+join: [supplier_id, offering_id]
 tier: source-synced
 temporal: true
 ---
@@ -99,15 +49,6 @@ tier: source-synced
 temporal: false
 ---
 kind: relation
-name: contains
-from: purchase
-to: product
-cardinality: many-to-many
-join: [purchase_id, product_id]
-tier: source-synced
-temporal: false
----
-kind: relation
 name: billed-to
 from: purchase
 to: organization
@@ -116,37 +57,59 @@ join: [purchase_id, organization_id]
 tier: source-synced
 temporal: false
 ---
-# No POS or HR feed emits "who is accountable for this location": an
-# owner assigns it by hand, so it sits at client-configured tier even
-# though it lives in universal-core. Coexists with `works-at` on the same
-# (employee, location) pair without conflict: different verb, different
-# relation (a manager is responsible-for a location without necessarily
-# clocking works-at shifts there).
+# Every employee is employed by an organization, regardless of vertical.
+# `works-at` (a location) is not universal; this is its location-free
+# analog, and the one truly universal fact about an employee's employer.
+kind: relation
+name: employed-by
+from: employee
+to: organization
+cardinality: many-to-one
+join: [employee_id, organization_id]
+tier: source-synced
+temporal: true
+---
+# An offering belongs to the organization that sells it. Also available
+# for a base package to reuse on a new pair: packages/operations-core
+# uses this same verb for location-to-organization.
+kind: relation
+name: belongs-to
+from: offering
+to: organization
+cardinality: many-to-one
+join: [offering_id, organization_id]
+tier: source-synced
+temporal: false
+---
+# A refund or adjustment transaction references the original sale it
+# corrects.
+kind: relation
+name: derived-from
+from: transaction
+to: transaction
+cardinality: many-to-one
+join: [transaction_id, original_transaction_id]
+tier: source-synced
+temporal: false
+---
+# A catalog refresh retires one offering in favor of a direct replacement.
+kind: relation
+name: supersedes
+from: offering
+to: offering
+cardinality: one-to-one
+join: [offering_id, superseded_offering_id]
+tier: source-synced
+temporal: false
+---
+# No source feed emits "who owns this customer relationship": an owner
+# assigns it by hand, so it sits at client-configured tier even though it
+# lives in universal-core.
 kind: relation
 name: responsible-for
 from: employee
-to: location
+to: customer
 cardinality: many-to-many
-join: [employee_id, location_id]
+join: [employee_id, customer_id]
 tier: client-configured
 temporal: true
----
-# A refund or adjustment order references the original sale it corrects.
-kind: relation
-name: derived-from
-from: order
-to: order
-cardinality: many-to-one
-join: [order_id, original_order_id]
-tier: source-synced
-temporal: false
----
-# A menu refresh retires one product in favor of a direct replacement.
-kind: relation
-name: supersedes
-from: product
-to: product
-cardinality: one-to-one
-join: [product_id, superseded_product_id]
-tier: source-synced
-temporal: false

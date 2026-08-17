@@ -1,10 +1,11 @@
-# Demo Cafe's install: the same 26 slots declared by universal-core's
-# attributes (cafe-demo adds no new attributes), mapped to two fictional
-# sources: demopos (the point-of-sale system) and demobooks (the
-# accounting system). Demo Cafe has no CRM yet, so the three crm.*
-# customer slots stay unmapped on purpose: `kbf coverage` should show
-# them as the one gap, proof the report distinguishes mapped from
-# unmapped rather than reporting a false 100%.
+# Demo Cafe's install: the full resolved slot set across its chain
+# (universal-core's 21 + operations-core's 6 = 27; cafe-demo adds no new
+# attributes of its own), mapped to two fictional sources: demopos (the
+# point-of-sale system) and demobooks (the accounting system). Demo Cafe
+# has no CRM yet, so the three crm.* customer slots stay unmapped on
+# purpose: `kbf coverage` should show them as the one gap, proof the
+# report distinguishes mapped from unmapped rather than reporting a false
+# 100%.
 
 - slot: core.organization-legal-name
   source: demobooks
@@ -12,23 +13,17 @@
   source: demobooks
 - slot: core.organization-tax-id
   source: demobooks
-- slot: core.location-label
+- slot: sales.transaction-timestamp
   source: demopos
-- slot: core.location-address
+- slot: sales.transaction-status
   source: demopos
-- slot: core.location-timezone
+- slot: sales.transaction-total
   source: demopos
-- slot: sales.order-timestamp
+- slot: catalog.offering-label
   source: demopos
-- slot: sales.order-status
+- slot: catalog.offering-category
   source: demopos
-- slot: sales.order-total
-  source: demopos
-- slot: catalog.product-label
-  source: demopos
-- slot: catalog.product-category
-  source: demopos
-- slot: catalog.product-price
+- slot: catalog.offering-price
   source: demopos
 - slot: crm.customer-name
   source: ""
@@ -42,11 +37,7 @@
   source: demobooks
 - slot: hr.employee-hire-date
   source: demobooks
-- slot: hr.shift-start
-  source: demobooks
-- slot: hr.shift-end
-  source: demobooks
-- slot: hr.shift-labor-cost
+- slot: hr.employee-labor-cost
   source: demobooks
 - slot: purchasing.supplier-name
   source: demobooks
@@ -57,4 +48,16 @@
 - slot: purchasing.purchase-status
   source: demobooks
 - slot: purchasing.purchase-total
+  source: demobooks
+- slot: core.location-label
+  source: demopos
+- slot: core.location-address
+  source: demopos
+- slot: core.location-timezone
+  source: demopos
+- slot: hr.shift-start
+  source: demobooks
+- slot: hr.shift-end
+  source: demobooks
+- slot: hr.shift-labor-cost
   source: demobooks

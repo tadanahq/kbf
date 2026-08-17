@@ -2,36 +2,38 @@
 # string in v0 (see spec/versioning.md): base metrics aggregate a
 # `sum(entity.attribute)` / `count(entity)`, derived metrics reference
 # other metric names directly, matching the convention in
-# spec/primitives/metric.md.
+# spec/primitives/metric.md. Grain stops at [organization, business-date]:
+# location is not universal (packages/operations-core adds a
+# location-grain sibling, e.g. average-ticket, on top of these).
 
 kind: metric
 name: revenue
-formula: sum(order.total)
-grain: [location, business-date]
+formula: sum(transaction.total)
+grain: [organization, business-date]
 additivity: additive
 unit: currency
 tier: structural
 ---
 kind: metric
-name: order-count
-formula: count(order)
-grain: [location, business-date]
+name: transaction-count
+formula: count(transaction)
+grain: [organization, business-date]
 additivity: additive
 unit: count
 tier: structural
 ---
 kind: metric
-name: average-ticket
-formula: revenue / order-count
-grain: [location, business-date]
+name: average-transaction-value
+formula: revenue / transaction-count
+grain: [organization, business-date]
 additivity: non-additive
 unit: currency
 tier: structural
 ---
 kind: metric
 name: labor-cost-ratio
-formula: sum(shift.labor-cost) / revenue
-grain: [location, business-date]
+formula: sum(employee.labor-cost) / revenue
+grain: [organization, business-date]
 additivity: non-additive
 unit: ratio
 thresholds: {warn-above: 0.35}
@@ -40,7 +42,7 @@ tier: structural
 kind: metric
 name: purchase-cost
 formula: sum(purchase.total)
-grain: [location, business-date]
+grain: [organization, business-date]
 additivity: additive
 unit: currency
 tier: structural
@@ -48,7 +50,7 @@ tier: structural
 kind: metric
 name: gross-margin
 formula: (revenue - purchase-cost) / revenue
-grain: [location, business-date]
+grain: [organization, business-date]
 additivity: non-additive
 unit: ratio
 thresholds: {warn-below: 0.55}

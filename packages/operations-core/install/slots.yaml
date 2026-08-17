@@ -1,0 +1,17 @@
+# Slot-mapping template for operations-core's own new attributes only
+# (location, shift). universal-core's 21 slots are declared in its own
+# install/slots.yaml; a leaf install extending this chain maps the full
+# resolved set. See spec/primitives/slot-mapping.md.
+
+- slot: core.location-label
+  source: ""
+- slot: core.location-address
+  source: ""
+- slot: core.location-timezone
+  source: ""
+- slot: hr.shift-start
+  source: ""
+- slot: hr.shift-end
+  source: ""
+- slot: hr.shift-labor-cost
+  source: ""

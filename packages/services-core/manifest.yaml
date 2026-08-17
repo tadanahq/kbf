@@ -1,0 +1,7 @@
+# services-core: the base layer for businesses that sell scoped work
+# rather than physical goods (agencies, consultancies, studios). Adds
+# engagement and deliverable on top of universal-core; does not fork it.
+name: services-core
+version: 0.1.0
+spec: v0
+extends: universal-core

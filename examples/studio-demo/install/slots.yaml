@@ -1,0 +1,67 @@
+# Demo Studio's install: the full resolved slot set across its chain
+# (universal-core's 21 + services-core's 8 = 29; studio-demo adds no new
+# attributes of its own), mapped to two fictional sources: demopm (the
+# project-management tool) and demobooks (the accounting system). Demo
+# Studio has no formal purchasing system yet, so the two purchasing.supplier-*
+# slots stay unmapped on purpose: `kbf coverage` should show them as the
+# gap, a different one than examples/cafe-demo's (proof the pattern is not
+# hardcoded to one business).
+
+- slot: core.organization-legal-name
+  source: demobooks
+- slot: core.organization-display-name
+  source: demobooks
+- slot: core.organization-tax-id
+  source: demobooks
+- slot: sales.transaction-timestamp
+  source: demobooks
+- slot: sales.transaction-status
+  source: demobooks
+- slot: sales.transaction-total
+  source: demobooks
+- slot: catalog.offering-label
+  source: demopm
+- slot: catalog.offering-category
+  source: demopm
+- slot: catalog.offering-price
+  source: demopm
+- slot: crm.customer-name
+  source: demopm
+- slot: crm.customer-contact
+  source: demopm
+- slot: crm.customer-joined-date
+  source: demopm
+- slot: hr.employee-name
+  source: demobooks
+- slot: hr.employee-role
+  source: demobooks
+- slot: hr.employee-hire-date
+  source: demobooks
+- slot: hr.employee-labor-cost
+  source: demobooks
+- slot: purchasing.supplier-name
+  source: ""
+- slot: purchasing.supplier-contact
+  source: ""
+- slot: purchasing.purchase-timestamp
+  source: demobooks
+- slot: purchasing.purchase-status
+  source: demobooks
+- slot: purchasing.purchase-total
+  source: demobooks
+- slot: delivery.engagement-label
+  source: demopm
+- slot: delivery.engagement-start
+  source: demopm
+- slot: delivery.engagement-end
+  source: demopm
+- slot: delivery.engagement-status
+  source: demopm
+- slot: delivery.engagement-billed-hours
+  source: demopm
+- slot: delivery.deliverable-label
+  source: demopm
+- slot: delivery.deliverable-due
+  source: demopm
+- slot: delivery.deliverable-status
+  source: demopm

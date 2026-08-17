@@ -1,7 +1,7 @@
 kind: entity
 name: customer
 meaning: >-
-  A person or account that places orders with the business.
+  A person or account that transacts with the business.
 identity: [customer_id]
 resolution: identity-mapping
 tier: structural

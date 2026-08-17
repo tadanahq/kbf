@@ -1,7 +1,9 @@
 # Slot-mapping template: one row per slot declared by an attribute in
-# ontology/*.yaml. universal-core ships every source empty; an install
-# (or a teaching package like examples/cafe-demo) fills them in. Static
-# coverage = share of rows below with a non-empty source.
+# this package's own ontology/*.yaml. universal-core ships every source
+# empty; a base package (operations-core, services-core) adds only its
+# own new slots the same way, and a leaf install (a teaching package like
+# examples/cafe-demo, or a real install) covers the full resolved chain
+# with real sources filled in. See spec/primitives/slot-mapping.md.
 
 - slot: core.organization-legal-name
   source: ""
@@ -9,23 +11,17 @@
   source: ""
 - slot: core.organization-tax-id
   source: ""
-- slot: core.location-label
+- slot: sales.transaction-timestamp
   source: ""
-- slot: core.location-address
+- slot: sales.transaction-status
   source: ""
-- slot: core.location-timezone
+- slot: sales.transaction-total
   source: ""
-- slot: sales.order-timestamp
+- slot: catalog.offering-label
   source: ""
-- slot: sales.order-status
+- slot: catalog.offering-category
   source: ""
-- slot: sales.order-total
-  source: ""
-- slot: catalog.product-label
-  source: ""
-- slot: catalog.product-category
-  source: ""
-- slot: catalog.product-price
+- slot: catalog.offering-price
   source: ""
 - slot: crm.customer-name
   source: ""
@@ -39,11 +35,7 @@
   source: ""
 - slot: hr.employee-hire-date
   source: ""
-- slot: hr.shift-start
-  source: ""
-- slot: hr.shift-end
-  source: ""
-- slot: hr.shift-labor-cost
+- slot: hr.employee-labor-cost
   source: ""
 - slot: purchasing.supplier-name
   source: ""

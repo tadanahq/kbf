@@ -1,0 +1,44 @@
+# Every verb here already exists in universal-core; services-core mints
+# none of its own, on purpose (RFC discipline: reuse an existing verb on
+# a new pair before proposing a new one). Relation identity is (name,
+# from, to), so each of these is a distinct relation from its
+# universal-core namesake, not a fork: see spec/conventions.md.
+
+kind: relation
+name: places
+from: customer
+to: engagement
+cardinality: one-to-many
+join: [customer_id, engagement_id]
+tier: source-synced
+temporal: false
+---
+kind: relation
+name: contains
+from: engagement
+to: deliverable
+cardinality: one-to-many
+join: [engagement_id, deliverable_id]
+tier: source-synced
+temporal: false
+---
+# A transaction (an invoice) is billed against the engagement it funds.
+kind: relation
+name: derived-from
+from: transaction
+to: engagement
+cardinality: many-to-one
+join: [transaction_id, engagement_id]
+tier: source-synced
+temporal: false
+---
+# No PM tool feed emits "who owns this engagement": an owner assigns it
+# by hand, so it sits at client-configured tier.
+kind: relation
+name: responsible-for
+from: employee
+to: engagement
+cardinality: many-to-many
+join: [employee_id, engagement_id]
+tier: client-configured
+temporal: true

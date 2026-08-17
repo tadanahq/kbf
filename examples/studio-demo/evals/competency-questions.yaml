@@ -1,0 +1,10 @@
+# Competency questions specific to Demo Studio's extensions. Universal
+# and services-core questions are inherited.
+
+kind: competency-question
+question: What is Demo Studio's repeat engagement rate this month?
+expects: [repeat-engagement-rate]
+---
+kind: competency-question
+question: Which customer accounts are grouped under a parent account?
+expects: [customer]
