@@ -55,6 +55,7 @@ read it and a linter can check it. That declaration is the KBF Ontology.
 | [`examples/bistro-demo/`](examples/bistro-demo/) | A fictional cafe that also runs events, building on both `core-operations` and `core-services` at once: the diamond and hybrid case. |
 | [`tools/`](tools/) | The `kbf` CLI: `lint`, `coverage`, `compile --to mermaid`, `schema`. Full reference, including the agent-facing JSON interface: [`spec/cli.md`](spec/cli.md). |
 | [`conformance/`](conformance/) | Language-agnostic fixtures (YAML in, expected outcome out), so an implementation other than `kbf` can prove it matches the spec. |
+| [`skills/`](skills/) | Agent skills that ship with KBF: [`kbf-authoring`](skills/kbf-authoring/) drives the raising flow (interview conduct + the lint loop) from inside Claude Code or any skill-reading runtime. |
 | [`rfcs/`](rfcs/) | How the spec itself changes once it is public. |
 
 ## Status: v0
