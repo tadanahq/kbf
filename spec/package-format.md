@@ -86,6 +86,15 @@ scope, not part of this spec.
   however far the chain goes and fails with `KBF011` on a cycle rather
   than hanging. `kbf lint`/`coverage`/`compile` need every package in the
   chain passed as an argument, not only the immediate parent.
+- **The root is a parameter, not a hardcoded package.** Nothing in `kbf`
+  privileges `universal-core` by name: it is a root only because its own
+  `manifest.yaml` says `extends: null`, the same way any other
+  organization's own root would be. Any team may publish its own base
+  package (a `retail-core`, a `healthcare-core`) that extends this
+  repository's `universal-core`, or a root of its own that doesn't extend
+  anything here at all; `kbf` resolves whatever chain the manifests
+  describe, this repository's own packages included only as one worked
+  example of the pattern, not as the only legal shape of one.
 - **A base package's own vocabulary and elements belong only to its own
   descendants.** `packages/operations-core` and `packages/services-core`
   both extend `packages/universal-core` directly; they are siblings, not
