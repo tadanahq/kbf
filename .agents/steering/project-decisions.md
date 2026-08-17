@@ -3,7 +3,17 @@
 Append-only. New entries on top. Project-level decisions only; feature detail
 stays in capsules.
 
-## 2026-08-13 - Layered base packages; universal-core is truly universal
+## 2026-08-13 - The unit is a playbook; the folder is playbooks/
+
+Owner decision: the shipped unit's name is **playbook** (a runnable package of
+business capability), everywhere: the repo folder becomes `playbooks/` (was
+`packages/`), the spec doc becomes `spec/playbook-format.md`, prose commits to
+one term (bases are "base playbooks"; universal-core stays "Playbook Zero";
+"package" survives only as plain English inside the definition). Rationale:
+the folder name should teach the product's central concept; "install the
+restaurant playbook" is the sentence the architecture exists to make true.
+`examples/` keeps its name (demos teach, they don't install). Applies as a
+mechanical rename batch after the layered-cores restructure lands.
 
 Owner correction: the first universal-core carried an operating-business bias
 (location, shift, order, product labeled "universal"), which contradicts the
