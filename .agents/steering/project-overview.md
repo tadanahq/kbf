@@ -35,10 +35,17 @@ machine-validated, versioned, with acceptance tests: not documentation.
    `kbf coverage` (static), `kbf compile --to mermaid`. Runtime enforcement (the
    query gate) is deliberately out of v0: see the public roadmap section in
    README when it lands.
-4. **Packages** (`packages/`): `universal-core`, the base ontology every
-   business shares (Playbook Zero). Vertical packages extend it, never fork it.
-5. **Teaching content** (`examples/cafe-demo`): a small fictional business,
-   fully valid, every primitive used at least once.
+4. **Packages** (`packages/`), layered: `universal-core` is the truly-universal
+   minimal floor (only what EVERY business shares: the revenue event, customers,
+   offerings, people, purchases); **base packages** (`operations-core` for
+   physical-operations businesses, `services-core` for engagement businesses)
+   extend it; verticals extend a base package. Extension, never fork, at every
+   layer, and the extends-root is a parameter: any organization can author its
+   own base.
+5. **Teaching content** (`examples/`): `cafe-demo` (operations chain) and
+   `studio-demo` (services chain), each small, fictional, fully valid, every
+   primitive used at least once. Two demos on two chains is the visible proof
+   of the multi-vertical claim.
 6. **Conformance** (`conformance/`): language-agnostic fixtures so third-party
    implementations can prove compliance.
 

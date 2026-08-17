@@ -3,6 +3,20 @@
 Append-only. New entries on top. Project-level decisions only; feature detail
 stays in capsules.
 
+## 2026-08-13 - Layered base packages; universal-core is truly universal
+
+Owner correction: the first universal-core carried an operating-business bias
+(location, shift, order, product labeled "universal"), which contradicts the
+framework's core claim (one shared multi-vertical core). New architecture:
+`universal-core` (minimal, truly universal: organization, customer, offering,
+transaction, employee, supplier, purchase) ← `operations-core` /
+`services-core` (base packages) ← verticals. Linter resolves `extends` chains
+recursively; KBF007's verb vocabulary is the union along the chain; KBF008
+checks forks against all ancestors. Two demos, one per chain (cafe-demo,
+studio-demo), keep the claim honest. The extends-root stays a parameter: the
+toolchain never privileges our packages. Reversal: none foreseeable; a bias
+reappearing in universal-core is a bug, not a preference.
+
 ## 2026-08-13 - v0 is config-phase tooling only
 
 The CLI serves an agent creating and validating an ontology: `lint`, static
