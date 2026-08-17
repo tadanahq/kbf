@@ -119,6 +119,13 @@ func loadSlots(fsys fs.FS, display string) (slots []SlotRow, file string, findin
 	if len(astFile.Docs) == 0 || astFile.Docs[0].Body == nil {
 		return nil, file, nil
 	}
+	if _, onlyComments := astFile.Docs[0].Body.(*ast.CommentGroupNode); onlyComments {
+		// A file holding nothing but a header comment (kbf init's own
+		// install/slots.yaml scaffold, before any row exists) parses to
+		// exactly this node type, not an empty SequenceNode: legitimately
+		// zero rows, not a shape error.
+		return nil, file, nil
+	}
 	seq, ok := astFile.Docs[0].Body.(*ast.SequenceNode)
 	if !ok {
 		return nil, file, []Finding{{
