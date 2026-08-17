@@ -1,0 +1,5 @@
+# One row per attribute slot in this playbook's composed closure:
+# {slot: <domain.concept>, source: <system, or "" if not yet mapped>}.
+# kbf coverage fills in the declared/mapped picture once ontology/
+# attributes exist; run it after the entity interview (spec/onboarding.md
+# step 7), not before, since there is nothing to map yet on a fresh init.
