@@ -53,7 +53,7 @@ read it and a linter can check it. That declaration is the KBF Ontology.
 | [`examples/cafe-demo/`](examples/cafe-demo/) | A fictional cafe building on `core-operations`, exercising every composition mechanic the spec allows. |
 | [`examples/studio-demo/`](examples/studio-demo/) | A fictional marketing studio building on `core-services`: the other core playbook, same teaching role. |
 | [`examples/bistro-demo/`](examples/bistro-demo/) | A fictional cafe that also runs events, building on both `core-operations` and `core-services` at once: the diamond and hybrid case. |
-| [`tools/`](tools/) | The `kbf` CLI: `lint`, `coverage`, `compile --to mermaid`, `schema`. |
+| [`tools/`](tools/) | The `kbf` CLI: `lint`, `coverage`, `compile --to mermaid`, `schema`. Full reference, including the agent-facing JSON interface: [`spec/cli.md`](spec/cli.md). |
 | [`conformance/`](conformance/) | Language-agnostic fixtures (YAML in, expected outcome out), so an implementation other than `kbf` can prove it matches the spec. |
 | [`rfcs/`](rfcs/) | How the spec itself changes once it is public. |
 

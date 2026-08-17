@@ -77,6 +77,9 @@ it builds on, and what version of the spec it targets.
 8. [`onboarding.md`](onboarding.md): the methodology for raising a new
    ontology end to end, everything above applied in the order it actually
    gets authored.
+9. [`cli.md`](cli.md): the command reference: what each of the four
+   commands is for, when each one runs, and the stable JSON interface
+   authoring agents parse.
 
 ## Where the primitives live for real
 
