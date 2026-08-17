@@ -1,0 +1,10 @@
+# Builds on both coll-root-a and coll-root-b, which both declare
+# `widget`: composition has no resolution order (unlike the old
+# single-parent chain's "nearest ancestor wins"), so this is an error,
+# KBF003's cross-playbook variant, reported against both root-a's and
+# root-b's own files.
+name: coll-composer
+version: 0.1.0
+spec: v0
+builds-on: [coll-root-a, coll-root-b]
+layer: vertical

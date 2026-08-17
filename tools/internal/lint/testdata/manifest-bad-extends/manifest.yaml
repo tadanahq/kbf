@@ -1,4 +1,4 @@
 name: bad-extends-fixture
 version: 0.1.0
 spec: v0
-extends: some-package-that-was-never-loaded
+builds-on: [some-package-that-was-never-loaded]

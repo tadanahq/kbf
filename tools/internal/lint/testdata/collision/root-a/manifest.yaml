@@ -1,0 +1,11 @@
+# Declares `widget`, same identity as testdata/collision/root-b's own
+# `widget`. Neither builds on the other, so linting the two together
+# alone is not a collision (merely loaded in the same invocation is not
+# the same as composed: mirrors KBF007's sibling-independence rule). Only
+# a package that actually composes both (testdata/collision/composer)
+# sees the conflict.
+name: coll-root-a
+version: 0.1.0
+spec: v0
+builds-on: []
+layer: core

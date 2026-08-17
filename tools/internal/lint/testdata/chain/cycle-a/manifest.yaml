@@ -3,4 +3,4 @@
 name: chain-cycle-a
 version: 0.1.0
 spec: v0
-extends: chain-cycle-b
+builds-on: [chain-cycle-b]

@@ -27,12 +27,12 @@ var lintFormat string
 var lintCmd = &cobra.Command{
 	Use:   "lint <path> [path...]",
 	Short: "Validate one or more KBF playbooks against the meta-model and semantic rules.",
-	Long: `lint loads one or more playbook directories, resolves manifest/extends across
-all of them together, and checks structure (KBF001-004, KBF010, KBF011, KBF013)
-then semantics (KBF005-009, KBF012). Pass a playbook's own path and its parent's
-path together when the playbook extends something: extends is resolved by
-manifest name across exactly the paths given on this command line, not by
-filesystem convention.
+	Long: `lint loads one or more playbook directories, resolves manifest/builds-on
+across all of them together, and checks structure (KBF001-004, KBF010, KBF011,
+KBF013) then semantics (KBF005-009, KBF012). Pass a playbook's own path and
+every playbook it builds on together: builds-on is resolved by manifest name
+across exactly the paths given on this command line, not by filesystem
+convention.
 
 Exits 1 if any rule fires.`,
 	Args: cobra.MinimumNArgs(1),

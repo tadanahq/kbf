@@ -1,0 +1,8 @@
+# layer: vertical building on another vertical (tax-vertical, itself
+# vertical-on-core's manifest): valid. Layered/hybrid verticals are a
+# legal composition shape, not just vertical-on-core.
+name: tax-vertical-layered
+version: 0.1.0
+spec: v0
+builds-on: [tax-vertical]
+layer: vertical

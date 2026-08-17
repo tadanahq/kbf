@@ -9,5 +9,5 @@
 name: chain-cousin
 version: 0.1.0
 spec: v0
-extends: core-chain-other-root
+builds-on: [core-chain-other-root]
 layer: vertical

@@ -47,12 +47,12 @@ type Report struct {
 }
 
 // Compute returns one Report per leaf package in u (see
-// lint.Universe.IsLeaf): a parent given only for extends resolution, e.g.
-// core-universal alongside cafe-demo, is not itself reported on, since its
-// slots.yaml is a template by definition (every source empty) and would
-// only be noise next to the package actually being evaluated. Linting a
-// root package alone still reports on it: with no children in the
-// universe, it is trivially its own leaf.
+// lint.Universe.IsLeaf): a parent given only for composition-resolution
+// context, e.g. core-universal alongside cafe-demo, is not itself
+// reported on, since its slots.yaml is a template by definition (every
+// source empty) and would only be noise next to the package actually
+// being evaluated. Linting a root package alone still reports on it:
+// with no children in the universe, it is trivially its own leaf.
 func Compute(u *lint.Universe) []Report {
 	var reports []Report
 	for _, pkg := range u.Order {
@@ -65,18 +65,19 @@ func Compute(u *lint.Universe) []Report {
 }
 
 // computeOne builds pkg's report. The attribute-to-entity lookup spans
-// pkg plus every package in its extends chain (an install configures the
-// resolved ontology, the same union KBF012 checks against: a package
-// three layers deep still needs its great-grandparent's attributes
-// resolvable), but the rows themselves come only from pkg's own
-// install/slots.yaml: by convention a leaf package's slots.yaml is
-// already the full resolved list, not just its own additions
-// (examples/cafe-demo's has all 26 rows, not the 0 new ones it declares).
+// pkg plus every package in its composition closure (an install
+// configures the resolved ontology, the same union KBF012 checks
+// against: a package three layers deep still needs attributes from a
+// playbook two hops up to be resolvable), but the rows themselves come
+// only from pkg's own install/slots.yaml: by convention a leaf package's
+// slots.yaml is already the full resolved list, not just its own
+// additions (examples/cafe-demo's has all its rows, not just the new
+// ones it declares).
 func computeOne(u *lint.Universe, pkg *lint.Package) Report {
 	entityOf := attributeEntities(pkg)
-	chain, _, _ := u.Chain(pkg)
-	for _, ancestor := range chain {
-		for slot, entity := range attributeEntities(ancestor) {
+	closure, _, _ := u.Closure(pkg)
+	for _, member := range closure {
+		for slot, entity := range attributeEntities(member) {
 			if _, ok := entityOf[slot]; !ok {
 				entityOf[slot] = entity
 			}

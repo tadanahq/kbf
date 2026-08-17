@@ -1,0 +1,8 @@
+# layer: vertical with builds-on: []: KBF013. Unlike core, an empty
+# builds-on has no derived meaning for vertical — a vertical always
+# composes at least one other playbook.
+name: tax-vertical-bad
+version: 0.1.0
+spec: v0
+builds-on: []
+layer: vertical

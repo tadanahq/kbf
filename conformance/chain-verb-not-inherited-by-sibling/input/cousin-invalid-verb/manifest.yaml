@@ -9,4 +9,4 @@
 name: chain-cousin
 version: 0.1.0
 spec: v0
-extends: chain-other-root
+builds-on: [chain-other-root]

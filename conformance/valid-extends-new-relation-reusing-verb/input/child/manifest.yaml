@@ -1,5 +1,5 @@
 name: child
 version: 0.1.0
 spec: v0
-extends: core-parent
+builds-on: [core-parent]
 layer: vertical

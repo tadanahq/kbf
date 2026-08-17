@@ -1,0 +1,7 @@
+# layer: core building on another core: valid. Foundation playbooks are
+# a closed, composable set among themselves.
+name: core-tax-child
+version: 0.1.0
+spec: v0
+builds-on: [core-tax-root]
+layer: core

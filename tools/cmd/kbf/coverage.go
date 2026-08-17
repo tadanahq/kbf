@@ -29,10 +29,10 @@ var coverageCmd = &cobra.Command{
 	Use:   "coverage <path> [path...]",
 	Short: "Report static slot-mapping completeness: declared, mapped, unmapped.",
 	Long: `coverage loads one or more playbook directories the same way lint does
-(extends resolved by manifest name across exactly the paths given), then
+(builds-on resolved by manifest name across exactly the paths given), then
 reports install/slots.yaml completeness for each leaf playbook: a playbook
-given only as extends context (e.g. core-universal alongside cafe-demo) is
-not itself reported on, since its slots.yaml is a template by definition.`,
+given only as composition context (e.g. core-universal alongside cafe-demo)
+is not itself reported on, since its slots.yaml is a template by definition.`,
 	Args: cobra.MinimumNArgs(1),
 	RunE: runCoverage,
 }

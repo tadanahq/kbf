@@ -4,4 +4,4 @@
 name: chain-child-fork
 version: 0.1.0
 spec: v0
-extends: chain-parent
+builds-on: [chain-parent]

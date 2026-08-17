@@ -1,7 +1,0 @@
-# layer: base extending tax-vertical (layer: vertical): KBF013, base and
-# vertical may only extend a root or base playbook, never a vertical.
-name: core-tax-base-bad-parent
-version: 0.1.0
-spec: v0
-extends: tax-vertical
-layer: base

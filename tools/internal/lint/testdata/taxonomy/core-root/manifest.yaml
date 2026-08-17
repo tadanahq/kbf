@@ -1,0 +1,11 @@
+# The valid composition KBF013's branch tests reuse (core-root/core-child/
+# vertical-on-core/vertical-on-vertical/hybrid, this file's siblings):
+# each branch test only adds the one extra package under test, so a
+# failure is never masked by a defect somewhere else in the set.
+# builds-on: [] on a layer: core playbook is what makes it a root —
+# root-ness is derived, never its own layer value.
+name: core-tax-root
+version: 0.1.0
+spec: v0
+builds-on: []
+layer: core

@@ -1,4 +1,4 @@
 name: chain-parent
 version: 0.1.0
 spec: v0
-extends: chain-grandparent
+builds-on: [chain-grandparent]

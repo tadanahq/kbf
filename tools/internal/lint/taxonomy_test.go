@@ -21,92 +21,76 @@ import (
 	"github.com/tadanahq/kbf/tools/internal/lint"
 )
 
-// TestKBF013Valid is the three-layer happy path (testdata/taxonomy/
-// root, base, vertical): a root, a base extending it, and a vertical
-// extending the base, name-prefixed exactly as spec/conventions.md's
-// "core playbooks" vs "vertical playbooks" split documents. The branch
-// tests below each load this trio (or a subset of it) plus the one extra
+// TestKBF013Valid is the composition happy path (testdata/taxonomy/
+// core-root, core-child, vertical-on-core, vertical-on-vertical, hybrid):
+// a root (core, empty builds-on), a core building on that core, a
+// vertical building on a core, a vertical building on another vertical,
+// and a vertical building on two cores at once (the diamond/hybrid
+// shape). Must produce zero KBF013 (and zero KBF010/KBF002 on layer)
+// findings; the branch tests below each load this set plus the one extra
 // package under test, so a failure is never masked by a defect elsewhere
 // in the baseline.
 func TestKBF013Valid(t *testing.T) {
-	result := mustRun(t, "testdata/taxonomy/root", "testdata/taxonomy/base", "testdata/taxonomy/vertical")
+	result := mustRun(t,
+		"testdata/taxonomy/core-root",
+		"testdata/taxonomy/core-child",
+		"testdata/taxonomy/vertical-on-core",
+		"testdata/taxonomy/vertical-on-vertical",
+		"testdata/taxonomy/hybrid",
+	)
 	for _, rule := range []string{lint.KBF013, lint.KBF010, lint.KBF002} {
 		if got := find(result.Findings, rule); len(got) != 0 {
-			t.Errorf("%s unexpectedly present on the valid 3-layer chain: %+v", rule, got)
+			t.Errorf("%s unexpectedly present on the valid composition set: %+v", rule, got)
 		}
 	}
 }
 
-// TestKBF013RootMustNotExtend is KBF013's extends-target rule, root
-// branch: layer: root with a non-null extends.
-func TestKBF013RootMustNotExtend(t *testing.T) {
-	result := mustRun(t, "testdata/taxonomy/root", "testdata/taxonomy/root-bad-extends")
+// TestKBF013CoreMustNotBuildOnVertical is KBF013's builds-on-target rule,
+// core branch: a core playbook may only build on other core playbooks.
+func TestKBF013CoreMustNotBuildOnVertical(t *testing.T) {
+	result := mustRun(t, "testdata/taxonomy/vertical-on-core", "testdata/taxonomy/core-on-vertical-bad")
 	got := find(result.Findings, lint.KBF013)
 	if len(got) != 1 {
 		t.Fatalf("KBF013: got %d findings, want 1: %+v", len(got), result.Findings)
 	}
 	f := got[0]
-	if f.Element != "extends" {
-		t.Errorf("KBF013 element = %q, want extends", f.Element)
+	if f.Element != "builds-on" {
+		t.Errorf("KBF013 element = %q, want builds-on", f.Element)
 	}
-	if !strings.Contains(f.File, "root-bad-extends") {
-		t.Errorf("KBF013 file %q, want the root-bad-extends package's manifest", f.File)
-	}
-	if !strings.Contains(f.Message, "extends: null") {
-		t.Errorf("KBF013 message %q does not say what a root's extends must be", f.Message)
-	}
-}
-
-// TestKBF013BaseMustExtend is KBF013's extends-target rule, the other
-// direction: layer: base (or vertical; both share the same requirement)
-// with extends: null has nothing to check a parent's layer against
-// because there is no parent at all.
-func TestKBF013BaseMustExtend(t *testing.T) {
-	result := mustRun(t, "testdata/taxonomy/base-no-extends")
-	got := find(result.Findings, lint.KBF013)
-	if len(got) != 1 {
-		t.Fatalf("KBF013: got %d findings, want 1: %+v", len(got), result.Findings)
-	}
-	if got[0].Element != "extends" {
-		t.Errorf("KBF013 element = %q, want extends", got[0].Element)
-	}
-	if !strings.Contains(got[0].Message, "must extend") {
-		t.Errorf("KBF013 message %q does not explain the missing extends", got[0].Message)
-	}
-}
-
-// TestKBF013WrongParentLayer is KBF013's extends-target rule when extends
-// resolves to a real playbook whose own layer is not root or base:
-// core-tax-base-bad-parent extends tax-vertical, a leaf, which no base or
-// vertical playbook may do.
-func TestKBF013WrongParentLayer(t *testing.T) {
-	result := mustRun(t,
-		"testdata/taxonomy/root",
-		"testdata/taxonomy/base",
-		"testdata/taxonomy/vertical",
-		"testdata/taxonomy/base-bad-parent",
-	)
-	got := find(result.Findings, lint.KBF013)
-	if len(got) != 1 {
-		t.Fatalf("KBF013: got %d findings, want 1: %+v", len(got), result.Findings)
-	}
-	f := got[0]
-	if !strings.Contains(f.File, "base-bad-parent") {
-		t.Errorf("KBF013 file %q, want the base-bad-parent package's manifest", f.File)
+	if !strings.Contains(f.File, "core-on-vertical-bad") {
+		t.Errorf("KBF013 file %q, want the core-on-vertical-bad package's manifest", f.File)
 	}
 	if !strings.Contains(f.Message, "tax-vertical") || !strings.Contains(f.Message, "vertical") {
-		t.Errorf("KBF013 message %q does not name the parent and its actual layer", f.Message)
+		t.Errorf("KBF013 message %q does not name the target and its actual layer", f.Message)
 	}
 }
 
-// TestKBF013SkipsWhenExtendsUnresolved confirms the extends-layer check
-// degrades the same way every other chain-dependent rule does: a
-// dangling extends is KBF011's story alone, not a second, confusing
-// KBF013 finding about a parent layer there is no way to know.
-func TestKBF013SkipsWhenExtendsUnresolved(t *testing.T) {
-	result := mustRun(t, "testdata/taxonomy/dangling-extends")
+// TestKBF013VerticalMustBuildOnSomething is KBF013's builds-on-target
+// rule, the other direction: layer: vertical with an empty BuildsOn has
+// no derived meaning (unlike core, where empty means root) and must
+// build on at least one playbook.
+func TestKBF013VerticalMustBuildOnSomething(t *testing.T) {
+	result := mustRun(t, "testdata/taxonomy/vertical-empty-bad")
+	got := find(result.Findings, lint.KBF013)
+	if len(got) != 1 {
+		t.Fatalf("KBF013: got %d findings, want 1: %+v", len(got), result.Findings)
+	}
+	if got[0].Element != "builds-on" {
+		t.Errorf("KBF013 element = %q, want builds-on", got[0].Element)
+	}
+	if !strings.Contains(got[0].Message, "must build on") {
+		t.Errorf("KBF013 message %q does not explain the missing builds-on", got[0].Message)
+	}
+}
+
+// TestKBF013SkipsWhenBuildsOnUnresolved confirms the builds-on-layer
+// check degrades the same way every other closure-dependent rule does: a
+// dangling builds-on entry is KBF011's story alone, not a second,
+// confusing KBF013 finding about a parent layer there is no way to know.
+func TestKBF013SkipsWhenBuildsOnUnresolved(t *testing.T) {
+	result := mustRun(t, "testdata/taxonomy/dangling-builds-on")
 	if got := find(result.Findings, lint.KBF013); len(got) != 0 {
-		t.Errorf("KBF013 fired on a dangling extends, want silence (KBF011 alone should speak to it): %+v", got)
+		t.Errorf("KBF013 fired on a dangling builds-on entry, want silence (KBF011 alone should speak to it): %+v", got)
 	}
 	got := find(result.Findings, lint.KBF011)
 	if len(got) != 1 {
@@ -114,10 +98,10 @@ func TestKBF013SkipsWhenExtendsUnresolved(t *testing.T) {
 	}
 }
 
-// TestKBF013NamePrefixRequired is KBF013's name-prefix rule, root/base
-// branch: layer: root (or base) requires a name matching ^core-.
+// TestKBF013NamePrefixRequired is KBF013's name-prefix rule, core branch:
+// layer: core requires a name matching ^core-.
 func TestKBF013NamePrefixRequired(t *testing.T) {
-	result := mustRun(t, "testdata/taxonomy/bad-prefix-root")
+	result := mustRun(t, "testdata/taxonomy/bad-prefix-core")
 	got := find(result.Findings, lint.KBF013)
 	if len(got) != 1 {
 		t.Fatalf("KBF013: got %d findings, want 1: %+v", len(got), result.Findings)
@@ -134,7 +118,7 @@ func TestKBF013NamePrefixRequired(t *testing.T) {
 // TestKBF013NamePrefixForbidden is KBF013's name-prefix rule, the other
 // direction: layer: vertical must NOT match ^core-.
 func TestKBF013NamePrefixForbidden(t *testing.T) {
-	result := mustRun(t, "testdata/taxonomy/root", "testdata/taxonomy/bad-prefix-vertical")
+	result := mustRun(t, "testdata/taxonomy/core-root", "testdata/taxonomy/bad-prefix-vertical")
 	got := find(result.Findings, lint.KBF013)
 	if len(got) != 1 {
 		t.Fatalf("KBF013: got %d findings, want 1: %+v", len(got), result.Findings)
@@ -166,9 +150,9 @@ func TestKBF010MissingLayer(t *testing.T) {
 }
 
 // TestKBF002BadLayerValue confirms a non-empty, unrecognized layer value
-// is KBF002 (the same treatment as a bad tier/cardinality/additivity/
-// risk value), not KBF013: an unrecognized layer has nothing coherent to
-// cross-check either.
+// is KBF002 (the same treatment as a bad cardinality/additivity/origin/
+// approval value), not KBF013: an unrecognized layer has nothing coherent
+// to cross-check either.
 func TestKBF002BadLayerValue(t *testing.T) {
 	result := mustRun(t, "testdata/taxonomy/bad-layer-value")
 	got := find(result.Findings, lint.KBF002)

@@ -1,9 +1,0 @@
-# extends names a playbook that was never passed to kbf lint: KBF011
-# alone should speak to it. KBF013's extends-layer check has no parent to
-# compare against and must stay silent rather than pile on a second,
-# confusing finding about the same underlying gap.
-name: core-tax-dangling
-version: 0.1.0
-spec: v0
-extends: tax-nonexistent-parent
-layer: base

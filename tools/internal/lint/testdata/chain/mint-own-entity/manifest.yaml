@@ -7,5 +7,5 @@
 name: chain-mint-own-entity
 version: 0.1.0
 spec: v0
-extends: core-chain-grandparent
+builds-on: [core-chain-grandparent]
 layer: vertical

@@ -29,16 +29,16 @@ import (
 // already-decoded element. Completeness (KBF004/KBF010, not KBF002: an
 // empty enum field is merely absent, not a bad value, so it never fires on
 // a fragment) is skipped for an element that matches something anywhere in
-// chain (pkg's full ancestor line, nearest first: Universe.Chain): it is
-// an override fragment or a fork, and either way KBF008 (semantic.go) is
-// the rule that speaks to it, not a second, redundant "missing tier"
-// complaint. See design.md's "Implementation clarifications".
-func structuralFindings(pkg *Package, chain []*Package) []Finding {
+// closure (pkg's full composition, Universe.Closure): it is an override
+// fragment or a fork, and either way KBF008 (semantic.go) is the rule
+// that speaks to it, not a second, redundant "missing tier" complaint.
+// See design.md's "Implementation clarifications".
+func structuralFindings(pkg *Package, closure []*Package) []Finding {
 	findings := checkDuplicateNames(pkg)
 
 	for _, e := range pkg.Elements {
 		findings = append(findings, checkEnums(e)...)
-		if _, _, matched := matchInChain(e, chain); matched {
+		if _, _, matched := matchInClosure(e, closure); matched {
 			continue
 		}
 		findings = append(findings, checkCompleteness(e)...)
@@ -103,7 +103,9 @@ func contains(values []string, want string) bool {
 
 // checkManifest validates manifest.yaml itself: KBF011. A missing file was
 // already reported during load (pkg.Manifest == nil); this only runs when
-// there is a manifest to check the content of.
+// there is a manifest to check the content of. Each unresolved builds-on
+// entry gets its own finding, same as every other "each problem is
+// independently fixable" rule in this file.
 func checkManifest(pkg *Package, pkgs map[string]*Package) []Finding {
 	if pkg.Manifest == nil {
 		return nil
@@ -122,9 +124,9 @@ func checkManifest(pkg *Package, pkgs map[string]*Package) []Finding {
 	if m.Spec == "" {
 		add("spec", "manifest is missing spec", "add the KBF spec version this package targets, e.g. v0")
 	}
-	if m.Extends != nil && *m.Extends != "" {
-		if _, ok := pkgs[*m.Extends]; !ok {
-			add("extends", fmt.Sprintf("extends %q does not resolve", *m.Extends), "pass the parent package's path to kbf lint too")
+	for _, name := range m.BuildsOn {
+		if _, ok := pkgs[name]; !ok {
+			add("builds-on", fmt.Sprintf("builds-on %q does not resolve", name), "pass that playbook's path to kbf lint too")
 		}
 	}
 	return findings

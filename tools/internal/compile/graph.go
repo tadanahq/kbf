@@ -47,13 +47,14 @@ type ActionEdge struct {
 }
 
 // BuildGraph unions every package in u: for the common case (one leaf
-// package plus the parent it extends, e.g. cafe-demo + core-universal),
-// this is exactly the resolved map a reader wants: the whole picture, not
-// just the leaf's own incremental additions. Unlike coverage, compile has
-// no reason to exclude a parent given as context: showing the same
-// picture "again" from union is harmless (dedup is by identity), and
-// omitting it would render a near-empty diagram for any package that
-// mostly inherits from its parent, which defeats the point of a map.
+// package plus the playbook(s) it builds on, e.g. cafe-demo +
+// core-universal), this is exactly the resolved map a reader wants: the
+// whole picture, not just the leaf's own incremental additions. Unlike
+// coverage, compile has no reason to exclude a parent given as context:
+// showing the same picture "again" from union is harmless (dedup is by
+// identity), and omitting it would render a near-empty diagram for any
+// package that mostly composes rather than adds, which defeats the point
+// of a map.
 func BuildGraph(u *lint.Universe) Graph {
 	entities := map[string]bool{}
 	relations := map[string]RelationEdge{}

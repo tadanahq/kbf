@@ -72,7 +72,7 @@ func loadManifest(root string) (m *model.Manifest, file string, line int, findin
 		return nil, file, 1, []Finding{{
 			Rule: KBF011, File: file, Line: 1, Element: root,
 			Message: "manifest.yaml is missing or unreadable: " + err.Error(),
-			Fix:     "add a manifest.yaml with name, version, spec, and extends",
+			Fix:     "add a manifest.yaml with name, version, spec, builds-on, and layer",
 		}}
 	}
 
@@ -81,7 +81,7 @@ func loadManifest(root string) (m *model.Manifest, file string, line int, findin
 		return nil, file, errorLine(err, 1), []Finding{malformedYAML(file, err)}
 	}
 	if len(astFile.Docs) == 0 || astFile.Docs[0].Body == nil {
-		return nil, file, 1, []Finding{{Rule: KBF011, File: file, Line: 1, Element: root, Message: "manifest.yaml is empty", Fix: "add name, version, spec, and extends"}}
+		return nil, file, 1, []Finding{{Rule: KBF011, File: file, Line: 1, Element: root, Message: "manifest.yaml is empty", Fix: "add name, version, spec, builds-on, and layer"}}
 	}
 	node := astFile.Docs[0].Body
 	line = node.GetToken().Position.Line

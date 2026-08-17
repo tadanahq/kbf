@@ -1,9 +1,9 @@
 # layer: vertical with a core- prefixed name: KBF013's name-prefix rule,
-# the other direction. extends: core-tax-root is correct here on purpose
-# (vertical may extend a root), so this fixture isolates the name-prefix
-# violation from the extends-shape one.
+# the other direction. builds-on: [core-tax-root] is correct here on
+# purpose, so this fixture isolates the name-prefix violation from the
+# builds-on-shape one.
 name: core-tax-bad-vertical
 version: 0.1.0
 spec: v0
-extends: core-tax-root
+builds-on: [core-tax-root]
 layer: vertical

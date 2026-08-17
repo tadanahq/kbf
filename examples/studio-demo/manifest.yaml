@@ -7,5 +7,5 @@
 name: studio-demo
 version: 0.1.0
 spec: v0
-extends: core-services
+builds-on: [core-services]
 layer: vertical

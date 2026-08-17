@@ -14,6 +14,8 @@
 
 package lint
 
+import "sort"
+
 // Universe is every package loaded together for one kbf invocation, keyed
 // by manifest name plus the original command-line order. internal/lint
 // owns loading (project-architecture.md), so internal/coverage and
@@ -26,13 +28,13 @@ type Universe struct {
 
 // Load reads every package rooted at each of paths (position-aware; see
 // loadPackage) into one Universe. Each path is loaded independently, then
-// all of them together form the set extends resolves against (design.md:
+// all of them together form the set builds-on resolves against (design.md:
 // "kbf lint takes one or more package paths ... resolved by name against
 // that set, not by filesystem convention"). Load returns a Go error only
 // for a path that isn't a readable directory; every content problem,
-// including an unresolvable extends, is a Finding for the caller to
-// decide what to do with (lint fails on it; coverage/compile mostly don't
-// care and just resolve what they can).
+// including an unresolvable builds-on entry, is a Finding for the caller
+// to decide what to do with (lint fails on it; coverage/compile mostly
+// don't care and just resolve what they can).
 func Load(paths []string) (*Universe, []Finding, error) {
 	u := &Universe{Packages: make(map[string]*Package, len(paths))}
 	var findings []Finding
@@ -51,59 +53,89 @@ func Load(paths []string) (*Universe, []Finding, error) {
 	return u, findings, nil
 }
 
-// Chain walks pkg's extends chain and returns its ancestors, nearest
-// first (immediate parent, then grandparent, ..., ending at the chain's
-// root: a package with Extends == nil). pkg itself is never included.
-// Playbook architecture is layered as of the owner's structural correction
-// (design.md, "Implementation clarifications"): verticals extend core
-// playbooks, which extend core-universal, so a chain can be arbitrarily
-// deep, not just the single hop v0 originally assumed.
+// Closure resolves pkg's full composition: every playbook reachable by
+// following BuildsOn transitively, deduped by manifest name, pkg itself
+// never included. This is a DAG walk, not a single-parent chain walk: a
+// playbook can compose more than one immediate parent (the diamond case
+// — two core playbooks both building on the same root, then a third
+// composing both of them — design.md's "Implementation clarifications"),
+// and an ancestor reached through two different paths is still one
+// instance in the result, not two. The returned slice is sorted by name
+// for determinism (composition has no "nearest first" notion once more
+// than one immediate parent is possible; every rule that used to walk a
+// chain nearest-ancestor-first now treats the closure as an unordered
+// set instead — see semantic.go's checkCrossPlaybookCollisions for what
+// that changes about identity conflicts).
 //
-// resolved is false the moment a link's extends target isn't in the
-// universe: the existing "missing parent" case (KBF011), just possibly
-// several hops up instead of the immediate one. cycle is true if the walk
-// would revisit a package name already seen; the walk stops there rather
-// than looping. Either way, chain still holds whatever ancestors were
-// found before the problem, since partial context beats none: a package
-// three levels deep whose great-grandparent is missing still has its
-// nearer ancestors to check references against.
-func (u *Universe) Chain(pkg *Package) (chain []*Package, resolved bool, cycle bool) {
-	seen := map[string]bool{}
-	if pkg.Manifest != nil {
-		seen[pkg.Manifest.Name] = true
+// resolved is false the moment a BuildsOn name isn't in the universe: the
+// existing "missing parent" case (KBF011), just possibly discovered
+// several hops in rather than on pkg's own immediate list. cycle is true
+// if the walk would revisit a package name already on the current
+// composition path (not merely "already seen anywhere": a diamond
+// re-visits a shared ancestor legitimately, that is not a cycle). Either
+// way, closure still holds whatever was resolved before the problem,
+// since partial context beats none.
+func (u *Universe) Closure(pkg *Package) (closure []*Package, resolved bool, cycle bool) {
+	seen := map[string]*Package{}
+	resolved = true
+
+	var walk func(current *Package, onPath map[string]bool)
+	walk = func(current *Package, onPath map[string]bool) {
+		if current.Manifest == nil {
+			return
+		}
+		for _, name := range current.Manifest.BuildsOn {
+			parent, ok := u.Packages[name]
+			if !ok {
+				resolved = false
+				continue
+			}
+			if onPath[name] {
+				cycle = true
+				continue
+			}
+			if _, already := seen[name]; already {
+				continue // diamond merge: this ancestor's own subtree was already walked
+			}
+			seen[name] = parent
+			closure = append(closure, parent)
+
+			nextPath := make(map[string]bool, len(onPath)+1)
+			for k := range onPath {
+				nextPath[k] = true
+			}
+			nextPath[name] = true
+			walk(parent, nextPath)
+		}
 	}
 
-	current := pkg
-	for {
-		if current.Manifest == nil || current.Manifest.Extends == nil {
-			return chain, true, false
-		}
-		parentName := *current.Manifest.Extends
-		parent, ok := u.Packages[parentName]
-		if !ok {
-			return chain, false, false
-		}
-		if seen[parentName] {
-			return chain, false, true
-		}
-		seen[parentName] = true
-		chain = append(chain, parent)
-		current = parent
+	startPath := map[string]bool{}
+	if pkg.Manifest != nil {
+		startPath[pkg.Manifest.Name] = true
 	}
+	walk(pkg, startPath)
+
+	sort.Slice(closure, func(i, j int) bool { return closure[i].Manifest.Name < closure[j].Manifest.Name })
+	return closure, resolved, cycle
 }
 
-// IsLeaf reports whether pkg is not the extends-root of any other package
+// IsLeaf reports whether pkg is not a build-on target of any other package
 // in this universe. coverage and compile report on leaf packages (the
 // ones actually being evaluated or rendered); a parent given alongside
 // them is resolution context, not a second subject. A package linted
 // alone (no children in the set) is trivially its own leaf.
 func (u *Universe) IsLeaf(pkg *Package) bool {
+	if pkg.Manifest == nil {
+		return true
+	}
 	for _, other := range u.Order {
-		if other == pkg {
+		if other == pkg || other.Manifest == nil {
 			continue
 		}
-		if other.Manifest != nil && other.Manifest.Extends != nil && pkg.Manifest != nil && *other.Manifest.Extends == pkg.Manifest.Name {
-			return false
+		for _, name := range other.Manifest.BuildsOn {
+			if name == pkg.Manifest.Name {
+				return false
+			}
 		}
 	}
 	return true
@@ -116,7 +148,7 @@ type Result struct {
 }
 
 // Run lints the packages rooted at each of paths: see Load for how the
-// universe is built and Chain for how extends is resolved.
+// universe is built and Closure for how composition is resolved.
 func Run(paths []string) (Result, error) {
 	universe, findings, err := Load(paths)
 	if err != nil {
@@ -129,16 +161,16 @@ func Run(paths []string) (Result, error) {
 		if pkg.Manifest == nil {
 			continue // already flagged: no manifest, nothing coherent to check
 		}
-		chain, _, cycle := universe.Chain(pkg)
+		closure, _, cycle := universe.Closure(pkg)
 		if cycle {
 			findings = append(findings, Finding{
-				Rule: KBF011, File: pkg.ManifestFile, Line: pkg.ManifestLine, Element: "extends",
-				Message: "extends chain cycles back to a package already in it",
-				Fix:     "break the cycle: one of these packages must stop extending something that, directly or indirectly, extends it back",
+				Rule: KBF011, File: pkg.ManifestFile, Line: pkg.ManifestLine, Element: "builds-on",
+				Message: "composition closure cycles back to a package already on this playbook's own path",
+				Fix:     "break the cycle: one of these playbooks must stop building on something that, directly or indirectly, builds on it back",
 			})
 		}
-		findings = append(findings, structuralFindings(pkg, chain)...)
-		findings = append(findings, semanticFindings(pkg, chain)...)
+		findings = append(findings, structuralFindings(pkg, closure)...)
+		findings = append(findings, semanticFindings(pkg, closure)...)
 	}
 
 	sortFindings(findings)

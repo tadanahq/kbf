@@ -13,23 +13,23 @@ $defs:
       spec:
         type: string
         description: Spec is the KBF spec version this package's content was authored against, e.g. "v0".
-      extends:
-        oneOf:
-        - type: string
-          description: "Extends names the parent package this one extends, or null for a root package (only core-universal is root in v0). A pointer so the loader can tell \"null\" (root, valid) apart from \"missing key\" (invalid): both decode a Go string to \"\", but only the former is a legal manifest. Non-null values must resolve within the set of packages passed to `kbf lint`: KBF011."
-        - type: "null"
+      builds-on:
+        items:
+          type: string
+        type: array
+        description: "BuildsOn lists the playbook(s) this one composes: zero or more parent names, resolved as a DAG closure (transitive, deduped by name: Universe.Closure), not a single linear chain. Two entries can legitimately share a deeper ancestor (the diamond case: two core playbooks both building on the same root, then a third composing both of them) without that ancestor being loaded twice. Empty means this playbook builds on nothing: for layer: core that is what makes it a root (root-ness is derived from an empty BuildsOn, never declared as its own value); layer: vertical always needs at least one entry (KBF013). Every name must resolve within the set of playbooks passed to `kbf lint`, and the closure must not cycle: both KBF011."
       layer:
         type: string
-        description: "Layer states this playbook's place in the taxonomy: root (the single universal floor, Extends must be null), base (a core playbook other playbooks build on: extends a root or another base), or vertical (a business-specific leaf: extends a base or root). This is what makes \"core playbook\" a checkable claim instead of a naming convention nobody enforces: KBF013 cross-checks Layer against Extends (a base/vertical must extend a root-or-base ancestor; a root must extend nothing) and against Name (root/base playbooks are named \"core-...\", vertical playbooks are not). Layer is a governance-taxonomy field the same way Entity/Metric.Tier is: empty Layer is KBF010, a non-empty value outside Layers is KBF002, and a non-empty, valid value that still doesn't line up with Extends or Name is KBF013."
+        description: "Layer states this playbook's place in the taxonomy: core (a foundation playbook other playbooks compose; builds-on only core playbooks, empty allowed) or vertical (a business-specific leaf; builds-on at least one core or vertical playbook, so a vertical may itself be composed by another vertical). This is what makes \"core playbook\" a checkable claim instead of a naming convention nobody enforces: KBF013 cross-checks Layer against BuildsOn (see the rule table in internal/lint/taxonomy.go) and against Name (core playbooks are named \"core-...\", vertical playbooks are not). Layer is a governance-taxonomy field the same way Entity/Metric.Tier is: empty Layer is KBF010, a non-empty value outside Layers is KBF002, and a non-empty, valid value that still doesn't line up with BuildsOn or Name is KBF013."
     additionalProperties: false
     type: object
     required:
     - name
     - version
     - spec
-    - extends
+    - builds-on
     - layer
-    description: "Manifest is a package's identity card: manifest.yaml at the package root. It names the package, the spec version it targets, and what it extends. Every package has exactly one manifest; the linter reads it before touching any ontology content, since extends drives cross-package resolution (KBF006, KBF007, KBF008)."
+    description: "Manifest is a package's identity card: manifest.yaml at the package root. It names the package, the spec version it targets, and what it builds on. Every package has exactly one manifest; the linter reads it before touching any ontology content, since builds-on drives cross-package resolution (KBF006, KBF007, KBF008)."
   SlotMapping:
     properties:
       slot:

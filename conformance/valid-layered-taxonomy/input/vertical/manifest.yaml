@@ -4,5 +4,5 @@
 name: downtown-branch
 version: 0.1.0
 spec: v0
-extends: core-lending
+builds-on: [core-lending]
 layer: vertical

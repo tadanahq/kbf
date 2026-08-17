@@ -20,7 +20,7 @@ import (
 	"github.com/tadanahq/kbf/tools/internal/model"
 )
 
-// identity.go holds the extends-relative matching shared by structural
+// identity.go holds the composition-relative matching shared by structural
 // completeness rules (KBF004/KBF005/KBF010, which must not fire on a
 // legitimate override fragment) and the semantic fork rule (KBF008, which
 // decides whether a match is legitimate or a fork). See design.md's
@@ -46,23 +46,29 @@ var matchable = map[model.Kind]bool{
 	model.KindAction:   true,
 }
 
-// matchInChain looks for elem's identity among chain's packages, nearest
-// ancestor first: (kind, name) for entity/metric/action, (kind, name,
-// from, to) for relation. Returns the first match found and which
-// ancestor it lives in, even when a farther ancestor also happens to
-// share the identity (a middle layer that already re-declared a
-// grandparent's element, say): the nearest one is what elem would be
-// extending or forking. chain is pkg's own ancestors (Universe.Chain),
-// never including pkg itself, so there is no self-match case to guard
-// against here.
-func matchInChain(elem Element, chain []*Package) (Element, *Package, bool) {
+// matchInClosure looks for elem's identity among closure's packages
+// (Universe.Closure, sorted by name for determinism): (kind, name) for
+// entity/metric/action, (kind, name, from, to) for relation. Returns the
+// first match found, in that deterministic order, and which package it
+// lives in. Composition has no "nearest ancestor" notion once more than
+// one immediate parent is possible (design.md's "Implementation
+// clarifications"): in the well-formed case at most one closure member
+// declares a given identity anyway, so which one this function picks is
+// unambiguous; if more than one does, that is itself a separate,
+// explicit finding (checkCrossPlaybookCollisions, semantic.go, KBF003's
+// cross-playbook variant), not something this function needs to
+// adjudicate — it only needs one deterministic answer for KBF008's
+// fork-vs-override check. closure is pkg's own composition (never
+// including pkg itself), so there is no self-match case to guard against
+// here.
+func matchInClosure(elem Element, closure []*Package) (Element, *Package, bool) {
 	if !matchable[elem.Kind] {
 		return Element{}, nil, false
 	}
-	for _, ancestor := range chain {
-		for _, cand := range ancestor.Elements {
+	for _, member := range closure {
+		for _, cand := range member.Elements {
 			if cand.Kind == elem.Kind && sameIdentity(elem, cand) {
-				return cand, ancestor, true
+				return cand, member, true
 			}
 		}
 	}

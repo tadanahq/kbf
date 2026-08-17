@@ -4,5 +4,5 @@
 name: core-downtown-branch
 version: 0.1.0
 spec: v0
-extends: core-library
+builds-on: [core-library]
 layer: vertical

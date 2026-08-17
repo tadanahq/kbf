@@ -1,5 +1,5 @@
 name: tax-vertical
 version: 0.1.0
 spec: v0
-extends: core-tax-base
+builds-on: [core-tax-root]
 layer: vertical

@@ -1,7 +1,0 @@
-# layer: root with a non-null extends: KBF013, "layer root must have
-# extends: null".
-name: core-tax-root-bad
-version: 0.1.0
-spec: v0
-extends: core-tax-root
-layer: root
