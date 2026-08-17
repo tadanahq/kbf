@@ -20,6 +20,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/tadanahq/kbf/tools/internal/compile"
+	"github.com/tadanahq/kbf/tools/internal/embedded"
 	"github.com/tadanahq/kbf/tools/internal/lint"
 )
 
@@ -28,11 +29,14 @@ var compileTo string
 var compileCmd = &cobra.Command{
 	Use:   "compile <path> [path...]",
 	Short: "Render an ontology's map: entities, relations, and actions.",
-	Long: `compile loads one or more playbook directories the same way lint does, then
-renders the union of everything loaded: entities as nodes, relations as
-labeled edges, actions as annotations on the entity they target. v0 ships
-one emitter: --to mermaid. Output is deterministic (sorted) and is plain
-mermaid source, valid as-is inside a GitHub Markdown ` + "```mermaid" + ` fence.`,
+	Long: `compile loads one or more playbook directories the same way lint does
+(falling back to kbf's embedded core playbooks for a builds-on name no path
+provides), then renders the union of everything loaded: entities as nodes,
+relations as labeled edges, actions as annotations on the entity they
+target. v0 ships one emitter: --to mermaid. Output is deterministic
+(sorted) and is plain mermaid source, valid as-is inside a GitHub Markdown
+` + "```mermaid" + ` fence: unlike lint/coverage, this never appends an
+embedded-resolution footer, since that would no longer be valid mermaid.`,
 	Args: cobra.MinimumNArgs(1),
 	RunE: runCompile,
 }
@@ -47,7 +51,7 @@ func runCompile(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("unknown --to %q: v0 ships mermaid only", compileTo)
 	}
 
-	universe, _, err := lint.Load(args)
+	universe, _, err := lint.LoadWithEmbedded(args, embedded.Playbook)
 	if err != nil {
 		return fmt.Errorf("compile: %w", err)
 	}

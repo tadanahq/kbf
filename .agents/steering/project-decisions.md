@@ -3,6 +3,58 @@
 Append-only. New entries on top. Project-level decisions only; feature detail
 stays in capsules.
 
+## 2026-08-17 - Batteries-included binary: embedded cores/skill/docs with local-override precedence
+
+Owner-approved Batch 9. Supersedes `project-architecture.md`'s Boundaries
+entry "tools/ may not embed playbook content; playbooks are always
+inputs": evolved, not dropped, by this decision. `project-architecture.md`
+carries the full current rule; this entry is the why and the reversal
+condition.
+
+Rationale, three things the old rule made needlessly hard:
+
+1. **Closure UX for consumers.** Composing `core-operations` from a fresh
+   playbook required cloning this whole repository first, just to get
+   three directories of YAML onto disk before `kbf lint` could resolve
+   the name. Real friction for exactly the audience v0 exists to serve:
+   an authoring agent or a human standing up a new business's ontology.
+2. **One-artifact distribution.** `go install
+   github.com/tadanahq/kbf/tools/cmd/kbf@latest` should be the whole
+   install. It wasn't: the binary alone couldn't do anything useful
+   without a matching clone sitting next to it.
+3. **The on-prem story.** Kozmo's own on-prem posture (per-client
+   install, no shared hosted state) wants a single binary fully
+   functional on a machine that has never seen this repository. A binary
+   that needs a clone alongside it to be useful undercuts that for KBF
+   specifically.
+
+New in this decision:
+
+- `tools/` embeds `playbooks/core-business`, `playbooks/core-operations`,
+  `playbooks/core-services`, `skills/kbf-authoring/`, and `spec/*.md` (+
+  `spec/primitives/*.md`), synced from the repo root by
+  `scripts/embedsync` (`make embed-sync`), verified by `make
+  embed-freshness` (wired into `make check` and CI): the same
+  copy-and-check shape `kbf schema --check` already established for
+  `schema/`.
+- Precedence is absolute and one-directional, enforced in code, not by
+  convention: a locally-passed path always wins on a name collision;
+  the embedded copy is consulted only for a `builds-on` name no local
+  path provided at all (`lint.LoadWithEmbedded`'s fallback only runs for
+  a name local resolution already failed on).
+- `kbf vendor` exists specifically so "embedded" never means "hidden":
+  anyone can materialize the exact embedded copy to a real, inspectable,
+  editable, replaceable directory on demand.
+
+Reversal: if embedded content and this repository's own source ever ship
+out of sync despite `make embed-freshness` (a bug in the freshness check
+itself, or a release process that skips `make check`), that is the signal
+to revisit, either strengthen the gate (a build-time assertion, not just
+CI) or drop back to `kbf vendor`-only (materialize on demand, never
+silently resolve). Not foreseeable otherwise: the mechanism is a strict
+subset of what `kbf schema --check` already does successfully for
+`schema/`.
+
 ## 2026-08-17 - Composition (DAG closure) replaces single-parent extends; core-business rename; origin/approval field renames
 
 Owner-approved Batch 7, dispatched mid-Batch-6-report. Supersedes this

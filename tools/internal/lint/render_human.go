@@ -35,10 +35,14 @@ var (
 // "lipgloss table grouped by file"), each row a finding: line, rule,
 // element, message, fix. Findings arrive pre-sorted by file then line
 // (Result comes from Run, which calls sortFindings), so grouping only
-// needs to notice where the file changes, never re-sort.
+// needs to notice where the file changes, never re-sort. When
+// r.EmbeddedUsed is non-empty (RunWithEmbedded resolved at least one
+// builds-on name from the embedded core playbooks rather than a local
+// path), a footer line names which: --format json carries no equivalent
+// field, by design, so this is the only place that information surfaces.
 func RenderHuman(r Result) string {
 	if len(r.Findings) == 0 {
-		return successStyle.Render("kbf lint: no findings") + "\n"
+		return successStyle.Render("kbf lint: no findings") + "\n" + embeddedFooter(r.EmbeddedUsed)
 	}
 
 	groups := groupByFile(r.Findings)
@@ -51,7 +55,18 @@ func RenderHuman(r Result) string {
 	}
 	b.WriteString(dimStyle.Render(fmt.Sprintf("%d finding(s) across %d file(s)", len(r.Findings), len(groups))))
 	b.WriteString("\n")
+	b.WriteString(embeddedFooter(r.EmbeddedUsed))
 	return b.String()
+}
+
+// embeddedFooter renders the "resolved from embedded: ..." line, or ""
+// when names is empty: no trailing blank line to keep clean of, since
+// callers already end their own output with "\n" before appending this.
+func embeddedFooter(names []string) string {
+	if len(names) == 0 {
+		return ""
+	}
+	return dimStyle.Render("resolved from embedded: "+strings.Join(names, ", ")) + "\n"
 }
 
 // renderTable builds one file's findings table.

@@ -1,0 +1,14 @@
+# DO NOT EDIT: generated from playbooks/core-business/ontology/purchase.yaml by scripts/embedsync. Edit the source, then run `make embed-sync`.
+kind: entity
+name: purchase
+meaning: >-
+  A cost-generating transaction where the business buys from a supplier.
+identity: [purchase_id]
+resolution: identity-mapping
+tier: structural
+synonyms: {en: [purchase-order, invoice], es: [compra, orden-de-compra]}
+attributes:
+  - {name: placed-at, type: timestamp, slot: purchasing.purchase-timestamp}
+  - {name: status, type: text, slot: purchasing.purchase-status}
+  - {name: total, type: currency, slot: purchasing.purchase-total}
+states: [open, received, cancelled]

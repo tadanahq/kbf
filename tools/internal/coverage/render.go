@@ -33,10 +33,15 @@ var (
 )
 
 // RenderHuman renders one lipgloss table per package, each row a slot,
-// followed by a declared/mapped summary line.
-func RenderHuman(reports []Report) string {
+// followed by a declared/mapped summary line. When embeddedUsed is
+// non-empty (the universe resolved at least one builds-on name from the
+// embedded core playbooks rather than a local path: lint.LoadWithEmbedded,
+// see cmd/kbf's runCoverage), a footer line names which: --format json
+// carries no equivalent field, by design, so this is the only place that
+// information surfaces.
+func RenderHuman(reports []Report, embeddedUsed []string) string {
 	if len(reports) == 0 {
-		return dimStyle.Render("kbf coverage: nothing to report (no leaf package in the given paths)") + "\n"
+		return dimStyle.Render("kbf coverage: nothing to report (no leaf package in the given paths)") + "\n" + embeddedFooter(embeddedUsed)
 	}
 
 	var b strings.Builder
@@ -52,7 +57,20 @@ func RenderHuman(reports []Report) string {
 		b.WriteString(dimStyle.Render(fmt.Sprintf("%d/%d slots mapped (%d%%)", r.Mapped, r.Declared, pct)))
 		b.WriteString("\n\n")
 	}
+	b.WriteString(embeddedFooter(embeddedUsed))
 	return b.String()
+}
+
+// embeddedFooter renders the "resolved from embedded: ..." line, or ""
+// when names is empty. Mirrors internal/lint's own embeddedFooter
+// (render_human.go); not shared code, since sharing it would mean one of
+// these two packages importing the other for a single one-line format
+// string, a worse trade than the tiny duplication.
+func embeddedFooter(names []string) string {
+	if len(names) == 0 {
+		return ""
+	}
+	return dimStyle.Render("resolved from embedded: "+strings.Join(names, ", ")) + "\n"
 }
 
 func renderTable(r Report) string {

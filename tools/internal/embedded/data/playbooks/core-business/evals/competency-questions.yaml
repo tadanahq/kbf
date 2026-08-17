@@ -1,0 +1,32 @@
+# DO NOT EDIT: generated from playbooks/core-business/evals/competency-questions.yaml by scripts/embedsync. Edit the source, then run `make embed-sync`.
+# Competency questions are the acceptance suite: each names the elements
+# an agent's answer must exercise. At least one per entity (design.md).
+# Business-neutral wording throughout: no location, no vertical jargon.
+
+kind: competency-question
+question: What is total revenue and transaction count for the organization this month?
+expects: [revenue, transaction-count]
+---
+kind: competency-question
+question: Which customers has the organization transacted with, and how many transactions has each placed?
+expects: [places]
+---
+kind: competency-question
+question: Which offerings has the organization sold this month, and how many times has each been sold?
+expects: [contains]
+---
+kind: competency-question
+question: What is the average transaction value for the organization this month?
+expects: [average-transaction-value]
+---
+kind: competency-question
+question: What is the labor cost ratio for the organization this month?
+expects: [labor-cost-ratio]
+---
+kind: competency-question
+question: Which suppliers does the organization purchase from, and what is total purchase cost per supplier?
+expects: [supplier, purchase-cost]
+---
+kind: competency-question
+question: What is the gross margin for the organization this month after purchase cost?
+expects: [gross-margin]

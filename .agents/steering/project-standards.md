@@ -30,8 +30,9 @@ as a project-level change.
   regenerates and fails on drift.
 - **Conformance is data**: fixtures are plain YAML (valid/invalid + expected
   outcome), runnable by any implementation. The runner is thin.
-- **Extension, never fork**: playbooks extend `core-business`; the linter
-  fails a playbook that redefines an inherited element.
+- **Composition, never fork**: playbooks build on `core-business`,
+  directly or transitively; the linter fails a playbook that redefines an
+  element already declared in its composition closure.
 - **Public hygiene (absolute)**: no client names, no internal project
   references, no private paths, no prices, in any file including fixtures and
   comments. `make boundaries` scans for a named blocklist plus heuristics; a
@@ -56,8 +57,8 @@ as a project-level change.
 ## Quality & Maintainability
 
 - **`make check` is the gate**: gofmt, golangci-lint, go test, `kbf lint` over
-  `playbooks/` + `examples/`, conformance suite, schema-freshness, boundaries.
-  Green before any task is marked done.
+  `playbooks/` + `examples/`, conformance suite, schema-freshness,
+  embed-freshness, boundaries. Green before any task is marked done.
 - **Module bar**: one concern per file, ~150 lines of real logic; split past
   that along the natural seam. No allowlist, no per-file exemption.
 - **Error messages are product**: a lint error names the file, line, rule, and

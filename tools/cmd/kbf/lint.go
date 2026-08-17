@@ -19,6 +19,7 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"github.com/tadanahq/kbf/tools/internal/embedded"
 	"github.com/tadanahq/kbf/tools/internal/lint"
 )
 
@@ -32,7 +33,10 @@ across all of them together, and checks structure (KBF001-004, KBF010, KBF011,
 KBF013) then semantics (KBF005-009, KBF012). Pass a playbook's own path and
 every playbook it builds on together: builds-on is resolved by manifest name
 across exactly the paths given on this command line, not by filesystem
-convention.
+convention. A builds-on name no path here provides falls back to kbf's
+embedded core playbooks (core-business, core-operations, core-services);
+a local path of the same name always wins over that fallback. See
+"Embedded content" in spec/cli.md.
 
 Exits 1 if any rule fires.`,
 	Args: cobra.MinimumNArgs(1),
@@ -45,7 +49,7 @@ func init() {
 }
 
 func runLint(cmd *cobra.Command, args []string) error {
-	result, err := lint.Run(args)
+	result, err := lint.RunWithEmbedded(args, embedded.Playbook)
 	if err != nil {
 		return fmt.Errorf("lint: %w", err)
 	}

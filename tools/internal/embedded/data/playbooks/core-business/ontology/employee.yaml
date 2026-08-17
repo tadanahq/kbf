@@ -1,0 +1,15 @@
+# DO NOT EDIT: generated from playbooks/core-business/ontology/employee.yaml by scripts/embedsync. Edit the source, then run `make embed-sync`.
+kind: entity
+name: employee
+meaning: >-
+  A person who works for the business and may be assigned responsibility.
+identity: [employee_id]
+resolution: identity-mapping
+tier: structural
+synonyms: {en: [staff, worker], es: [empleado, colaborador]}
+attributes:
+  - {name: display-name, type: text, slot: hr.employee-name}
+  - {name: role, type: text, slot: hr.employee-role}
+  - {name: hired-at, type: date, slot: hr.employee-hire-date}
+  - {name: labor-cost, type: currency, slot: hr.employee-labor-cost}
+states: [active, on-leave, terminated]

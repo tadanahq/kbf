@@ -1,0 +1,58 @@
+# DO NOT EDIT: generated from playbooks/core-business/ontology/metrics.yaml by scripts/embedsync. Edit the source, then run `make embed-sync`.
+# Universal metrics, grouped by kind. Formula is an opaque expression
+# string in v0 (see spec/versioning.md): base metrics aggregate a
+# `sum(entity.attribute)` / `count(entity)`, derived metrics reference
+# other metric names directly, matching the convention in
+# spec/primitives/metric.md. Grain stops at [organization, business-date]:
+# location is not universal (playbooks/core-operations adds a
+# location-grain sibling, e.g. average-ticket, on top of these).
+
+kind: metric
+name: revenue
+formula: sum(transaction.total)
+grain: [organization, business-date]
+additivity: additive
+unit: currency
+tier: structural
+---
+kind: metric
+name: transaction-count
+formula: count(transaction)
+grain: [organization, business-date]
+additivity: additive
+unit: count
+tier: structural
+---
+kind: metric
+name: average-transaction-value
+formula: revenue / transaction-count
+grain: [organization, business-date]
+additivity: non-additive
+unit: currency
+tier: structural
+---
+kind: metric
+name: labor-cost-ratio
+formula: sum(employee.labor-cost) / revenue
+grain: [organization, business-date]
+additivity: non-additive
+unit: ratio
+thresholds: {warn-above: 0.35}
+tier: structural
+---
+kind: metric
+name: purchase-cost
+formula: sum(purchase.total)
+grain: [organization, business-date]
+additivity: additive
+unit: currency
+tier: structural
+---
+kind: metric
+name: gross-margin
+formula: (revenue - purchase-cost) / revenue
+grain: [organization, business-date]
+additivity: non-additive
+unit: ratio
+thresholds: {warn-below: 0.55}
+tier: structural

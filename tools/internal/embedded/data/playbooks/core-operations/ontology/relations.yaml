@@ -1,0 +1,68 @@
+# DO NOT EDIT: generated from playbooks/core-operations/ontology/relations.yaml by scripts/embedsync. Edit the source, then run `make embed-sync`.
+# Relations that need `location` or `shift` to exist, so they live here,
+# not in core-business. Two verbs are reused from core-business on new
+# pairs (belongs-to, responsible-for); four are minted here for the first
+# time (works-at, staffed-by, located-at, sells) and become available, by
+# the closure union, to anything that builds on core-operations (see
+# spec/conventions.md).
+
+kind: relation
+name: belongs-to
+from: location
+to: organization
+cardinality: many-to-one
+join: [location_id, organization_id]
+origin: source-synced
+temporal: false
+---
+# Minted here: core-business's `employed-by` (employee to organization) is
+# the location-free HR fact; this is the location-specific operational one,
+# and the two coexist without conflict on the same employee.
+kind: relation
+name: works-at
+from: employee
+to: location
+cardinality: many-to-one
+join: [employee_id, location_id]
+origin: source-synced
+temporal: true
+---
+kind: relation
+name: staffed-by
+from: shift
+to: employee
+cardinality: many-to-one
+join: [shift_id, employee_id]
+origin: source-synced
+temporal: false
+---
+kind: relation
+name: located-at
+from: transaction
+to: location
+cardinality: many-to-one
+join: [transaction_id, location_id]
+origin: source-synced
+temporal: false
+---
+kind: relation
+name: sells
+from: location
+to: offering
+cardinality: many-to-many
+join: [location_id, offering_id]
+origin: source-synced
+temporal: false
+---
+# No POS or HR feed emits "who is accountable for this location": an
+# owner assigns it by hand, so it sits at client-configured tier.
+# Coexists with `works-at` on the same (employee, location) pair without
+# conflict: different verb, different relation.
+kind: relation
+name: responsible-for
+from: employee
+to: location
+cardinality: many-to-many
+join: [employee_id, location_id]
+origin: client-configured
+temporal: true

@@ -16,7 +16,7 @@ package lint
 
 import (
 	"fmt"
-	"os"
+	"io/fs"
 	"path/filepath"
 	"sort"
 
@@ -27,50 +27,58 @@ import (
 	"github.com/tadanahq/kbf/tools/internal/model"
 )
 
-// loadPackage reads one package directory: manifest.yaml, everything under
-// ontology/ and evals/ (position-aware, KBF-coded on trouble), and
-// install/slots.yaml. It returns a genuine error only when root itself
-// isn't a readable directory; every content problem becomes a Finding so
-// one bad file never aborts linting the rest of the package. Per-document
-// decoding (turning one AST node into a typed Element) lives in decode.go.
-func loadPackage(root string) (*Package, []Finding, error) {
-	info, err := os.Stat(root)
+// loadPackage reads one package from fsys: an fs.FS rooted at the
+// package's own directory, either a real disk directory (os.DirFS, for a
+// locally-passed path) or a sub-tree of the embedded core playbooks
+// (composition fallback, see embedded.go). Both sources share this one
+// loader (project-architecture.md: "internal/lint owns loading"), so an
+// embedded package is validated exactly as strictly as a local one, never
+// a second, looser code path. display is the path used to build every
+// human-facing file reference (Finding.File, Package.Root): a real disk
+// path for a local package, "embedded:<name>" for one resolved from
+// fallback, so a reader can always tell which is which even though both
+// parse identically. It returns a genuine error only when fsys's root
+// itself isn't readable as a directory; every content problem becomes a
+// Finding, so one bad file never aborts loading the rest of the package.
+func loadPackage(fsys fs.FS, display string) (*Package, []Finding, error) {
+	info, err := fs.Stat(fsys, ".")
 	if err != nil {
-		return nil, nil, fmt.Errorf("%s: %w", root, err)
+		return nil, nil, fmt.Errorf("%s: %w", display, err)
 	}
 	if !info.IsDir() {
-		return nil, nil, fmt.Errorf("%s: not a directory", root)
+		return nil, nil, fmt.Errorf("%s: not a directory", display)
 	}
 
-	pkg := &Package{Root: root}
+	pkg := &Package{Root: display}
 	var findings []Finding
 
-	manifest, mFile, mLine, mFindings := loadManifest(root)
+	manifest, mFile, mLine, mFindings := loadManifest(fsys, display)
 	pkg.Manifest, pkg.ManifestFile, pkg.ManifestLine = manifest, mFile, mLine
 	findings = append(findings, mFindings...)
 
 	for _, dir := range []string{"ontology", "evals"} {
-		elems, f := loadElements(filepath.Join(root, dir))
+		elems, f := loadElements(fsys, dir, display)
 		pkg.Elements = append(pkg.Elements, elems...)
 		findings = append(findings, f...)
 	}
 
-	slots, sFile, sFindings := loadSlots(root)
+	slots, sFile, sFindings := loadSlots(fsys, display)
 	pkg.Slots, pkg.SlotsFile = slots, sFile
 	findings = append(findings, sFindings...)
 
 	return pkg, findings, nil
 }
 
-// loadManifest reads manifest.yaml. A missing file is KBF011, not a Go
-// error: the caller still gets a Package back (with Manifest == nil) so it
-// can keep loading the rest and report every problem in one lint run.
-func loadManifest(root string) (m *model.Manifest, file string, line int, findings []Finding) {
-	file = filepath.Join(root, "manifest.yaml")
-	data, err := os.ReadFile(file)
+// loadManifest reads manifest.yaml from fsys's root. A missing file is
+// KBF011, not a Go error: the caller still gets a Package back (with
+// Manifest == nil) so it can keep loading the rest and report every
+// problem in one lint run.
+func loadManifest(fsys fs.FS, display string) (m *model.Manifest, file string, line int, findings []Finding) {
+	file = filepath.Join(display, "manifest.yaml")
+	data, err := fs.ReadFile(fsys, "manifest.yaml")
 	if err != nil {
 		return nil, file, 1, []Finding{{
-			Rule: KBF011, File: file, Line: 1, Element: root,
+			Rule: KBF011, File: file, Line: 1, Element: display,
 			Message: "manifest.yaml is missing or unreadable: " + err.Error(),
 			Fix:     "add a manifest.yaml with name, version, spec, builds-on, and layer",
 		}}
@@ -81,7 +89,7 @@ func loadManifest(root string) (m *model.Manifest, file string, line int, findin
 		return nil, file, errorLine(err, 1), []Finding{malformedYAML(file, err)}
 	}
 	if len(astFile.Docs) == 0 || astFile.Docs[0].Body == nil {
-		return nil, file, 1, []Finding{{Rule: KBF011, File: file, Line: 1, Element: root, Message: "manifest.yaml is empty", Fix: "add name, version, spec, builds-on, and layer"}}
+		return nil, file, 1, []Finding{{Rule: KBF011, File: file, Line: 1, Element: display, Message: "manifest.yaml is empty", Fix: "add name, version, spec, builds-on, and layer"}}
 	}
 	node := astFile.Docs[0].Body
 	line = node.GetToken().Position.Line
@@ -97,9 +105,9 @@ func loadManifest(root string) (m *model.Manifest, file string, line int, findin
 // discriminator, one row per line, position-aware so KBF012 can point at
 // the specific row. A missing file is not an error: a package with no
 // attributes to map legitimately has nothing to declare.
-func loadSlots(root string) (slots []SlotRow, file string, findings []Finding) {
-	file = filepath.Join(root, "install", "slots.yaml")
-	data, err := os.ReadFile(file)
+func loadSlots(fsys fs.FS, display string) (slots []SlotRow, file string, findings []Finding) {
+	file = filepath.Join(display, "install", "slots.yaml")
+	data, err := fs.ReadFile(fsys, "install/slots.yaml")
 	if err != nil {
 		return nil, file, nil
 	}
@@ -131,29 +139,35 @@ func loadSlots(root string) (slots []SlotRow, file string, findings []Finding) {
 	return slots, file, findings
 }
 
-// loadElements walks dir (recursively, sorted, so output is deterministic)
-// for *.yaml/*.yml files and decodes every `---`-separated document in
-// each. A missing dir (e.g. a package with no evals/ yet) is not an error.
-func loadElements(dir string) ([]Element, []Finding) {
-	paths := yamlFiles(dir)
+// loadElements walks dir ("ontology" or "evals", fs.FS-relative, always
+// slash-separated regardless of host OS) within fsys, recursively and
+// sorted so output is deterministic, for *.yaml/*.yml files, and decodes
+// every `---`-separated document in each. A missing dir (e.g. a package
+// with no evals/ yet) is not an error. display is the package's own
+// human-facing root; each file's display path is display/<relative path>,
+// built with filepath.Join so it renders with the host's native separator
+// even though the fs.FS-relative path underneath is always slash-joined.
+func loadElements(fsys fs.FS, dir, display string) ([]Element, []Finding) {
+	relPaths := yamlFiles(fsys, dir)
 	var elements []Element
 	var findings []Finding
-	for _, path := range paths {
-		data, err := os.ReadFile(path)
+	for _, rel := range relPaths {
+		displayPath := filepath.Join(display, rel)
+		data, err := fs.ReadFile(fsys, rel)
 		if err != nil {
-			findings = append(findings, malformedYAML(path, err))
+			findings = append(findings, malformedYAML(displayPath, err))
 			continue
 		}
 		astFile, err := parser.ParseBytes(data, parser.ParseComments)
 		if err != nil {
-			findings = append(findings, malformedYAML(path, err))
+			findings = append(findings, malformedYAML(displayPath, err))
 			continue
 		}
 		for _, doc := range astFile.Docs {
 			if doc.Body == nil {
 				continue // a stray leading `---` with nothing after it
 			}
-			elem, f := decodeDocument(path, doc.Body)
+			elem, f := decodeDocument(displayPath, doc.Body)
 			findings = append(findings, f...)
 			if elem != nil {
 				elements = append(elements, *elem)
@@ -163,16 +177,17 @@ func loadElements(dir string) ([]Element, []Finding) {
 	return elements, findings
 }
 
-// yamlFiles returns every .yaml/.yml file under dir, sorted, or nil if dir
-// doesn't exist.
-func yamlFiles(dir string) []string {
+// yamlFiles returns every .yaml/.yml file under dir within fsys
+// (fs.FS-relative paths, e.g. "ontology/entities.yaml"), sorted, or nil
+// if dir doesn't exist.
+func yamlFiles(fsys fs.FS, dir string) []string {
 	var paths []string
-	_ = filepath.WalkDir(dir, func(path string, d os.DirEntry, err error) error {
+	_ = fs.WalkDir(fsys, dir, func(p string, d fs.DirEntry, err error) error {
 		if err != nil || d.IsDir() {
 			return nil //nolint:nilerr // a missing dir just yields zero files
 		}
-		if ext := filepath.Ext(path); ext == ".yaml" || ext == ".yml" {
-			paths = append(paths, path)
+		if ext := filepath.Ext(p); ext == ".yaml" || ext == ".yml" {
+			paths = append(paths, p)
 		}
 		return nil
 	})

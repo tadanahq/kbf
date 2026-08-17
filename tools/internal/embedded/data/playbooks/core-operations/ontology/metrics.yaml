@@ -1,0 +1,23 @@
+# DO NOT EDIT: generated from playbooks/core-operations/ontology/metrics.yaml by scripts/embedsync. Edit the source, then run `make embed-sync`.
+# location-grain metrics: core-business stops at [organization,
+# business-date] because location is not universal. These add the
+# location dimension on top of core-business's own metrics; they are net
+# new names, not overrides (a metric's grain is not glossary-eligible, so
+# a same-name redeclaration at a different grain would be a fork).
+
+kind: metric
+name: average-ticket
+formula: revenue / transaction-count
+grain: [location, business-date]
+additivity: non-additive
+unit: currency
+tier: structural
+---
+kind: metric
+name: location-labor-cost-ratio
+formula: sum(shift.labor-cost) / revenue
+grain: [location, business-date]
+additivity: non-additive
+unit: ratio
+thresholds: {warn-above: 0.35}
+tier: structural

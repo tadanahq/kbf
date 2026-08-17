@@ -148,7 +148,7 @@ func TestRenderGolden(t *testing.T) {
 			}
 			reports := coverage.Compute(universe)
 
-			checkGolden(t, filepath.Join("testdata", "golden", c.name+".human.txt"), coverage.RenderHuman(reports))
+			checkGolden(t, filepath.Join("testdata", "golden", c.name+".human.txt"), coverage.RenderHuman(reports, universe.EmbeddedNames))
 
 			out, err := coverage.RenderJSON(reports)
 			if err != nil {

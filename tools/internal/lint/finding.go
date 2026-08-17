@@ -32,12 +32,12 @@ const (
 	KBF005 = "KBF005" // metric without grain and/or additivity
 	KBF006 = "KBF006" // relation endpoint (from/to) not a declared entity
 	KBF007 = "KBF007" // relation verb outside the controlled vocabulary
-	KBF008 = "KBF008" // fork of a core element (redefinition in an extending package)
+	KBF008 = "KBF008" // fork of an element already declared in the composition closure
 	KBF009 = "KBF009" // dangling cross-reference (grain, on, expects)
-	KBF010 = "KBF010" // missing governance tier (or risk, for actions)
+	KBF010 = "KBF010" // missing governance tier (or approval, for actions)
 	KBF011 = "KBF011" // manifest missing or invalid
 	KBF012 = "KBF012" // attribute slot reference without a matching install/slots.yaml declaration
-	KBF013 = "KBF013" // layer/taxonomy consistency: extends-target layer, name-prefix convention
+	KBF013 = "KBF013" // layer/taxonomy consistency: build-target layer, name-prefix convention
 )
 
 // Finding is one rule violation. The field set and JSON keys are exactly

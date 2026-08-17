@@ -1,0 +1,16 @@
+# DO NOT EDIT: generated from playbooks/core-services/ontology/engagement.yaml by scripts/embedsync. Edit the source, then run `make embed-sync`.
+kind: entity
+name: engagement
+meaning: >-
+  A scoped period of work the business performs for a customer.
+identity: [engagement_id]
+resolution: identity-mapping
+tier: structural
+synonyms: {en: [project, retainer], es: [proyecto]}
+attributes:
+  - {name: label, type: text, slot: delivery.engagement-label}
+  - {name: starts-at, type: date, slot: delivery.engagement-start}
+  - {name: ends-at, type: date, slot: delivery.engagement-end}
+  - {name: status, type: text, slot: delivery.engagement-status}
+  - {name: billed-hours, type: number, slot: delivery.engagement-billed-hours}
+states: [proposed, active, completed, cancelled]

@@ -1,0 +1,22 @@
+# DO NOT EDIT: generated from playbooks/core-services/install/slots.yaml by scripts/embedsync. Edit the source, then run `make embed-sync`.
+# Slot-mapping template for core-services' own new attributes only
+# (engagement, deliverable). core-business's 21 slots are declared in
+# its own install/slots.yaml; a leaf install building on this playbook
+# maps the full resolved set. See spec/primitives/slot-mapping.md.
+
+- slot: delivery.engagement-label
+  source: ""
+- slot: delivery.engagement-start
+  source: ""
+- slot: delivery.engagement-end
+  source: ""
+- slot: delivery.engagement-status
+  source: ""
+- slot: delivery.engagement-billed-hours
+  source: ""
+- slot: delivery.deliverable-label
+  source: ""
+- slot: delivery.deliverable-due
+  source: ""
+- slot: delivery.deliverable-status
+  source: ""

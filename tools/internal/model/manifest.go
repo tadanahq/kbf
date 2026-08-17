@@ -40,9 +40,12 @@ type Manifest struct {
 	// this playbook builds on nothing: for layer: core that is what makes
 	// it a root (root-ness is derived from an empty BuildsOn, never
 	// declared as its own value); layer: vertical always needs at least
-	// one entry (KBF013). Every name must resolve within the set of
-	// playbooks passed to `kbf lint`, and the closure must not cycle:
-	// both KBF011.
+	// one entry (KBF013). Every name must resolve, either within the set
+	// of playbooks passed to `kbf lint` or, for the kbf CLI specifically,
+	// from the embedded core playbooks it falls back to when a name isn't
+	// passed at all (lint.LoadWithEmbedded; a local path of the same name
+	// always wins over the embedded fallback), and the closure must not
+	// cycle: both KBF011.
 	BuildsOn []string `yaml:"builds-on" json:"builds-on"`
 	// Layer states this playbook's place in the taxonomy: core (a
 	// foundation playbook other playbooks compose; builds-on only core

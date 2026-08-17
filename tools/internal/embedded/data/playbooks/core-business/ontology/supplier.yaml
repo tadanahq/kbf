@@ -1,0 +1,12 @@
+# DO NOT EDIT: generated from playbooks/core-business/ontology/supplier.yaml by scripts/embedsync. Edit the source, then run `make embed-sync`.
+kind: entity
+name: supplier
+meaning: >-
+  A vendor the business buys goods or services from.
+identity: [supplier_id]
+resolution: identity-mapping
+tier: structural
+synonyms: {en: [vendor], es: [proveedor]}
+attributes:
+  - {name: display-name, type: text, slot: purchasing.supplier-name}
+  - {name: contact, type: text, slot: purchasing.supplier-contact}

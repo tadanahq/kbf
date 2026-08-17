@@ -20,6 +20,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/tadanahq/kbf/tools/internal/coverage"
+	"github.com/tadanahq/kbf/tools/internal/embedded"
 	"github.com/tadanahq/kbf/tools/internal/lint"
 )
 
@@ -29,7 +30,8 @@ var coverageCmd = &cobra.Command{
 	Use:   "coverage <path> [path...]",
 	Short: "Report static slot-mapping completeness: declared, mapped, unmapped.",
 	Long: `coverage loads one or more playbook directories the same way lint does
-(builds-on resolved by manifest name across exactly the paths given), then
+(builds-on resolved by manifest name across exactly the paths given, falling
+back to kbf's embedded core playbooks for a name no path provides), then
 reports install/slots.yaml completeness for each leaf playbook: a playbook
 given only as composition context (e.g. core-business alongside cafe-demo)
 is not itself reported on, since its slots.yaml is a template by definition.`,
@@ -43,7 +45,7 @@ func init() {
 }
 
 func runCoverage(cmd *cobra.Command, args []string) error {
-	universe, _, err := lint.Load(args)
+	universe, _, err := lint.LoadWithEmbedded(args, embedded.Playbook)
 	if err != nil {
 		return fmt.Errorf("coverage: %w", err)
 	}
@@ -51,7 +53,7 @@ func runCoverage(cmd *cobra.Command, args []string) error {
 
 	switch coverageFormat {
 	case "human":
-		if _, err := fmt.Fprint(cmd.OutOrStdout(), coverage.RenderHuman(reports)); err != nil {
+		if _, err := fmt.Fprint(cmd.OutOrStdout(), coverage.RenderHuman(reports, universe.EmbeddedNames)); err != nil {
 			return err
 		}
 	case "json":

@@ -1,0 +1,20 @@
+# DO NOT EDIT: generated from playbooks/core-operations/evals/competency-questions.yaml by scripts/embedsync. Edit the source, then run `make embed-sync`.
+# Competency questions for core-operations' own additions (location,
+# shift, and the location-grain metrics). Core-universal's questions are
+# inherited.
+
+kind: competency-question
+question: What is the average ticket size per location this month?
+expects: [average-ticket]
+---
+kind: competency-question
+question: What is the labor cost ratio per location this month?
+expects: [location-labor-cost-ratio]
+---
+kind: competency-question
+question: Which offerings does each location sell?
+expects: [sells]
+---
+kind: competency-question
+question: How many shifts were staffed this month, and by whom?
+expects: [staffed-by]

@@ -1,0 +1,50 @@
+# DO NOT EDIT: generated from playbooks/core-business/install/slots.yaml by scripts/embedsync. Edit the source, then run `make embed-sync`.
+# Slot-mapping template: one row per slot declared by an attribute in
+# this playbook's own ontology/*.yaml. core-business ships every source
+# empty; a core playbook (core-operations, core-services) adds only its
+# own new slots the same way, and a leaf install (a teaching playbook like
+# examples/cafe-demo, or a real install) covers the full resolved closure
+# with real sources filled in. See spec/primitives/slot-mapping.md.
+
+- slot: core.organization-legal-name
+  source: ""
+- slot: core.organization-display-name
+  source: ""
+- slot: core.organization-tax-id
+  source: ""
+- slot: sales.transaction-timestamp
+  source: ""
+- slot: sales.transaction-status
+  source: ""
+- slot: sales.transaction-total
+  source: ""
+- slot: catalog.offering-label
+  source: ""
+- slot: catalog.offering-category
+  source: ""
+- slot: catalog.offering-price
+  source: ""
+- slot: crm.customer-name
+  source: ""
+- slot: crm.customer-contact
+  source: ""
+- slot: crm.customer-joined-date
+  source: ""
+- slot: hr.employee-name
+  source: ""
+- slot: hr.employee-role
+  source: ""
+- slot: hr.employee-hire-date
+  source: ""
+- slot: hr.employee-labor-cost
+  source: ""
+- slot: purchasing.supplier-name
+  source: ""
+- slot: purchasing.supplier-contact
+  source: ""
+- slot: purchasing.purchase-timestamp
+  source: ""
+- slot: purchasing.purchase-status
+  source: ""
+- slot: purchasing.purchase-total
+  source: ""

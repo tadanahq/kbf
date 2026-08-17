@@ -3,16 +3,16 @@
 # `make check` is the quality gate (AGENTS.md / project-standards.md):
 # gofmt, golangci-lint, go test, `kbf lint` over playbooks/ + examples/
 # (dogfood), the conformance suite, spec doc-extraction, schema-freshness,
-# and boundaries. Green before any task is marked done. Every target
-# enforces for real: no empty-pass left anywhere (all content/code this
-# gate checks exists).
+# embed-freshness, and boundaries. Green before any task is marked done.
+# Every target enforces for real: no empty-pass left anywhere (all
+# content/code this gate checks exists).
 
 TOOLS := tools
 SCRIPTS := scripts
 BIN := bin/kbf
 
 .PHONY: check
-check: fmt lint test dogfood-lint conformance spec-examples schema-freshness boundaries
+check: fmt lint test dogfood-lint conformance spec-examples schema-freshness embed-freshness boundaries
 
 .PHONY: fmt
 fmt:
@@ -62,6 +62,14 @@ schema: $(BIN)
 .PHONY: schema-freshness
 schema-freshness: $(BIN)
 	./$(BIN) schema --check --out schema
+
+.PHONY: embed-sync
+embed-sync:
+	cd $(SCRIPTS) && go run ./embedsync --root ..
+
+.PHONY: embed-freshness
+embed-freshness:
+	cd $(SCRIPTS) && go run ./embedsync --root .. --check
 
 .PHONY: boundaries
 boundaries:

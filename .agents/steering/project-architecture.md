@@ -34,12 +34,17 @@ competency question, namespace).
 - `tools/` is one Go module, package layout:
   - `internal/model/`: the canonical structs (the meta-model). Single source of truth.
   - `internal/schemagen/`: emits `schema/*.yaml` from the model.
-  - `internal/lint/`: loads YAML (position-aware), validates structure against
-    the model, then applies semantic rules (extension-not-fork, verb vocabulary,
+  - `internal/lint/`: loads YAML (position-aware, `fs.FS`-generic so a real disk
+    directory and an embedded one share one loader), validates structure against
+    the model, then applies semantic rules (composition-not-fork, verb vocabulary,
     grain/additivity presence, tier presence, cross-references resolve).
   - `internal/coverage/`: static slot-mapping completeness report.
   - `internal/compile/`: emitters; v0 ships `mermaid` only.
-  - `cmd/kbf/`: cobra wiring: `lint`, `coverage`, `compile`, `schema` (regen).
+  - `internal/embedded/`: the public core playbooks, the `kbf-authoring` skill,
+    and the prose spec, baked into the binary (see Boundaries below); mirrored
+    from the repo root into `data/` by `scripts/embedsync`, never hand-edited.
+  - `cmd/kbf/`: cobra wiring: `lint`, `coverage`, `compile`, `schema` (regen),
+    `vendor`, `skill install`, `docs`, `init`.
 - Lint pipeline: parse → structural validation → semantic rules → render
   (lipgloss table or `--format json` for agent consumption). **JSON output is a
   stable interface**: authoring agents parse it.
@@ -64,5 +69,19 @@ but not linted in v0 (config-phase scope).
 
 - `spec/`, `schema/`, `playbooks/`, `examples/` never reference engines,
   databases, vendors, clients, or tooling internals.
-- `tools/` may not embed playbook content; playbooks are always inputs.
+- `tools/` may embed the *public* core playbooks (`playbooks/core-*`), the
+  `kbf-authoring` skill, and the prose spec (`spec/*.md`,
+  `spec/primitives/*.md`), strictly as a composition-resolution fallback:
+  a local path of the same manifest name always overrides the embedded
+  copy, never the reverse, and embedded content is a convenience default,
+  never a privileged or hidden source of truth (`kbf vendor` always
+  materializes it to a real, inspectable, editable directory on request).
+  `tools/` may not embed a vertical, an example, or anything not already
+  public in this repository: the fallback mirrors what's already here, it
+  never becomes a second, parallel source of content. Evolved
+  2026-08-17 from "tools/ may not embed playbook content; playbooks are
+  always inputs" (the batteries-included binary needed a local-first,
+  never-privileged carve-out that rule didn't have room for); see
+  `project-decisions.md`'s "Batteries-included binary" entry for the why
+  and the reversal condition.
 - Public hygiene scan covers every file in the repo.

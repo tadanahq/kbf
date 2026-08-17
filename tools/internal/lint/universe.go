@@ -14,7 +14,10 @@
 
 package lint
 
-import "sort"
+import (
+	"os"
+	"sort"
+)
 
 // Universe is every package loaded together for one kbf invocation, keyed
 // by manifest name plus the original command-line order. internal/lint
@@ -24,23 +27,32 @@ import "sort"
 type Universe struct {
 	Packages map[string]*Package
 	Order    []*Package
+	// EmbeddedNames is every manifest name resolved from a PlaybookSource
+	// fallback rather than one of the paths passed in, sorted. Empty for
+	// a Universe built by Load (no fallback consulted at all): only
+	// LoadWithEmbedded ever populates it. See embedded_resolve.go.
+	EmbeddedNames []string
 }
 
 // Load reads every package rooted at each of paths (position-aware; see
-// loadPackage) into one Universe. Each path is loaded independently, then
-// all of them together form the set builds-on resolves against (design.md:
-// "kbf lint takes one or more package paths ... resolved by name against
-// that set, not by filesystem convention"). Load returns a Go error only
-// for a path that isn't a readable directory; every content problem,
-// including an unresolvable builds-on entry, is a Finding for the caller
-// to decide what to do with (lint fails on it; coverage/compile mostly
-// don't care and just resolve what they can).
+// loadPackage) into one Universe, each as a real disk directory
+// (os.DirFS). Each path is loaded independently, then all of them
+// together form the set builds-on resolves against (design.md: "kbf lint
+// takes one or more package paths ... resolved by name against that set,
+// not by filesystem convention"). Load returns a Go error only for a path
+// that isn't a readable directory; every content problem, including an
+// unresolvable builds-on entry, is a Finding for the caller to decide
+// what to do with (lint fails on it; coverage/compile mostly don't care
+// and just resolve what they can). Load never consults an embedded
+// fallback: exactly what's passed is exactly what's resolved, which is
+// what the conformance suite and every internal/lint test rely on. The
+// kbf CLI itself uses LoadWithEmbedded instead; see embedded_resolve.go.
 func Load(paths []string) (*Universe, []Finding, error) {
 	u := &Universe{Packages: make(map[string]*Package, len(paths))}
 	var findings []Finding
 
 	for _, p := range paths {
-		pkg, loadFindings, err := loadPackage(p)
+		pkg, loadFindings, err := loadPackage(os.DirFS(p), p)
 		if err != nil {
 			return nil, nil, err
 		}
@@ -145,16 +157,33 @@ func (u *Universe) IsLeaf(pkg *Package) bool {
 // package passed in, sorted deterministically.
 type Result struct {
 	Findings []Finding
+	// EmbeddedUsed mirrors the Universe's EmbeddedNames: every manifest
+	// name resolved from fallback rather than an explicit path, sorted,
+	// empty for a Run built without one. A human renderer surfaces this
+	// as a footer line; the JSON contract carries no field for it (see
+	// RenderJSON's doc comment in render_json.go), since it is a run
+	// detail, not part of the stable finding shape an agent parses.
+	EmbeddedUsed []string
 }
 
 // Run lints the packages rooted at each of paths: see Load for how the
-// universe is built and Closure for how composition is resolved.
+// universe is built and Closure for how composition is resolved. Run
+// never falls back to embedded playbooks; see RunWithEmbedded
+// (embedded_resolve.go) for the variant the kbf CLI actually runs.
 func Run(paths []string) (Result, error) {
 	universe, findings, err := Load(paths)
 	if err != nil {
 		return Result{}, err
 	}
+	return runOn(universe, findings), nil
+}
 
+// runOn is Run's and RunWithEmbedded's shared tail: given an already-built
+// Universe and whatever Findings loading itself produced, apply every
+// structural and semantic rule per package and return the sorted Result.
+// Kept separate from Run so RunWithEmbedded (embedded_resolve.go) never
+// duplicates this loop, only how the Universe was built.
+func runOn(universe *Universe, findings []Finding) Result {
 	for _, pkg := range universe.Order {
 		findings = append(findings, checkManifest(pkg, universe.Packages)...)
 		findings = append(findings, checkTaxonomy(pkg, universe.Packages)...)
@@ -174,5 +203,5 @@ func Run(paths []string) (Result, error) {
 	}
 
 	sortFindings(findings)
-	return Result{Findings: findings}, nil
+	return Result{Findings: findings, EmbeddedUsed: universe.EmbeddedNames}
 }
