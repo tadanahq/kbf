@@ -1,5 +1,5 @@
 # Competency questions specific to Demo Studio's extensions. Universal
-# and services-core questions are inherited.
+# and core-services questions are inherited.
 
 kind: competency-question
 question: What is Demo Studio's repeat engagement rate this month?

@@ -1,7 +1,7 @@
 # kbf — repo gates.
 #
 # `make check` is the quality gate (AGENTS.md / project-standards.md):
-# gofmt, golangci-lint, go test, `kbf lint` over packages/ + examples/
+# gofmt, golangci-lint, go test, `kbf lint` over playbooks/ + examples/
 # (dogfood), the conformance suite, spec doc-extraction, schema-freshness,
 # and boundaries. Green before any task is marked done. Every target
 # enforces for real: no empty-pass left anywhere (all content/code this
@@ -43,8 +43,8 @@ build: $(BIN)
 
 .PHONY: dogfood-lint
 dogfood-lint: $(BIN)
-	./$(BIN) lint packages/universal-core packages/operations-core examples/cafe-demo
-	./$(BIN) lint packages/universal-core packages/services-core examples/studio-demo
+	./$(BIN) lint playbooks/core-universal playbooks/core-operations examples/cafe-demo
+	./$(BIN) lint playbooks/core-universal playbooks/core-services examples/studio-demo
 
 .PHONY: conformance
 conformance:

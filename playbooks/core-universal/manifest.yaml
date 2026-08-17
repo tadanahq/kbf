@@ -1,0 +1,6 @@
+# core-universal is Playbook Zero: the base ontology every KBF business
+# shares. It has no parent; every other playbook extends it.
+name: core-universal
+version: 0.1.0
+spec: v0
+extends: null

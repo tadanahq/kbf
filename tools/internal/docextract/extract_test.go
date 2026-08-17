@@ -30,8 +30,8 @@ import (
 // attributionPattern matches a repo-relative-looking path ending in .yaml
 // or .yml: the one stable signal across every way spec/ docs name the real
 // file an example is copied from ("Copied from
-// `packages/universal-core/ontology/metrics.yaml`:", "The root package,
-// `packages/universal-core/manifest.yaml`:", "...from
+// `playbooks/core-universal/ontology/metrics.yaml`:", "The root playbook,
+// `playbooks/core-universal/manifest.yaml`:", "...from
 // `examples/cafe-demo/install/slots.yaml`:", or a plain comment inside the
 // fence itself, "# See examples/cafe-demo/ontology/entities.yaml for the
 // real file."). Wording and backtick-quoting both vary; the path shape does
@@ -58,7 +58,7 @@ func findMarkdownFiles(t *testing.T, dir string) []string {
 }
 
 // extractYAMLBlocks parses mdFile's markdown AST and returns every fenced
-// code block tagged ```yaml (not a bare ``` fence, which package-format.md
+// code block tagged ```yaml (not a bare ``` fence, which playbook-format.md
 // uses for a plain directory-tree illustration, not YAML data).
 func extractYAMLBlocks(t *testing.T, mdFile string) []yamlBlock {
 	t.Helper()

@@ -63,7 +63,7 @@ var ActionRisks = []string{"auto", "confirm"}
 // many-to-many, but from/to are directional and fixed by the relation, so
 // "many locations belong-to one organization" is genuinely many-to-one,
 // not restatable as one-to-many without reversing from/to. Found dogfooding
-// against packages/universal-core, which uses many-to-one 7 times for
+// against playbooks/core-universal, which uses many-to-one 7 times for
 // exactly this shape (child-to-parent relations); see design.md.
 var Cardinalities = []string{"one-to-one", "one-to-many", "many-to-one", "many-to-many"}
 

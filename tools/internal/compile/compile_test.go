@@ -29,12 +29,12 @@ var update = flag.Bool("update", false, "write golden files instead of comparing
 // realChains: both demo chains this repo ships, dogfooded the same way
 // the linter is (design.md, coverage_test.go). design.md is explicit that
 // both exist so "one shared multi-vertical core" is checkable, not
-// asserted: universal-core is never exercised alone as "the" example,
+// asserted: core-universal is never exercised alone as "the" example,
 // only as the common ancestor of two visibly different businesses, so
 // both get the same golden protection, not just cafe-demo. Each chain is
-// three levels (layered-packages restructure, 2026-08-13): all three
+// three levels (layered-playbooks restructure, 2026-08-13): all three
 // paths must be passed or the leaf's own extends fails to resolve
-// (KBF011), same as any other package whose ancestor isn't among the
+// (KBF011), same as any other playbook whose ancestor isn't among the
 // loaded paths.
 var realChains = []struct {
 	name          string // also the golden file's basename
@@ -47,22 +47,22 @@ var realChains = []struct {
 		name: "cafe-demo",
 		paths: []string{
 			filepath.Join("..", "..", "..", "examples", "cafe-demo"),
-			filepath.Join("..", "..", "..", "packages", "operations-core"),
-			filepath.Join("..", "..", "..", "packages", "universal-core"),
+			filepath.Join("..", "..", "..", "playbooks", "core-operations"),
+			filepath.Join("..", "..", "..", "playbooks", "core-universal"),
 		},
-		// 9 entities: universal-core's 7 (organization, customer,
+		// 9 entities: core-universal's 7 (organization, customer,
 		// offering, transaction, employee, supplier, purchase) plus
-		// operations-core's 2 new ones (location, shift). cafe-demo
+		// core-operations' 2 new ones (location, shift). cafe-demo
 		// introduces no entity of its own (its product fragment is a
 		// synonym-only override of offering).
 		wantEntities: 9,
-		// 17 relations: universal-core's own, plus operations-core's 6
+		// 17 relations: core-universal's own, plus core-operations' 6
 		// (belongs-to and responsible-for reused on new pairs, plus the 4
 		// minted verbs located-at/staffed-by/works-at/sells), plus
 		// cafe-demo's one new (name,from,to) triple (location belongs-to
 		// location) that does not collide with anything up the chain.
 		wantRelations: 17,
-		// 4 actions: all from universal-core; operations-core and
+		// 4 actions: all from core-universal; core-operations and
 		// cafe-demo add none.
 		wantActions: 4,
 	},
@@ -70,23 +70,23 @@ var realChains = []struct {
 		name: "studio-demo",
 		paths: []string{
 			filepath.Join("..", "..", "..", "examples", "studio-demo"),
-			filepath.Join("..", "..", "..", "packages", "services-core"),
-			filepath.Join("..", "..", "..", "packages", "universal-core"),
+			filepath.Join("..", "..", "..", "playbooks", "core-services"),
+			filepath.Join("..", "..", "..", "playbooks", "core-universal"),
 		},
-		// 9 entities: universal-core's 7 plus services-core's 2 new ones
+		// 9 entities: core-universal's 7 plus core-services' 2 new ones
 		// (engagement, deliverable). studio-demo introduces none of its
 		// own.
 		wantEntities: 9,
-		// 15 relations: universal-core's own, plus services-core's 5
+		// 15 relations: core-universal's own, plus core-services' 5
 		// (places, contains, derived-from, responsible-for all reused on
-		// new pairs; services-core mints no new verb at all), plus
+		// new pairs; core-services mints no new verb at all), plus
 		// studio-demo's one new triple (customer belongs-to customer).
 		wantRelations: 15,
 		wantActions:   4,
 	},
 }
 
-func TestBuildGraphAgainstRealPackages(t *testing.T) {
+func TestBuildGraphAgainstRealPlaybooks(t *testing.T) {
 	for _, c := range realChains {
 		t.Run(c.name, func(t *testing.T) {
 			universe, findings, err := lint.Load(c.paths)

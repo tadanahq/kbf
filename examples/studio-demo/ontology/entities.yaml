@@ -3,8 +3,8 @@
 # override must leave every non-glossary field zero-valued: meaning,
 # identity, resolution, tier, attributes and states are omitted here on
 # purpose, not repeated. Only `synonyms` (Entity's one glossary-eligible
-# field) is set. `engagement` is declared in services-core, studio-demo's
-# immediate parent, so this matches and layers on top of services-core's
+# field) is set. `engagement` is declared in core-services, studio-demo's
+# immediate parent, so this matches and layers on top of core-services'
 # own `project`/`retainer` synonyms. See "Extension, not fork" in
 # spec/conventions.md.
 

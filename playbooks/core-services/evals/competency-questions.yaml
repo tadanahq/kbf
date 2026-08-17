@@ -1,8 +1,8 @@
-# Competency questions for services-core's own additions (engagement,
-# deliverable, effective-rate, on-time-delivery-rate). Universal-core's
+# Competency questions for core-services' own additions (engagement,
+# deliverable, effective-rate, on-time-delivery-rate). Core-universal's
 # questions are inherited. `expects` avoids every verb reused from
-# universal-core (places, contains, derived-from, responsible-for all
-# recur on a services-core pair): a bare verb reference would be
+# core-universal (places, contains, derived-from, responsible-for all
+# recur on a core-services pair): a bare verb reference would be
 # ambiguous about which pair, so these reference entities and metrics
 # instead, per spec/primitives/competency-question.md.
 

@@ -18,7 +18,7 @@ contributor needs.
 In short: propose the change as a capsule before writing code or content,
 build against the approved capsule, keep `tasks.md` current as each task
 lands, and make sure `make check` (gofmt, lint, tests, `kbf lint` over
-`packages/` and `examples/`, conformance, schema-freshness, boundaries) is
+`playbooks/` and `examples/`, conformance, schema-freshness, boundaries) is
 green before calling anything done. `make check` is the gate; a pull
 request that does not pass it is not ready for review.
 
@@ -26,7 +26,7 @@ request that does not pass it is not ready for review.
 
 This project is licensed Apache-2.0. Go source files under `tools/` carry
 the standard Apache-2.0 header comment at the top of the file. YAML content
-(`packages/`, `examples/`, `conformance/`) and Markdown documentation
+(`playbooks/`, `examples/`, `conformance/`) and Markdown documentation
 (`spec/`, this file, `README.md`) do not carry a per-file header: the
 repository-level [`LICENSE`](LICENSE) file covers them, following the same
 convention most open-source projects use for data and prose files that

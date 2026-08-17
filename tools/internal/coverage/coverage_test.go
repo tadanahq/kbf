@@ -41,7 +41,7 @@ var update = flag.Bool("update", false, "write golden files instead of comparing
 // clarifications"). design.md is explicit that both exist so "one shared
 // multi-vertical core" is checkable, not asserted, so both get the same
 // golden protection, not just cafe-demo. Each chain is three levels
-// (layered-packages restructure, 2026-08-13): all three paths must be
+// (layered-playbooks restructure, 2026-08-13): all three paths must be
 // passed or the leaf's own extends fails to resolve (KBF011).
 var realChains = []struct {
 	name     string // also the golden files' basename
@@ -54,10 +54,10 @@ var realChains = []struct {
 		name: "cafe-demo",
 		paths: []string{
 			filepath.Join("..", "..", "..", "examples", "cafe-demo"),
-			filepath.Join("..", "..", "..", "packages", "operations-core"),
-			filepath.Join("..", "..", "..", "packages", "universal-core"),
+			filepath.Join("..", "..", "..", "playbooks", "core-operations"),
+			filepath.Join("..", "..", "..", "playbooks", "core-universal"),
 		},
-		// 27 slots: universal-core's 21 + operations-core's 6 (location
+		// 27 slots: core-universal's 21 + core-operations' 6 (location
 		// x3, shift x3), the full resolved ontology across the chain.
 		declared: 27,
 		mapped:   24,
@@ -67,10 +67,10 @@ var realChains = []struct {
 		name: "studio-demo",
 		paths: []string{
 			filepath.Join("..", "..", "..", "examples", "studio-demo"),
-			filepath.Join("..", "..", "..", "packages", "services-core"),
-			filepath.Join("..", "..", "..", "packages", "universal-core"),
+			filepath.Join("..", "..", "..", "playbooks", "core-services"),
+			filepath.Join("..", "..", "..", "playbooks", "core-universal"),
 		},
-		// 29 slots: universal-core's 21 + services-core's 8 (engagement
+		// 29 slots: core-universal's 21 + core-services' 8 (engagement
 		// x5, deliverable x3).
 		declared: 29,
 		mapped:   27,
@@ -78,7 +78,7 @@ var realChains = []struct {
 	},
 }
 
-func TestComputeAgainstRealPackages(t *testing.T) {
+func TestComputeAgainstRealPlaybooks(t *testing.T) {
 	for _, c := range realChains {
 		t.Run(c.name, func(t *testing.T) {
 			universe, findings, err := lint.Load(c.paths)
@@ -86,12 +86,12 @@ func TestComputeAgainstRealPackages(t *testing.T) {
 				t.Fatalf("lint.Load: %v", err)
 			}
 			if len(findings) != 0 {
-				t.Fatalf("lint.Load produced findings, want none (packages/examples are expected to lint clean): %+v", findings)
+				t.Fatalf("lint.Load produced findings, want none (playbooks/examples are expected to lint clean): %+v", findings)
 			}
 
 			reports := coverage.Compute(universe)
 			if len(reports) != 1 {
-				t.Fatalf("got %d reports, want 1 (only the demo is a leaf; its base/universal-core ancestors are extends-context, not a subject): %+v", len(reports), reports)
+				t.Fatalf("got %d reports, want 1 (only the demo is a leaf; its core-playbook and core-universal ancestors are extends-context, not a subject): %+v", len(reports), reports)
 			}
 
 			r := reports[0]
@@ -143,17 +143,17 @@ func TestRenderGolden(t *testing.T) {
 	}
 }
 
-func TestUniversalCoreAlone(t *testing.T) {
-	universe, _, err := lint.Load([]string{filepath.Join("..", "..", "..", "packages", "universal-core")})
+func TestCoreUniversalAlone(t *testing.T) {
+	universe, _, err := lint.Load([]string{filepath.Join("..", "..", "..", "playbooks", "core-universal")})
 	if err != nil {
 		t.Fatalf("lint.Load: %v", err)
 	}
 	reports := coverage.Compute(universe)
 	if len(reports) != 1 {
-		t.Fatalf("got %d reports, want 1: linted alone, universal-core is trivially its own leaf", len(reports))
+		t.Fatalf("got %d reports, want 1: linted alone, core-universal is trivially its own leaf", len(reports))
 	}
 	if reports[0].Mapped != 0 {
-		t.Errorf("Mapped = %d, want 0: universal-core's slots.yaml is a template, every source empty", reports[0].Mapped)
+		t.Errorf("Mapped = %d, want 0: core-universal's slots.yaml is a template, every source empty", reports[0].Mapped)
 	}
 	if reports[0].Declared != 21 {
 		t.Errorf("Declared = %d, want 21", reports[0].Declared)

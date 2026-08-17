@@ -1,0 +1,7 @@
+# core-operations: the core playbook for businesses that operate from one
+# or more physical or scheduled sites (retail, hospitality, field services).
+# Adds location and shift on top of core-universal; does not fork it.
+name: core-operations
+version: 0.1.0
+spec: v0
+extends: core-universal

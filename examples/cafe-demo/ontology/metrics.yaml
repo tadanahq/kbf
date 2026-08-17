@@ -3,9 +3,9 @@
 #    "Implementation clarifications" (KBF008), the override leaves every
 #    non-glossary field zero-valued: formula, grain, additivity, unit and
 #    tier are omitted, not repeated. Only `thresholds` (Metric's one
-#    glossary-eligible field) is set, tightened from operations-core's 0.35
-#    to 0.32. This overrides operations-core's location-grain metric, not
-#    universal-core's organization-grain labor-cost-ratio: they are
+#    glossary-eligible field) is set, tightened from core-operations' 0.35
+#    to 0.32. This overrides core-operations' location-grain metric, not
+#    core-universal's organization-grain labor-cost-ratio: they are
 #    different metrics (different name), so overriding one says nothing
 #    about the other.
 # 2. waste-ratio: a net-new vertical metric, not present in core at all, so

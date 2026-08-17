@@ -31,7 +31,7 @@ var rootCmd = &cobra.Command{
 	Long: `kbf is the reference tool for the KBF Ontology Spec.
 
 v0 is config-phase tooling: it helps an authoring agent, or a human, create
-and validate a KBF ontology package. It never touches a business's live data
+and validate a KBF ontology playbook. It never touches a business's live data
 and runs no queries: files in, files out. Runtime enforcement (validating
 agent-generated queries against an ontology) is on the roadmap, not in v0.`,
 	SilenceUsage:  true,

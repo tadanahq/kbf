@@ -10,7 +10,7 @@ sequencing reaches this repo only through spec capsules.
 
 **This repo is public.** It is the home of KBF, the Kozmo Business Framework:
 its specs (the KBF Ontology first, further modules as they land), reference
-tooling, and base packages: and a showcase of how we engineer. The ontology is
+tooling, and core playbooks: and a showcase of how we engineer. The ontology is
 KBF's foundation module, never a synonym for KBF itself. Everything here is written for a
 stranger: no client names, no internal project references, no private paths, no
 prices. That rule is absolute and machine-checked (`make boundaries`).
@@ -69,7 +69,7 @@ One repeating cycle: **pick → spec → build → review → log**.
 
 ## Architecture (summary; full detail in steering)
 
-- `spec/` prose spec · `schema/` **generated** meta-schemas · `packages/`
+- `spec/` prose spec · `schema/` **generated** meta-schemas · `playbooks/`
   ontology content · `examples/` teaching content · `tools/` the Go `kbf` CLI ·
   `conformance/` language-agnostic fixture suite · `rfcs/` public change process.
 - **The spec is engine-agnostic.** Databases exist only behind explicit
@@ -84,7 +84,7 @@ One repeating cycle: **pick → spec → build → review → log**.
 ## Quality gate
 
 `make check` is the gate: gofmt, golangci-lint, go test, `kbf lint` over
-`packages/` and `examples/` (dogfood), conformance suite, schema-freshness
+`playbooks/` and `examples/` (dogfood), conformance suite, schema-freshness
 (regenerate, diff must be empty), boundaries (public-hygiene scan). Green before
 any task is marked done.
 

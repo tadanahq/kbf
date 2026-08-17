@@ -1,7 +1,0 @@
-# operations-core: the base layer for businesses that operate from one or
-# more physical or scheduled sites (retail, hospitality, field services).
-# Adds location and shift on top of universal-core; does not fork it.
-name: operations-core
-version: 0.1.0
-spec: v0
-extends: universal-core

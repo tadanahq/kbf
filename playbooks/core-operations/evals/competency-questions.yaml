@@ -1,5 +1,5 @@
-# Competency questions for operations-core's own additions (location,
-# shift, and the location-grain metrics). Universal-core's questions are
+# Competency questions for core-operations' own additions (location,
+# shift, and the location-grain metrics). Core-universal's questions are
 # inherited.
 
 kind: competency-question

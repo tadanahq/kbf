@@ -3,12 +3,12 @@
 #    "Implementation clarifications" (KBF008), the override leaves every
 #    non-glossary field zero-valued: formula, grain, additivity, unit and
 #    tier are omitted, not repeated. Only `thresholds` (Metric's one
-#    glossary-eligible field) is set, tightened from services-core's 0.85
+#    glossary-eligible field) is set, tightened from core-services' 0.85
 #    to 0.90: Demo Studio holds itself to a stricter bar.
 # 2. repeat-engagement-rate: a net-new vertical metric, not present in
-#    services-core or universal-core, so it is declared in full. A classic
+#    core-services or core-universal, so it is declared in full. A classic
 #    agency health signal (client loyalty), expressible from customer and
-#    engagement counts alone, no attributes beyond what services-core
+#    engagement counts alone, no attributes beyond what core-services
 #    already declares.
 
 kind: metric

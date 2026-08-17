@@ -21,21 +21,21 @@ there is exactly one row per declared slot, and the file's only job is to
 be a checklist. Unlike the other primitives, it carries neither `tier` nor
 `risk`: `KBF010` does not apply to it.
 
-A package's `install/slots.yaml` covers only the slots declared by
-attributes in that package's own `ontology/`, not its ancestors': a base
-package (`packages/operations-core`, `packages/services-core`) templates
-only what it adds on top of `universal-core`, exactly as `universal-core`
-templates its own. A leaf install (a teaching package like
+A playbook's `install/slots.yaml` covers only the slots declared by
+attributes in that playbook's own `ontology/`, not its ancestors': a core
+playbook (`playbooks/core-operations`, `playbooks/core-services`) templates
+only what it adds on top of `core-universal`, exactly as `core-universal`
+templates its own. A leaf install (a teaching playbook like
 `examples/cafe-demo`, or a real deployment) is different: it covers the
 *full resolved chain*, because an install is mapping one business's whole
 ontology to its real systems, not documenting what one layer contributed.
 `examples/cafe-demo/install/slots.yaml` has all 27 slots across
-`universal-core` and `packages/operations-core` combined, even though
+`core-universal` and `playbooks/core-operations` combined, even though
 `cafe-demo` itself declares no new attributes.
 
 ## Example
 
-The template form, one row from `packages/universal-core/install/slots.yaml`:
+The template form, one row from `playbooks/core-universal/install/slots.yaml`:
 
 ```yaml
 - slot: catalog.offering-label
@@ -54,7 +54,7 @@ The same row, filled in by a leaf install, from
 
 - **A slot with no declaring attribute.** Every row in `install/slots.yaml`
   must match a `slot:` value used by some entity's `attributes:` list
-  somewhere in the resolved package. A typo or a leftover row from a
+  somewhere in the resolved playbook. A typo or a leftover row from a
   deleted attribute fails `KBF012`.
 - **An attribute slot with no row.** The reverse gap does not fail the
   linter in v0 (static coverage reporting, not enforcement, is what

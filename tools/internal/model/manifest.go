@@ -20,7 +20,7 @@ package model
 // touching any ontology content, since extends drives cross-package
 // resolution (KBF006, KBF007, KBF008).
 type Manifest struct {
-	// Name is the package's identifier, e.g. "universal-core". Doubles as
+	// Name is the package's identifier, e.g. "core-universal". Doubles as
 	// its namespace: element uniqueness (KBF003) and fork detection
 	// (KBF008) are scoped by this name.
 	Name string `yaml:"name" json:"name"`
@@ -32,7 +32,7 @@ type Manifest struct {
 	// against, e.g. "v0".
 	Spec string `yaml:"spec" json:"spec"`
 	// Extends names the parent package this one extends, or null for a
-	// root package (only universal-core is root in v0). A pointer so the
+	// root package (only core-universal is root in v0). A pointer so the
 	// loader can tell "null" (root, valid) apart from "missing key"
 	// (invalid): both decode a Go string to "", but only the former is a
 	// legal manifest. Non-null values must resolve within the set of

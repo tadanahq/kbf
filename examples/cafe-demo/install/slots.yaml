@@ -1,5 +1,5 @@
 # Demo Cafe's install: the full resolved slot set across its chain
-# (universal-core's 21 + operations-core's 6 = 27; cafe-demo adds no new
+# (core-universal's 21 + core-operations' 6 = 27; cafe-demo adds no new
 # attributes of its own), mapped to two fictional sources: demopos (the
 # point-of-sale system) and demobooks (the accounting system). Demo Cafe
 # has no CRM yet, so the three crm.* customer slots stay unmapped on

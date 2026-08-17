@@ -1,8 +1,8 @@
-# Every verb here already exists in universal-core; services-core mints
+# Every verb here already exists in core-universal; core-services mints
 # none of its own, on purpose (RFC discipline: reuse an existing verb on
 # a new pair before proposing a new one). Relation identity is (name,
 # from, to), so each of these is a distinct relation from its
-# universal-core namesake, not a fork: see spec/conventions.md.
+# core-universal namesake, not a fork: see spec/conventions.md.
 
 kind: relation
 name: places

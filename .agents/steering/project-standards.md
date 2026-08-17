@@ -21,7 +21,7 @@ as a project-level change.
 ## Architecture Principles
 
 - **Spec is engine-agnostic**: no database concept appears in `spec/`,
-  `schema/`, `packages/`, or `examples/`. Engine specificity may exist only in
+  `schema/`, `playbooks/`, or `examples/`. Engine specificity may exist only in
   tooling behind explicit interfaces (none in v0).
 - **Zero runtime dependencies**: files in, files out. No network, no services,
   no DB, anywhere in this repo.
@@ -30,8 +30,8 @@ as a project-level change.
   regenerates and fails on drift.
 - **Conformance is data**: fixtures are plain YAML (valid/invalid + expected
   outcome), runnable by any implementation. The runner is thin.
-- **Extension, never fork**: packages extend `universal-core`; the linter fails
-  a package that redefines a core element.
+- **Extension, never fork**: playbooks extend `core-universal`; the linter
+  fails a playbook that redefines an inherited element.
 - **Public hygiene (absolute)**: no client names, no internal project
   references, no private paths, no prices, in any file including fixtures and
   comments. `make boundaries` scans for a named blocklist plus heuristics; a
@@ -45,7 +45,7 @@ as a project-level change.
 - Vocabulary: **semantic elements** (entities, relations, metrics) and
   **action elements**. Never "kinetic".
 - Relation verbs come from a small controlled vocabulary (target 10-20) defined
-  in `packages/universal-core`; packages may propose additions via RFC, not ad hoc.
+  in `playbooks/core-universal`; playbooks may propose additions via RFC, not ad hoc.
 - Every metric declares grain and additivity. Every entity declares identity
   keys. Every element carries a governance tier (structural / glossary /
   instance).
@@ -55,7 +55,7 @@ as a project-level change.
 ## Quality & Maintainability
 
 - **`make check` is the gate**: gofmt, golangci-lint, go test, `kbf lint` over
-  `packages/` + `examples/`, conformance suite, schema-freshness, boundaries.
+  `playbooks/` + `examples/`, conformance suite, schema-freshness, boundaries.
   Green before any task is marked done.
 - **Module bar**: one concern per file, ~150 lines of real logic; split past
   that along the natural seam. No allowlist, no per-file exemption.

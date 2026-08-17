@@ -18,17 +18,17 @@ without an agent guessing whether that is safe.
 | `grain` | yes (root only) | list of entity names and/or dimensions | The level at which one row of this metric is true. `business-date` is the standard time dimension. |
 | `additivity` | yes (root only) | `additive \| semi-additive \| non-additive` | Whether the metric can be summed across its grain. Empty or invalid fails `KBF005` / `KBF002`. |
 | `unit` | yes (root only) | free text | Opaque string in v0 (common values: `currency`, `count`, `ratio`), not a closed vocabulary. |
-| `thresholds` | no | map of named bounds | Glossary tier by definition: the one field an extending package may set without forking the metric. |
+| `thresholds` | no | map of named bounds | Glossary tier by definition: the one field an extending playbook may set without forking the metric. |
 | `tier` | yes (root only) | `structural \| glossary \| instance` | Governance tier for the metric definition itself (separate from a threshold's own glossary status). Empty fails `KBF010`. |
 
 "Root only" fields are required when a metric is defined for the first
 time. `thresholds` is the exception: it is the one field an extending
-package may set on its own, in a fragment that leaves everything else
+playbook may set on its own, in a fragment that leaves everything else
 zero-valued (see "Common mistakes").
 
 ## Example
 
-Copied from `packages/universal-core/ontology/metrics.yaml`:
+Copied from `playbooks/core-universal/ontology/metrics.yaml`:
 
 ```yaml
 kind: metric
@@ -41,11 +41,11 @@ thresholds: {warn-below: 0.55}
 tier: structural
 ```
 
-`universal-core`'s own metrics stop at `[organization, business-date]`
-grain: `location` is not universal (`packages/operations-core` adds it).
-A base package that wants a location-grain sibling of an existing metric
+`core-universal`'s own metrics stop at `[organization, business-date]`
+grain: `location` is not universal (`playbooks/core-operations` adds it).
+A core playbook that wants a location-grain sibling of an existing metric
 declares a new metric with its own name at that grain
-(`packages/operations-core`'s `average-ticket`, next to universal-core's
+(`playbooks/core-operations`'s `average-ticket`, next to core-universal's
 `average-transaction-value`): grain is not glossary-eligible, so
 redeclaring an existing metric name at a different grain is a fork, not
 an override.
@@ -64,7 +64,7 @@ Metric formulas may reference other metric names directly (`revenue`,
   lint` will not reject an unusual value, but an unfamiliar unit makes the
   metric harder for the next agent to trust. Stay inside the common set
   unless there is a real reason not to.
-- **Forking instead of overriding a threshold.** A package that wants to
+- **Forking instead of overriding a threshold.** A playbook that wants to
   tighten or loosen a threshold should declare a fragment with only `kind`,
   `name`, and `thresholds` set, exactly like the entity synonym pattern in
   `spec/primitives/entity.md`:

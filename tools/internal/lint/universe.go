@@ -54,9 +54,9 @@ func Load(paths []string) (*Universe, []Finding, error) {
 // Chain walks pkg's extends chain and returns its ancestors, nearest
 // first (immediate parent, then grandparent, ..., ending at the chain's
 // root: a package with Extends == nil). pkg itself is never included.
-// Package architecture is layered as of the owner's structural correction
-// (design.md, "Implementation clarifications"): verticals extend base
-// packages, which extend universal-core, so a chain can be arbitrarily
+// Playbook architecture is layered as of the owner's structural correction
+// (design.md, "Implementation clarifications"): verticals extend core
+// playbooks, which extend core-universal, so a chain can be arbitrarily
 // deep, not just the single hop v0 originally assumed.
 //
 // resolved is false the moment a link's extends target isn't in the

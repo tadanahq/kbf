@@ -6,7 +6,7 @@ type: spec-doc
 
 A competency question is a plain-language question paired with the
 elements an answer must use. Together, the competency questions in a
-package are its acceptance suite: if an ontology cannot answer the
+playbook are its acceptance suite: if an ontology cannot answer the
 questions it claims to, it is not done, no matter how complete the
 `ontology/` files look.
 
@@ -20,14 +20,14 @@ questions it claims to, it is not done, no matter how complete the
 
 Competency question carries neither `tier` nor `risk`: `KBF010` does not
 apply to it. At least one per entity is the v0 floor
-(`packages/universal-core/evals/competency-questions.yaml` has seven, one
-per entity; a base package or a leaf install adds more for what it adds,
-`packages/operations-core/evals/competency-questions.yaml` and
+(`playbooks/core-universal/evals/competency-questions.yaml` has seven, one
+per entity; a core playbook or a leaf install adds more for what it adds,
+`playbooks/core-operations/evals/competency-questions.yaml` and
 `examples/cafe-demo/evals/competency-questions.yaml` among them).
 
 ## Example
 
-Copied from `packages/universal-core/evals/competency-questions.yaml`:
+Copied from `playbooks/core-universal/evals/competency-questions.yaml`:
 
 ```yaml
 kind: competency-question
@@ -41,11 +41,11 @@ expects: [labor-cost-ratio]
   does not resolve fails `KBF009`. Rename or delete an element and its
   competency questions go stale in the same pass.
 - **Referencing a relation verb that recurs.** `expects: [supplies]` is
-  ambiguous once a package declares `supplies` for more than one `(from,
+  ambiguous once a playbook declares `supplies` for more than one `(from,
   to)` pair (see `spec/primitives/relation.md`): nothing in the question
   says which one. Reference the metric or entity the question is really
   about instead, the way
-  `packages/universal-core/evals/competency-questions.yaml` asks about
+  `playbooks/core-universal/evals/competency-questions.yaml` asks about
   suppliers with `expects: [supplier, purchase-cost]`, not
   `expects: [supplies]`.
 - **A question with no single right answer.** "How is the business doing?"

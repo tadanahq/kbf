@@ -28,7 +28,7 @@ var compileTo string
 var compileCmd = &cobra.Command{
 	Use:   "compile <path> [path...]",
 	Short: "Render an ontology's map: entities, relations, and actions.",
-	Long: `compile loads one or more package directories the same way lint does, then
+	Long: `compile loads one or more playbook directories the same way lint does, then
 renders the union of everything loaded: entities as nodes, relations as
 labeled edges, actions as annotations on the entity they target. v0 ships
 one emitter: --to mermaid. Output is deterministic (sorted) and is plain

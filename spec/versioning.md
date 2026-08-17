@@ -4,9 +4,9 @@ type: spec-doc
 
 # Versioning
 
-The KBF Ontology Spec, the `kbf` CLI, and any given package all version
+The KBF Ontology Spec, the `kbf` CLI, and any given playbook all version
 independently. This document covers how the spec itself versions, what a
-package's `spec:` field commits it to, and which parts of v0 are
+playbook's `spec:` field commits it to, and which parts of v0 are
 deliberately left opaque for a later version to close.
 
 ## Spec versions
@@ -14,15 +14,15 @@ deliberately left opaque for a later version to close.
 The spec is tagged `spec-v0.x` while it is pre-1.0: each tag is a
 snapshot of `spec/` at a point where the meta-model (the shapes in
 `spec/primitives/`) is stable enough to build against, even though it may
-still change before 1.0. A package declares which spec version it targets
+still change before 1.0. A playbook declares which spec version it targets
 in its manifest:
 
 ```yaml
 spec: v0
 ```
 
-This is independent of the package's own `version` field and of the `kbf`
-tool's release version. A package built against `spec: v0` should keep
+This is independent of the playbook's own `version` field and of the `kbf`
+tool's release version. A playbook built against `spec: v0` should keep
 working against any `spec-v0.x` tag; a breaking change to the meta-model
 itself is what moves the major version, not a new primitive or a new
 convention layered on top of the existing ones.
@@ -40,7 +40,7 @@ matches the spec without depending on `kbf`'s own code.
 
 A breaking change to the meta-model ships with a migration note in the
 same pull request that makes the change: what broke, and the mechanical
-fix for a package that hits it. Notes accumulate per major version; there
+fix for a playbook that hits it. Notes accumulate per major version; there
 is no separate changelog to keep in sync by hand. Until the spec reaches
 1.0, breaking changes are expected between `spec-v0.x` tags; after 1.0,
 they gate on the RFC process in `rfcs/README.md`.
@@ -60,7 +60,7 @@ after the ontology itself has stabilized, not before:
 
 None of these are silent gaps: each is named here and in the primitive doc
 that owns the field, so "opaque in v0" is a stated scope boundary, not
-something a package author has to discover by trial and error against
+something a playbook author has to discover by trial and error against
 `kbf lint`. Closing any of them is a spec-version change, tracked the same
 way as any other breaking change, once there is a real need behind it
 rather than a hypothetical one.

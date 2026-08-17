@@ -1,7 +1,7 @@
 # Slot-mapping template: one row per slot declared by an attribute in
-# this package's own ontology/*.yaml. universal-core ships every source
-# empty; a base package (operations-core, services-core) adds only its
-# own new slots the same way, and a leaf install (a teaching package like
+# this playbook's own ontology/*.yaml. core-universal ships every source
+# empty; a core playbook (core-operations, core-services) adds only its
+# own new slots the same way, and a leaf install (a teaching playbook like
 # examples/cafe-demo, or a real install) covers the full resolved chain
 # with real sources filled in. See spec/primitives/slot-mapping.md.
 

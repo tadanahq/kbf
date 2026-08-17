@@ -3,9 +3,10 @@
 **KBF (Kozmo Business Framework)** is the open framework that organizes a
 business for AI agents: the business layer of an agentic operating system.
 Its modules, in dependency order: the **KBF Ontology** (the contract), the
-**package format** (playbooks as runnable packages), the **findings contract**
-(the judgment layer), and **Outcomes** (value measurement). This repo is the
-home of all of them; the ontology never stands in for the whole framework.
+**playbook format** (playbooks as runnable units of business capability), the
+**findings contract** (the judgment layer), and **Outcomes** (value
+measurement). This repo is the home of all of them; the ontology never
+stands in for the whole framework.
 
 The **KBF Ontology** is the foundation module and v0's shipped artifact: a
 versioned, YAML-authored contract declaring what a business's data *means*
@@ -35,13 +36,13 @@ machine-validated, versioned, with acceptance tests: not documentation.
    `kbf coverage` (static), `kbf compile --to mermaid`. Runtime enforcement (the
    query gate) is deliberately out of v0: see the public roadmap section in
    README when it lands.
-4. **Packages** (`packages/`), layered: `universal-core` is the truly-universal
-   minimal floor (only what EVERY business shares: the revenue event, customers,
-   offerings, people, purchases); **base packages** (`operations-core` for
-   physical-operations businesses, `services-core` for engagement businesses)
-   extend it; verticals extend a base package. Extension, never fork, at every
-   layer, and the extends-root is a parameter: any organization can author its
-   own base.
+4. **Playbooks** (`playbooks/`), layered: `core-universal` is the
+   truly-universal minimal floor (only what EVERY business shares: the
+   revenue event, customers, offerings, people, purchases); **core playbooks**
+   (`core-operations` for physical-operations businesses, `core-services` for
+   engagement businesses) extend it; verticals extend a core playbook.
+   Extension, never fork, at every layer, and the extends-root is a
+   parameter: any organization can author its own core.
 5. **Teaching content** (`examples/`): `cafe-demo` (operations chain) and
    `studio-demo` (services chain), each small, fictional, fully valid, every
    primitive used at least once. Two demos on two chains is the visible proof
@@ -54,11 +55,11 @@ machine-validated, versioned, with acceptance tests: not documentation.
 - **Authoring agents** (Claude Code, Codex, and similar) drive the CLI through
   skills/plugins to spin up and validate ontologies.
 - **Humans** get the same via the editor experience (published schemas) and docs.
-- **Runtimes** consume packages as data; they live outside this repo.
+- **Runtimes** consume playbooks as data; they live outside this repo.
 
 ## v0 definition of done
 
 A stranger can: read README + spec in one sitting, run `kbf lint` on
-`examples/cafe-demo` and `packages/universal-core`, break a file and get a
+`examples/cafe-demo` and `playbooks/core-universal`, break a file and get a
 file:line error that teaches the rule, and render the demo's ontology map with
 `kbf compile --to mermaid`.

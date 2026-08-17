@@ -1,8 +1,8 @@
 # Relations that need `location` or `shift` to exist, so they live here,
-# not in universal-core. Two verbs are reused from universal-core on new
+# not in core-universal. Two verbs are reused from core-universal on new
 # pairs (belongs-to, responsible-for); four are minted here for the first
 # time (works-at, staffed-by, located-at, sells) and become available, by
-# the extends-chain union, to anything that extends operations-core (see
+# the extends-chain union, to anything that extends core-operations (see
 # spec/conventions.md).
 
 kind: relation
@@ -14,7 +14,7 @@ join: [location_id, organization_id]
 tier: source-synced
 temporal: false
 ---
-# Minted here: universal-core's `employed-by` (employee to organization) is
+# Minted here: core-universal's `employed-by` (employee to organization) is
 # the location-free HR fact; this is the location-specific operational one,
 # and the two coexist without conflict on the same employee.
 kind: relation

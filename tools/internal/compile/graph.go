@@ -47,7 +47,7 @@ type ActionEdge struct {
 }
 
 // BuildGraph unions every package in u: for the common case (one leaf
-// package plus the parent it extends, e.g. cafe-demo + universal-core),
+// package plus the parent it extends, e.g. cafe-demo + core-universal),
 // this is exactly the resolved map a reader wants: the whole picture, not
 // just the leaf's own incremental additions. Unlike coverage, compile has
 // no reason to exclude a parent given as context: showing the same

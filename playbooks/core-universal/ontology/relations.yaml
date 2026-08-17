@@ -1,15 +1,15 @@
-# Base relations, grouped by kind. Each document below is a complete
+# Core relations, grouped by kind. Each document below is a complete
 # `kind: relation` element; `---` separates them. Verbs come from the
 # controlled vocabulary in spec/conventions.md, whose scope in v0 is the
 # union of every Relation.name declared anywhere along an extends chain
-# (see the "Layered base packages" decision, 2026-08-13): a base package
-# may mint a verb its own descendants can then use, not only universal-core.
+# (see the "Layered base packages" decision, 2026-08-13): a core playbook
+# may mint a verb its own descendants can then use, not only core-universal.
 # A verb may recur across different entity pairs: relation identity is
 # (name, from, to), not name alone (see "Relation identity" in
 # spec/conventions.md).
 #
 # `location` and `shift` are deliberately absent here: they are not
-# universal (packages/operations-core owns them). `works-at` is absent for
+# universal (playbooks/core-operations owns them). `works-at` is absent for
 # the same reason; `employed-by` below is its location-free replacement.
 
 kind: relation
@@ -70,7 +70,7 @@ tier: source-synced
 temporal: true
 ---
 # An offering belongs to the organization that sells it. Also available
-# for a base package to reuse on a new pair: packages/operations-core
+# for a core playbook to reuse on a new pair: playbooks/core-operations
 # uses this same verb for location-to-organization.
 kind: relation
 name: belongs-to
@@ -104,7 +104,7 @@ temporal: false
 ---
 # No source feed emits "who owns this customer relationship": an owner
 # assigns it by hand, so it sits at client-configured tier even though it
-# lives in universal-core.
+# lives in core-universal.
 kind: relation
 name: responsible-for
 from: employee

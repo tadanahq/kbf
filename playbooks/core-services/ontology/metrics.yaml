@@ -1,8 +1,8 @@
 # Thin but real: two metrics that are actually expressible from
 # engagement and deliverable alone, without inventing capacity data
-# services-core does not have (a true utilization metric needs employee
-# available-hours, which is not a field this package can add to
-# universal-core's employee without forking it, so it is left out rather
+# core-services does not have (a true utilization metric needs employee
+# available-hours, which is not a field this playbook can add to
+# core-universal's employee without forking it, so it is left out rather
 # than faked).
 
 kind: metric

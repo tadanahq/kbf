@@ -3,9 +3,9 @@
 ## Repository layout
 
 ```
-spec/            # the prose spec: index, primitives/, package-format, conventions, versioning
+spec/            # the prose spec: index, primitives/, playbook-format, conventions, versioning
 schema/          # GENERATED meta-schemas (ontology.schema.yaml, manifest.schema.yaml)
-packages/        # ontology content: universal-core (Playbook Zero); verticals later
+playbooks/       # ontology content: core-universal (Playbook Zero); verticals later
 examples/        # cafe-demo: fictional, fully valid, teaching-first
 tools/           # Go module: the kbf CLI and libraries
 conformance/     # language-agnostic fixture suite (YAML in, expected outcome out)
@@ -23,7 +23,7 @@ scripts/         # repo gates (boundaries scan), invoked by make
 | Action | per-entity verbs agents may execute, risk tier (auto/confirm), what it writes |
 | Slot mapping | element → source system declaration; fill status (static in v0) |
 | Competency question | question + answer oracle; the acceptance suite |
-| Namespace | `universal-core` vs `<package>`; extension rules |
+| Namespace | `core-universal` vs `<playbook>`; extension rules |
 
 Grouped in prose as **semantic elements** (entity, relation, metric),
 **action elements** (action), and **operational elements** (slot mapping,
@@ -47,22 +47,22 @@ competency question, namespace).
   never depend on Go: each case is `input/` + `expect.yaml` (ok | errors with
   rule ids).
 
-## Package anatomy (what the linter understands)
+## Playbook anatomy (what the linter understands)
 
 ```
-<package>/
+<playbook>/
   manifest.yaml        # name, version, spec version, extends
   ontology/            # *.yaml: entities, relations, metrics, actions
   evals/               # competency questions
   install/             # slot-mapping templates, defaults
 ```
 
-Workflows, agents, surfaces folders are reserved in the package format spec but
-not linted in v0 (config-phase scope).
+Workflows, agents, surfaces folders are reserved in the playbook format spec
+but not linted in v0 (config-phase scope).
 
 ## Boundaries
 
-- `spec/`, `schema/`, `packages/`, `examples/` never reference engines,
+- `spec/`, `schema/`, `playbooks/`, `examples/` never reference engines,
   databases, vendors, clients, or tooling internals.
-- `tools/` may not embed package content; packages are always inputs.
+- `tools/` may not embed playbook content; playbooks are always inputs.
 - Public hygiene scan covers every file in the repo.

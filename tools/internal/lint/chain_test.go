@@ -83,7 +83,7 @@ func TestChainVerbNotInheritedBySibling(t *testing.T) {
 
 // TestChainMintOnOwnEntity is owner item (1) of the 2026-08-13 KBF007
 // adjudication ("valid: base playbook mints verb on own-entity pair"),
-// mirroring packages/operations-core minting located-at/staffed-by/
+// mirroring playbooks/core-operations minting located-at/staffed-by/
 // works-at/sells on pairs that touch location or shift. chain-mint-own-
 // entity extends chain-grandparent directly and mints stored-at, a verb
 // no ancestor declares, on a pair that touches warehouse (its own new

@@ -24,7 +24,7 @@ see the tier comparison table in `conventions.md`.
 
 ## Example
 
-Copied from `packages/universal-core/ontology/actions.yaml`:
+Copied from `playbooks/core-universal/ontology/actions.yaml`:
 
 ```yaml
 kind: action
@@ -49,7 +49,7 @@ writes: finding
   YAML 1.1 booleans. This repo's tooling (goccy/go-yaml) parses YAML 1.2
   and reads an unquoted `on:` correctly as the string key `"on"`, but a
   YAML 1.1 parser reading the same file would silently see the boolean
-  `true` instead. Since a KBF package is meant to be readable by any
+  `true` instead. Since a KBF playbook is meant to be readable by any
   conforming implementation (`conformance/` exists for exactly this),
   write it `"on": <entity>`, always, everywhere.
 - **Treating a `confirm` action as safe to automate.** The risk tier is

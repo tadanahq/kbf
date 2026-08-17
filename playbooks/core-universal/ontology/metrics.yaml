@@ -3,7 +3,7 @@
 # `sum(entity.attribute)` / `count(entity)`, derived metrics reference
 # other metric names directly, matching the convention in
 # spec/primitives/metric.md. Grain stops at [organization, business-date]:
-# location is not universal (packages/operations-core adds a
+# location is not universal (playbooks/core-operations adds a
 # location-grain sibling, e.g. average-ticket, on top of these).
 
 kind: metric

@@ -4,8 +4,8 @@
 # it is tier: client-configured, not source-synced (see the three-tier
 # governance model in spec/conventions.md). This reuses the `belongs-to`
 # verb already declared, on other pairs, by both ancestors in this
-# package's chain (universal-core's offering-to-organization,
-# operations-core's location-to-organization): relation identity is
+# playbook's chain (core-universal's offering-to-organization,
+# core-operations' location-to-organization): relation identity is
 # (name, from, to), and (belongs-to, location, location) is a distinct
 # relation from either of those, so this is a new relation, not a fork.
 # `parent_location_id` is a role-qualified alias for location's own

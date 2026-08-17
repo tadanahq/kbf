@@ -6,7 +6,7 @@ $defs:
     properties:
       name:
         type: string
-        description: "Name is the package's identifier, e.g. \"universal-core\". Doubles as its namespace: element uniqueness (KBF003) and fork detection (KBF008) are scoped by this name."
+        description: "Name is the package's identifier, e.g. \"core-universal\". Doubles as its namespace: element uniqueness (KBF003) and fork detection (KBF008) are scoped by this name."
       version:
         type: string
         description: "Version is the package's own version, independent of the spec version it targets (project-standards.md: spec versioning is independent of tool/package versioning)."
@@ -16,7 +16,7 @@ $defs:
       extends:
         oneOf:
         - type: string
-          description: "Extends names the parent package this one extends, or null for a root package (only universal-core is root in v0). A pointer so the loader can tell \"null\" (root, valid) apart from \"missing key\" (invalid): both decode a Go string to \"\", but only the former is a legal manifest. Non-null values must resolve within the set of packages passed to `kbf lint`: KBF011."
+          description: "Extends names the parent package this one extends, or null for a root package (only core-universal is root in v0). A pointer so the loader can tell \"null\" (root, valid) apart from \"missing key\" (invalid): both decode a Go string to \"\", but only the former is a legal manifest. Non-null values must resolve within the set of packages passed to `kbf lint`: KBF011."
         - type: "null"
     additionalProperties: false
     type: object

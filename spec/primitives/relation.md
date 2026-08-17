@@ -27,18 +27,18 @@ invented ad hoc; it comes from the controlled vocabulary in
 A relation's identity for uniqueness and fork-detection purposes is the
 triple `(name, from, to)`, not `name` alone. The controlled vocabulary is
 deliberately small (10 to 20 verbs, see `conventions.md`), meant to recur
-across many unrelated entity pairs, both within one package and across a
-package's extends chain: `packages/universal-core` legitimately declares
+across many unrelated entity pairs, both within one playbook and across a
+playbook's extends chain: `playbooks/core-universal` legitimately declares
 `supplies` twice (`supplier` to `offering`, and `supplier` to `purchase`),
 and `contains` shows up again, on a different pair, in
-`packages/services-core` (`engagement` to `deliverable`) without
-conflicting with universal-core's own `transaction` to `offering` use of
+`playbooks/core-services` (`engagement` to `deliverable`) without
+conflicting with core-universal's own `transaction` to `offering` use of
 the same verb. Two relations sharing a verb are only in conflict if they
 also share the same `from` and `to`.
 
 ## Example
 
-Copied from `packages/universal-core/ontology/relations.yaml`:
+Copied from `playbooks/core-universal/ontology/relations.yaml`:
 
 ```yaml
 kind: relation
@@ -55,10 +55,10 @@ temporal: true
 
 - **Verb outside the controlled vocabulary.** `name: assigned-to` fails
   `KBF007` if `assigned-to` is not a verb already declared somewhere in
-  the package's extends chain (its own ancestors, not the whole spec).
+  the playbook's extends chain (its own ancestors, not the whole spec).
   Propose new verbs through `rfcs/`, not by using them first and asking
   later; prefer reusing an existing verb on a new pair before proposing
-  one (see `packages/services-core`, which mints none of its own).
+  one (see `playbooks/core-services`, which mints none of its own).
 - **Undeclared endpoint.** A typo in `from` or `to` (`transactionn`,
   `custmer`) fails `KBF006`, since it does not resolve to any declared
   entity.
@@ -69,10 +69,10 @@ temporal: true
   business says it, not inverted to avoid the value.
 - **Redeclaring a relation to change one field.** Unlike entity and metric,
   relation has no glossary carve-out: if a `(name, from, to)` triple already
-  exists anywhere in the package's chain, restating it for any reason, even
+  exists anywhere in the playbook's chain, restating it for any reason, even
   to change only `tier` or `temporal`, is a fork and fails `KBF008`,
   wherever in the chain the match is found. A different pairing (same verb,
   different `from`/`to`) is a new relation, not a redeclaration, and is
-  exactly how an extending package is expected to add relations: see the
+  exactly how an extending playbook is expected to add relations: see the
   client-configured `belongs-to` between two locations in
   `examples/cafe-demo/ontology/relations.yaml`.
