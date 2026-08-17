@@ -36,13 +36,14 @@ func init() {
 
 var update = flag.Bool("update", false, "write golden files instead of comparing against them")
 
-// realChains: both demo chains this repo ships, dogfooded the same way
-// the linter is (design.md and tasks.md's "Implementation
-// clarifications"). design.md is explicit that both exist so "one shared
-// multi-vertical core" is checkable, not asserted, so both get the same
-// golden protection, not just cafe-demo. Each chain is three levels
-// (layered-playbooks restructure, 2026-08-13): all three paths must be
-// passed or the leaf's own extends fails to resolve (KBF011).
+// realChains: all three demo playbooks this repo ships, dogfooded the
+// same way the linter is (design.md and tasks.md's "Implementation
+// clarifications"). design.md is explicit that cafe-demo and studio-demo
+// exist so "one shared multi-vertical core" is checkable, not asserted;
+// bistro-demo (Batch 7) extends that proof to composition itself, a
+// vertical building on two core playbooks at once (the diamond: both
+// compose core-business, deduped to one instance) rather than a single
+// chain. All three get the same golden protection.
 var realChains = []struct {
 	name     string // also the golden files' basename
 	paths    []string
@@ -58,7 +59,7 @@ var realChains = []struct {
 			filepath.Join("..", "..", "..", "playbooks", "core-business"),
 		},
 		// 27 slots: core-business's 21 + core-operations' 6 (location
-		// x3, shift x3), the full resolved ontology across the chain.
+		// x3, shift x3), the full resolved ontology across the closure.
 		declared: 27,
 		mapped:   24,
 		unmapped: []string{"crm.customer-contact", "crm.customer-joined-date", "crm.customer-name"},
@@ -75,6 +76,21 @@ var realChains = []struct {
 		declared: 29,
 		mapped:   27,
 		unmapped: []string{"purchasing.supplier-contact", "purchasing.supplier-name"},
+	},
+	{
+		name: "bistro-demo",
+		paths: []string{
+			filepath.Join("..", "..", "..", "examples", "bistro-demo"),
+			filepath.Join("..", "..", "..", "playbooks", "core-operations"),
+			filepath.Join("..", "..", "..", "playbooks", "core-services"),
+			filepath.Join("..", "..", "..", "playbooks", "core-business"),
+		},
+		// 35 slots: core-business's 21 + core-operations' 6 + core-services'
+		// 8, core-business deduped to one instance despite two composition
+		// paths into it (the diamond).
+		declared: 35,
+		mapped:   33,
+		unmapped: []string{"delivery.deliverable-due", "delivery.deliverable-status"},
 	},
 }
 

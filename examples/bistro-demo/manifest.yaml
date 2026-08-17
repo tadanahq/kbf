@@ -1,0 +1,13 @@
+# Demo Bistro & Events: a fictional single-location cafe that also books
+# private events (catering, venue rental). The diamond/hybrid showcase:
+# builds on both core-operations and core-services directly, both of
+# which build on core-business, so core-business is reached through two
+# paths and deduped to one instance in the closure (`kbf lint`/`coverage`/
+# `compile` need all four playbook paths: bistro-demo, core-operations,
+# core-services, core-business). Same teaching role as the other two
+# demos, on a shape neither of them alone can exercise.
+name: bistro-demo
+version: 0.1.0
+spec: v0
+builds-on: [core-operations, core-services]
+layer: vertical

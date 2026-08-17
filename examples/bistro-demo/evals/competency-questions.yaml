@@ -1,0 +1,11 @@
+# Competency questions specific to Demo Bistro & Events' extensions.
+# Questions from core-business, core-operations, and core-services are
+# all inherited through the closure.
+
+kind: competency-question
+question: What share of Demo Bistro & Events' activity comes from event bookings rather than walk-in transactions?
+expects: [event-booking-rate]
+---
+kind: competency-question
+question: Which location hosts each event booking?
+expects: [engagement, location]

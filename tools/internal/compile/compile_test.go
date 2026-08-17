@@ -26,16 +26,16 @@ import (
 
 var update = flag.Bool("update", false, "write golden files instead of comparing against them")
 
-// realChains: both demo chains this repo ships, dogfooded the same way
-// the linter is (design.md, coverage_test.go). design.md is explicit that
-// both exist so "one shared multi-vertical core" is checkable, not
-// asserted: core-business is never exercised alone as "the" example,
-// only as the common ancestor of two visibly different businesses, so
-// both get the same golden protection, not just cafe-demo. Each chain is
-// three levels (layered-playbooks restructure, 2026-08-13): all three
-// paths must be passed or the leaf's own extends fails to resolve
-// (KBF011), same as any other playbook whose ancestor isn't among the
-// loaded paths.
+// realChains: all three demo playbooks this repo ships, dogfooded the
+// same way the linter is (design.md, coverage_test.go). design.md is
+// explicit that cafe-demo and studio-demo exist so "one shared
+// multi-vertical core" is checkable, not asserted: core-business is
+// never exercised alone as "the" example, only as the common root of
+// visibly different businesses. bistro-demo (Batch 7) composes two core
+// playbooks directly (the diamond), so it needs every playbook in that
+// closure passed on the command line, same as any chain whose composed
+// playbook isn't among the loaded paths would fail to resolve (KBF011).
+// All three get the same golden protection.
 var realChains = []struct {
 	name          string // also the golden file's basename
 	paths         []string
@@ -82,6 +82,27 @@ var realChains = []struct {
 		// new pairs; core-services mints no new verb at all), plus
 		// studio-demo's one new triple (customer belongs-to customer).
 		wantRelations: 15,
+		wantActions:   4,
+	},
+	{
+		name: "bistro-demo",
+		paths: []string{
+			filepath.Join("..", "..", "..", "examples", "bistro-demo"),
+			filepath.Join("..", "..", "..", "playbooks", "core-operations"),
+			filepath.Join("..", "..", "..", "playbooks", "core-services"),
+			filepath.Join("..", "..", "..", "playbooks", "core-business"),
+		},
+		// 11 entities: core-business's 7, core-operations' 2 (location,
+		// shift), core-services' 2 (engagement, deliverable) — the union
+		// across the diamond, core-business counted once despite two
+		// composition paths into it. bistro-demo introduces no entity of
+		// its own (its engagement fragment is a synonym-only override).
+		wantEntities: 11,
+		// 21 relations: core-business's own, core-operations' 6, core-
+		// services' 4, plus bistro-demo's one new triple (located-at:
+		// engagement -> location) — the pairing only a playbook composing
+		// both core playbooks at once can express.
+		wantRelations: 21,
 		wantActions:   4,
 	},
 }

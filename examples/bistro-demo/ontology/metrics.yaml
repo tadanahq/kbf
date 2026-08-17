@@ -1,0 +1,31 @@
+# Two extensions:
+# 1. gross-margin: a threshold override. Per design.md's "Implementation
+#    clarifications" (KBF008), the override leaves every non-glossary
+#    field zero-valued: formula, grain, additivity, unit and tier are
+#    omitted, not repeated. Only `thresholds` (Metric's one
+#    glossary-eligible field) is set, tightened from core-business's 0.55
+#    to 0.60: event catering margins swing more than walk-in sales, so
+#    Demo Bistro & Events wants the warning earlier. This overrides
+#    core-business's organization-grain metric directly (the closure has
+#    no location- or engagement-grain gross-margin to collide with
+#    instead): matching against the whole composition closure, not a
+#    single nearest parent, is what makes this resolve even though
+#    core-business is two composed playbooks away.
+# 2. event-booking-rate: a net-new vertical metric, not present anywhere
+#    in the closure, so it is declared in full. It is the metric the
+#    hybrid exists to make expressible: how much of the business is event
+#    bookings (engagement, from core-services) versus walk-in sales
+#    (transaction, from core-business/core-operations), something neither
+#    core-operations nor core-services alone has both entities to define.
+
+kind: metric
+name: gross-margin
+thresholds: {warn-below: 0.60}
+---
+kind: metric
+name: event-booking-rate
+formula: count(engagement) / count(transaction)
+grain: [organization, business-date]
+additivity: non-additive
+unit: ratio
+tier: structural

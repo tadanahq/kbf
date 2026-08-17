@@ -1,0 +1,13 @@
+# Demo Bistro & Events calls `engagement` a "booking" or "event" in
+# conversation. Per design.md's "Implementation clarifications" (KBF008),
+# a glossary-only override must leave every non-glossary field
+# zero-valued: meaning, identity, resolution, tier, attributes and states
+# are omitted here on purpose, not repeated. Only `synonyms` (Entity's one
+# glossary-eligible field) is set. `engagement` is declared in
+# core-services, one of bistro-demo's two immediate composed playbooks;
+# core-services' own `project`/`retainer` synonyms are layered under, not
+# replaced.
+
+kind: entity
+name: engagement
+synonyms: {en: [event, booking], es: [evento, reserva]}
