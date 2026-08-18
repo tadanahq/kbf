@@ -24,20 +24,20 @@ import (
 	"github.com/tadanahq/kbf/tools/internal/lint"
 )
 
-func resetVendorFlags() {
-	vendorTo = "playbooks"
-	vendorForce = false
+func resetPinFlags() {
+	pinTo = "playbooks"
+	pinForce = false
 }
 
-// TestVendor checks the default destination, that all three core
+// TestPlaybooksPin checks the default destination, that all three core
 // playbooks land, and that the result lints clean standalone (no
-// embedded fallback needed: everything vendor writes is now local).
-func TestVendor(t *testing.T) {
-	resetVendorFlags()
+// embedded fallback needed: everything pin writes is now local).
+func TestPlaybooksPin(t *testing.T) {
+	resetPinFlags()
 	t.Chdir(t.TempDir())
 
-	if _, _, err := runCLI(t, "vendor"); err != nil {
-		t.Fatalf("vendor: %v", err)
+	if _, _, err := runCLI(t, "playbooks", "pin"); err != nil {
+		t.Fatalf("playbooks pin: %v", err)
 	}
 
 	var paths []string
@@ -54,19 +54,19 @@ func TestVendor(t *testing.T) {
 		t.Fatalf("lint.Run: %v", err)
 	}
 	if len(result.Findings) != 0 {
-		t.Errorf("vendored playbooks do not lint clean: %+v", result.Findings)
+		t.Errorf("pinned playbooks do not lint clean: %+v", result.Findings)
 	}
 }
 
-// TestVendorIdempotencyAndForce mirrors skill install's own guard: a
-// second vendor without --force is refused and changes nothing; --force
-// overwrites.
-func TestVendorIdempotencyAndForce(t *testing.T) {
-	resetVendorFlags()
+// TestPlaybooksPinIdempotencyAndForce mirrors skill install's own
+// guard: a second pin without --force is refused and changes nothing;
+// --force overwrites.
+func TestPlaybooksPinIdempotencyAndForce(t *testing.T) {
+	resetPinFlags()
 	t.Chdir(t.TempDir())
 
-	if _, _, err := runCLI(t, "vendor"); err != nil {
-		t.Fatalf("first vendor: %v", err)
+	if _, _, err := runCLI(t, "playbooks", "pin"); err != nil {
+		t.Fatalf("first pin: %v", err)
 	}
 
 	marker := filepath.Join("playbooks", "core-business", "manifest.yaml")
@@ -74,9 +74,9 @@ func TestVendorIdempotencyAndForce(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	resetVendorFlags()
-	if _, _, err := runCLI(t, "vendor"); err == nil {
-		t.Fatal("expected the second vendor to be refused without --force, it wasn't")
+	resetPinFlags()
+	if _, _, err := runCLI(t, "playbooks", "pin"); err == nil {
+		t.Fatal("expected the second pin to be refused without --force, it wasn't")
 	} else if !strings.Contains(err.Error(), "already exists") {
 		t.Errorf("error = %q, want it to mention \"already exists\"", err.Error())
 	}
@@ -88,9 +88,9 @@ func TestVendorIdempotencyAndForce(t *testing.T) {
 		t.Error("a rejected reinstall modified the existing file")
 	}
 
-	resetVendorFlags()
-	if _, _, err := runCLI(t, "vendor", "--force"); err != nil {
-		t.Fatalf("forced vendor: %v", err)
+	resetPinFlags()
+	if _, _, err := runCLI(t, "playbooks", "pin", "--force"); err != nil {
+		t.Fatalf("forced pin: %v", err)
 	}
 	got, err = os.ReadFile(marker)
 	if err != nil {
@@ -101,14 +101,14 @@ func TestVendorIdempotencyAndForce(t *testing.T) {
 	}
 }
 
-// TestVendorTo checks --to writes under a custom directory instead of
-// the default ./playbooks.
-func TestVendorTo(t *testing.T) {
-	resetVendorFlags()
+// TestPlaybooksPinTo checks --to writes under a custom directory
+// instead of the default ./playbooks.
+func TestPlaybooksPinTo(t *testing.T) {
+	resetPinFlags()
 	t.Chdir(t.TempDir())
 
-	if _, _, err := runCLI(t, "vendor", "--to", "third_party/kbf"); err != nil {
-		t.Fatalf("vendor --to: %v", err)
+	if _, _, err := runCLI(t, "playbooks", "pin", "--to", "third_party/kbf"); err != nil {
+		t.Fatalf("playbooks pin --to: %v", err)
 	}
 	if _, err := os.Stat(filepath.Join("third_party", "kbf", "core-business", "manifest.yaml")); err != nil {
 		t.Errorf("--to third_party/kbf: %v", err)

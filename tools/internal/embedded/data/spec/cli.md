@@ -8,7 +8,7 @@ type: spec-doc
 
 Eight commands. `kbf init`, `kbf lint`, and `kbf compile` serve the
 author; `kbf coverage` serves the install; `kbf schema` serves the format
-itself; `kbf vendor`, `kbf skill install`, and `kbf docs` are what make
+itself; `kbf playbooks pin`, `kbf skill install`, and `kbf docs` are what make
 the other five usable with nothing but the binary, no clone of this
 repository required for any of it (see "Embedded content" below). If you
 are authoring or installing playbooks you will use `init`, `lint`,
@@ -22,7 +22,7 @@ design.
 | `kbf coverage` | Is this ontology connected to real sources? | Every install, ongoing |
 | `kbf compile` | What can be made from this ontology? | Whenever an artifact is needed |
 | `kbf schema` | What is a valid ontology allowed to look like? | Only when the spec itself changes |
-| `kbf vendor` | Where can I see the embedded cores for real? | Rarely, on demand |
+| `kbf playbooks pin` | Where can I see the embedded cores for real? | Rarely, on demand |
 | `kbf skill install` | How does my agent learn this workflow? | Once per project |
 | `kbf docs` | Where's the spec, without a clone? | As needed |
 
@@ -193,22 +193,25 @@ code itself, not a convention: see `project-decisions.md`'s
 "Batteries-included binary" entry for the full rationale, and
 `project-architecture.md`'s Boundaries section for the rule as it stands
 today. Embedded content is a convenience default, never a privileged or
-hidden source of truth: `kbf vendor` exists specifically so you can always
-get the real files.
+hidden source of truth: `kbf playbooks pin` exists specifically so you can
+always get the real files.
 
-### kbf vendor
+### kbf playbooks pin
 
 ```sh
-kbf vendor              # writes ./playbooks/core-{business,operations,services}
-kbf vendor --to third_party/kbf
+kbf playbooks pin       # writes ./playbooks/core-{business,operations,services}
+kbf playbooks pin --to third_party/kbf
 ```
 
-Materializes the three embedded core playbooks to real, inspectable,
-editable, replaceable directories on disk, DO-NOT-EDIT header and all
-(same as embedded, since a vendored copy is meant to be read as exactly
-what fallback would have used; keep editing it locally from here and it's
-yours from that point on, no different from any other local path).
-Refuses to overwrite an existing directory; pass `--force` to replace it.
+Pins the three embedded core playbooks to real, inspectable, editable,
+replaceable directories on disk, DO-NOT-EDIT header and all (same as
+embedded, since a pinned copy is meant to be read as exactly what
+fallback would have used; keep editing it locally from here and it's
+yours from that point on, no different from any other local path). The
+default `--to playbooks` mirrors this repository's own layout, so a
+pinned tree lands where every example on this page already points.
+Refuses to overwrite an existing directory; pass `--force` to replace
+it.
 
 ### kbf skill install
 

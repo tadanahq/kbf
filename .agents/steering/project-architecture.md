@@ -44,7 +44,7 @@ competency question, namespace).
     and the prose spec, baked into the binary (see Boundaries below); mirrored
     from the repo root into `data/` by `scripts/embedsync`, never hand-edited.
   - `cmd/kbf/`: cobra wiring: `lint`, `coverage`, `compile`, `schema` (regen),
-    `vendor`, `skill install`, `docs`, `init`.
+    `playbooks pin`, `skill install`, `docs`, `init`.
 - Lint pipeline: parse → structural validation → semantic rules → render
   (lipgloss table or `--format json` for agent consumption). **JSON output is a
   stable interface**: authoring agents parse it.
@@ -74,8 +74,8 @@ but not linted in v0 (config-phase scope).
   `spec/primitives/*.md`), strictly as a composition-resolution fallback:
   a local path of the same manifest name always overrides the embedded
   copy, never the reverse, and embedded content is a convenience default,
-  never a privileged or hidden source of truth (`kbf vendor` always
-  materializes it to a real, inspectable, editable directory on request).
+  never a privileged or hidden source of truth (`kbf playbooks pin` always
+  writes it to a real, inspectable, editable directory on request).
   `tools/` may not embed a vertical, an example, or anything not already
   public in this repository: the fallback mirrors what's already here, it
   never becomes a second, parallel source of content. Evolved

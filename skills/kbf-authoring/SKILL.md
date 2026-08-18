@@ -39,8 +39,8 @@ Confirm before starting, and fix or ask if missing:
 - The `kbf` binary runs (`kbf --help`). If not: `go install
   github.com/tadanahq/kbf/tools/cmd/kbf@latest`. No clone of the kbf
   repository is needed anywhere in this flow: the core playbooks, this
-  skill, and the spec are all embedded in the binary (`kbf vendor` and
-  `kbf docs` materialize any of them to a real file on request).
+  skill, and the spec are all embedded in the binary (`kbf playbooks pin`
+  and `kbf docs` write any of them to a real file on request).
 - This skill is installed (`kbf skill install`; idempotent, `--force` to
   reinstall). If you are reading this file at all, it already is.
 - A `builds-on` name resolves even with no local copy: `builds-on:

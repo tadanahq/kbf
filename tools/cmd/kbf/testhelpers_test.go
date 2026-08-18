@@ -26,7 +26,7 @@ var update = flag.Bool("update", false, "write golden files instead of comparing
 
 // testdataDir is this package's own testdata/ directory, captured once
 // at load time (before any test calls t.Chdir, which several here do:
-// init/vendor/skill install all act relative to CWD by design, the same
+// init/playbooks pin/skill install all act relative to CWD by design, the same
 // way the real binary does). Golden-file paths are built from this, not
 // from a bare "testdata/..." relative path, so they still resolve after
 // the working directory has moved to a t.TempDir().
@@ -41,7 +41,7 @@ var testdataDir = func() string {
 // runCLI executes rootCmd with args, capturing stdout/stderr separately.
 // rootCmd and every command's flag variables are package-level (cobra's
 // usual shape), shared across every test in this package and with the
-// real binary: callers that set a flag (init's --builds-on, vendor's
+// real binary: callers that set a flag (init's --builds-on, pin's
 // --to, ...) must reset it themselves before the next test runs, since
 // pflag never resets a var to its default between Execute calls on its
 // own, only ever between one explicit --flag and the next.

@@ -3,6 +3,37 @@
 Append-only. New entries on top. Project-level decisions only; feature detail
 stays in capsules.
 
+## 2026-08-18 - The CLI speaks KBF vocabulary: `kbf vendor` renamed to `kbf playbooks pin`
+
+Owner decision, origin: the vendor-to-playbooks-pin rename. Two rules,
+both binding on every future command:
+
+1. **The CLI speaks KBF vocabulary** (playbook, builds-on, contract,
+   install), never implementation-ecosystem jargon. "vendor" is Go/PHP
+   dependency-management slang that leaked into the product surface; a
+   user should not be able to guess the implementation language from the
+   CLI. Dev-internal machinery is exempt (`go mod vendor`,
+   `scripts/embedsync`, and the like are not product surface).
+2. **No bare-noun commands for mutations.** A bare noun reads as "list"
+   or "show"; anything that writes is a verb under a noun namespace.
+   Hence `kbf playbooks pin`: a `playbooks` parent (help only, the same
+   shape as `skill`) with a `pin` subcommand.
+
+No backward-compat alias for `vendor`: zero adopters, clean break.
+
+`--to` keeps its `playbooks` default. Checked before deciding: `kbf
+init`'s scaffold has no `builds-on/` directory, and no doc in this
+repository describes an install-repo layout that uses one; every example
+in `spec/cli.md` and the README tour points at `playbooks/`. A
+`builds-on` default would have matched nothing that exists today. If a
+`playbook/builds-on/` install-repo convention lands in the docs later,
+revisit the default in that same change, not before.
+
+Reversal: if a future KBF module gives "pin" a distinct meaning (say,
+version pinning of playbook dependencies), rename the command again
+under rule 1; the rules themselves stand unless the owner overturns
+them.
+
 ## 2026-08-17 - Batteries-included binary: embedded cores/skill/docs with local-override precedence
 
 Owner-approved Batch 9. Supersedes `project-architecture.md`'s Boundaries

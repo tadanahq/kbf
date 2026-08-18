@@ -53,7 +53,7 @@ read it and a linter can check it. That declaration is the KBF Ontology.
 | [`examples/cafe-demo/`](examples/cafe-demo/) | A fictional cafe building on `core-operations`, exercising every composition mechanic the spec allows. |
 | [`examples/studio-demo/`](examples/studio-demo/) | A fictional marketing studio building on `core-services`: the other core playbook, same teaching role. |
 | [`examples/bistro-demo/`](examples/bistro-demo/) | A fictional cafe that also runs events, building on both `core-operations` and `core-services` at once: the diamond and hybrid case. |
-| [`tools/`](tools/) | The `kbf` CLI: `init`, `lint`, `coverage`, `compile --to mermaid`, `schema`, `vendor`, `skill install`, `docs`. Batteries-included: the core playbooks, the authoring skill, and the prose spec are embedded in the binary. Full reference, including the agent-facing JSON interface: [`spec/cli.md`](spec/cli.md). |
+| [`tools/`](tools/) | The `kbf` CLI: `init`, `lint`, `coverage`, `compile --to mermaid`, `schema`, `playbooks pin`, `skill install`, `docs`. Batteries-included: the core playbooks, the authoring skill, and the prose spec are embedded in the binary. Full reference, including the agent-facing JSON interface: [`spec/cli.md`](spec/cli.md). |
 | [`conformance/`](conformance/) | Language-agnostic fixtures (YAML in, expected outcome out), so an implementation other than `kbf` can prove it matches the spec. |
 | [`skills/`](skills/) | Agent skills that ship with KBF: [`kbf-authoring`](skills/kbf-authoring/) drives the raising flow (interview conduct + the lint loop) from inside Claude Code or any skill-reading runtime. |
 | [`rfcs/`](rfcs/) | How the spec itself changes once it is public. |
@@ -80,8 +80,8 @@ kbf skill install
 ```
 
 The core playbooks, the authoring skill, and the whole prose spec are
-embedded in the binary: `kbf docs` reads any of it, `kbf vendor`
-materializes the playbooks to real files if you want them on disk. This
+embedded in the binary: `kbf docs` reads any of it, `kbf playbooks pin`
+writes the playbooks to real files if you want them on disk. This
 is the whole loop for standing up a new business's ontology. Full
 command reference: [`spec/cli.md`](spec/cli.md), or `kbf docs cli`.
 

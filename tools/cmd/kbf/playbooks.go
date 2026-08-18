@@ -26,55 +26,61 @@ import (
 )
 
 var (
-	vendorTo    string
-	vendorForce bool
+	pinTo    string
+	pinForce bool
 )
 
-var vendorCmd = &cobra.Command{
-	Use:   "vendor",
-	Short: "Materialize the embedded core playbooks to disk.",
-	Long: `vendor writes every embedded core playbook (core-business, core-operations,
-core-services) to real directories under --to, exactly as embedded: a
-DO-NOT-EDIT header and all, since a vendored copy is meant to be inspected
-and, if you choose to keep editing it locally from here, treated as your
-own from that point on. "Embedded" never means "hidden": this command is
-how you get the same content lint/coverage/compile fall back to onto disk,
-where you can read, diff, or fork it.
+var playbooksCmd = &cobra.Command{
+	Use:   "playbooks",
+	Short: "Manage the playbooks yours builds on.",
+}
+
+var playbooksPinCmd = &cobra.Command{
+	Use:   "pin",
+	Short: "Pin the embedded core playbooks to disk.",
+	Long: `pin writes the playbooks yours can build on (core-business,
+core-operations, core-services) to real directories under --to, exactly
+as embedded: a DO-NOT-EDIT header and all, since a pinned copy is meant
+to be inspected and, if you choose to keep editing it locally from here,
+treated as your own from that point on. "Embedded" never means "hidden":
+this command is how you get the same content lint/coverage/compile fall
+back to onto disk, where you can read, diff, or fork it.
 
 Refuses to overwrite an existing directory; pass --force to replace it.`,
 	Args: cobra.NoArgs,
-	RunE: runVendor,
+	RunE: runPlaybooksPin,
 }
 
 func init() {
-	vendorCmd.Flags().StringVar(&vendorTo, "to", "playbooks", "directory the core playbooks are written under")
-	vendorCmd.Flags().BoolVar(&vendorForce, "force", false, "overwrite existing directories")
-	rootCmd.AddCommand(vendorCmd)
+	playbooksPinCmd.Flags().StringVar(&pinTo, "to", "playbooks", "directory the pinned playbooks are written under")
+	playbooksPinCmd.Flags().BoolVar(&pinForce, "force", false, "overwrite existing directories")
+	playbooksCmd.AddCommand(playbooksPinCmd)
+	rootCmd.AddCommand(playbooksCmd)
 }
 
-func runVendor(cmd *cobra.Command, _ []string) error {
+func runPlaybooksPin(cmd *cobra.Command, _ []string) error {
 	names := embedded.CorePlaybookNames()
 
-	if !vendorForce {
+	if !pinForce {
 		var existing []string
 		for _, name := range names {
-			if _, err := os.Stat(filepath.Join(vendorTo, name)); err == nil {
-				existing = append(existing, filepath.Join(vendorTo, name))
+			if _, err := os.Stat(filepath.Join(pinTo, name)); err == nil {
+				existing = append(existing, filepath.Join(pinTo, name))
 			}
 		}
 		if len(existing) > 0 {
-			return fmt.Errorf("vendor: already exists: %v (pass --force to overwrite)", existing)
+			return fmt.Errorf("playbooks pin: already exists: %v (pass --force to overwrite)", existing)
 		}
 	}
 
 	for _, name := range names {
 		fsys, ok := embedded.Playbook(name)
 		if !ok {
-			return fmt.Errorf("vendor: %q is not embedded (this should not happen: CorePlaybookNames and Playbook disagree)", name)
+			return fmt.Errorf("playbooks pin: %q is not embedded (this should not happen: CorePlaybookNames and Playbook disagree)", name)
 		}
-		dest := filepath.Join(vendorTo, name)
+		dest := filepath.Join(pinTo, name)
 		if err := writeTree(fsys, dest); err != nil {
-			return fmt.Errorf("vendor %s: %w", name, err)
+			return fmt.Errorf("pin %s: %w", name, err)
 		}
 		if _, err := fmt.Fprintln(cmd.OutOrStdout(), "wrote", dest); err != nil {
 			return err

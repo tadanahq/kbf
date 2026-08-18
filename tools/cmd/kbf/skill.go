@@ -25,8 +25,9 @@ import (
 )
 
 // skillName is the one skill v0 ships. install takes no argument (unlike
-// vendor and docs, which name their targets): a bare kbf-authoring is the
-// whole skill catalog today, so there is nothing to disambiguate yet.
+// playbooks pin and docs, which name their targets): a bare kbf-authoring
+// is the whole skill catalog today, so there is nothing to disambiguate
+// yet.
 const skillName = "kbf-authoring"
 
 var skillInstallForce bool

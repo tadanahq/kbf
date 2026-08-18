@@ -291,3 +291,37 @@ mechanics themselves. 4 commits: `f7d5bbc` (embed mechanics), `e0296b0`
   bistro-demo closing-paragraph commands): nothing about the embedded
   fallback changed local-path behavior when local paths are what's given.
 - [x] README "What's here" row for `skills/`.
+
+## Batch 10: `kbf vendor` renamed to `kbf playbooks pin` + vocabulary sweep
+
+Owner-dispatched, 2026-08-18. Principle logged in
+`project-decisions.md` ("The CLI speaks KBF vocabulary"): no
+implementation-ecosystem jargon on the product surface, no bare-noun
+mutation commands. Zero adopters, so a clean break: no `vendor` alias.
+
+- [x] `tools/cmd/kbf/vendor.go` → `playbooks.go`: `playbooks` parent
+  command (help only, same shape as `skill`) with a `pin` subcommand;
+  identifiers renamed (`pinTo`, `pinForce`, `runPlaybooksPin`); error
+  prefixes now say `playbooks pin:`; help text rewritten in pin
+  vocabulary, keeping the "Embedded never means hidden" prose.
+- [x] `--to` default stays `playbooks`: checked `kbf init`'s scaffold
+  (no `builds-on/` directory) and every doc example (`spec/cli.md`,
+  README tour, all pointing at `playbooks/`) before deciding; a
+  `builds-on` default would have matched no documented layout. The
+  default's rationale is now stated in `spec/cli.md`'s section.
+- [x] `vendor_test.go` → `playbooks_test.go` (`TestPlaybooksPin`,
+  `TestPlaybooksPinIdempotencyAndForce`, `TestPlaybooksPinTo`,
+  `resetPinFlags`), plus comment sweeps in `init_test.go`, `skill.go`,
+  `testhelpers_test.go`.
+- [x] Docs sweep: `spec/cli.md` (intro, command table, Embedded content
+  section, `### kbf playbooks pin`), `README.md` (tools row,
+  quickstart), `skills/kbf-authoring/SKILL.md` prerequisites,
+  `project-architecture.md` (cmd list, Boundaries). Left alone on
+  purpose: domain uses of "vendor" (supplier.yaml's synonym,
+  onboarding.md's "vendor's field name", architecture's "engines,
+  databases, vendors, clients") and dev-internal tooling
+  (`scripts/embedsync`, `go mod` machinery): those are not the product
+  surface. `make embed-sync` re-mirrored the edited docs.
+- [x] Proof: `make check` green from clean; in a temp dir, `kbf
+  playbooks pin` wrote all three cores (lint clean standalone), a
+  re-run refused without `--force`, `--to third_party/kbf` honored.

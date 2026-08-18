@@ -142,7 +142,7 @@ func TestInitRequiresBuildsOnForVertical(t *testing.T) {
 }
 
 // TestInitRefusesExistingDirectory: init never overwrites, no --force
-// escape hatch (unlike vendor and skill install), since a scaffold
+// escape hatch (unlike playbooks pin and skill install), since a scaffold
 // overwrite could destroy real authored content sitting in ontology/.
 func TestInitRefusesExistingDirectory(t *testing.T) {
 	resetInitFlags()
