@@ -165,6 +165,42 @@ stable cut: tag it `v0.1.0`, the same semver its own `version` field
 already carries (`spec/primitives/namespace.md`), and the number every
 later change bumps from.
 
+## The install repo
+
+A playbook raised for a real business lives in its own repository, one
+playbook per repo, rooted at a directory conventionally named
+`playbook/`:
+
+```
+playbook/
+  manifest.yaml
+  ontology/
+  evals/
+  install/
+  builds-on/     # the pinned composition closure
+```
+
+`kbf init` creates everything except `builds-on/`; `kbf playbooks pin`,
+run from inside `playbook/`, adds it (the command's default `--to` is
+`builds-on` for exactly this layout; from the repo root, pass `--to
+playbook/builds-on`). Set the layout up right after step 1's `kbf init`;
+nothing later depends on when the closure gets pinned. Pinning is what
+makes the closure readable to tools that are not `kbf`: `kbf` itself
+resolves `builds-on` names against local paths and its embedded cores,
+but a downstream consumer, an agent runtime loading the contract from
+disk, say, just walks `builds-on/` and sees the full closure, with no
+composition resolution reimplemented. Inspectability and version
+pinning ride along: the pinned copies are real files, diffable, and
+frozen until deliberately re-pinned.
+
+A brownfield install (a business with systems already running, the
+normal case) tends to carry three more files at the playbook root:
+`MAPPING.md` (contract-to-current-system bindings), `DRIFT.md` (where
+the running system disagrees with the contract), `PENDING.md` (open
+questions for the owner). They are working install artifacts, not spec
+primitives: nothing lints them, and a greenfield install may never
+create them.
+
 What comes after this point (wiring real adapters, running the ontology
 against live queries, the runtime enforcement `README.md`'s "Status: v0"
 section marks as roadmap) is out of this spec's scope by design: v0 is

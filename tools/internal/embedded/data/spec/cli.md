@@ -22,7 +22,7 @@ design.
 | `kbf coverage` | Is this ontology connected to real sources? | Every install, ongoing |
 | `kbf compile` | What can be made from this ontology? | Whenever an artifact is needed |
 | `kbf schema` | What is a valid ontology allowed to look like? | Only when the spec itself changes |
-| `kbf playbooks pin` | Where can I see the embedded cores for real? | Rarely, on demand |
+| `kbf playbooks pin` | How does my install get the closure on disk? | Once per install |
 | `kbf skill install` | How does my agent learn this workflow? | Once per project |
 | `kbf docs` | Where's the spec, without a clone? | As needed |
 
@@ -199,8 +199,8 @@ always get the real files.
 ### kbf playbooks pin
 
 ```sh
-kbf playbooks pin       # writes ./playbooks/core-{business,operations,services}
-kbf playbooks pin --to third_party/kbf
+kbf playbooks pin       # writes ./builds-on/core-{business,operations,services}
+kbf playbooks pin --to playbook/builds-on   # same, run from the repo root instead
 ```
 
 Pins the three embedded core playbooks to real, inspectable, editable,
@@ -208,10 +208,14 @@ replaceable directories on disk, DO-NOT-EDIT header and all (same as
 embedded, since a pinned copy is meant to be read as exactly what
 fallback would have used; keep editing it locally from here and it's
 yours from that point on, no different from any other local path). The
-default `--to playbooks` mirrors this repository's own layout, so a
-pinned tree lands where every example on this page already points.
-Refuses to overwrite an existing directory; pass `--force` to replace
-it.
+default `--to builds-on` is the install-repo layout
+(`spec/onboarding.md`, "The install repo"): run from your playbook's
+directory, the closure lands in `builds-on/`, where a tool that is not
+`kbf` (an agent runtime loading the contract from disk, say) reads the
+full closure without reimplementing builds-on resolution. `kbf` itself
+never needs the pinned copies: local paths and the embedded fallback
+already resolve. Refuses to overwrite an existing directory; pass
+`--force` to replace it.
 
 ### kbf skill install
 

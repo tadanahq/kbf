@@ -46,13 +46,21 @@ treated as your own from that point on. "Embedded" never means "hidden":
 this command is how you get the same content lint/coverage/compile fall
 back to onto disk, where you can read, diff, or fork it.
 
+The default --to is builds-on, the install-repo layout ("kbf docs
+onboarding", "The install repo" section): run from your playbook's
+directory, the closure lands in builds-on/, where a tool that is not
+kbf (an agent runtime loading the contract from disk, say) reads the
+full closure without reimplementing builds-on resolution. kbf itself
+never needs the pinned copies: local paths and the embedded fallback
+already resolve.
+
 Refuses to overwrite an existing directory; pass --force to replace it.`,
 	Args: cobra.NoArgs,
 	RunE: runPlaybooksPin,
 }
 
 func init() {
-	playbooksPinCmd.Flags().StringVar(&pinTo, "to", "playbooks", "directory the pinned playbooks are written under")
+	playbooksPinCmd.Flags().StringVar(&pinTo, "to", "builds-on", "directory the pinned playbooks are written under")
 	playbooksPinCmd.Flags().BoolVar(&pinForce, "force", false, "overwrite existing directories")
 	playbooksCmd.AddCommand(playbooksPinCmd)
 	rootCmd.AddCommand(playbooksCmd)

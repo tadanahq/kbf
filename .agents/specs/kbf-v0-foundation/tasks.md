@@ -325,3 +325,41 @@ mutation commands. Zero adopters, so a clean break: no `vendor` alias.
 - [x] Proof: `make check` green from clean; in a temp dir, `kbf
   playbooks pin` wrote all three cores (lint clean standalone), a
   re-run refused without `--force`, `--to third_party/kbf` honored.
+
+## Batch 11: install-repo layout documented, pin default flipped to `builds-on`
+
+Owner-dispatched follow-up, 2026-08-18: the decision entry's revisit
+trigger fired (the first real install fixed the convention), so the
+layout is documented publicly and the default flipped in the same
+change, as that entry required. All install-repo specifics genericized:
+no client names, demo vocabulary only.
+
+- [x] `spec/onboarding.md`: new "The install repo" section between step
+  8 and the closing scope paragraph: the layout (one playbook per repo,
+  rooted at `playbook/`, pinned closure in `builds-on/`), where pin
+  fits (right after step 1's init, timing free), why the closure is
+  pinned (non-kbf tools read the full closure from disk without
+  reimplementing builds-on resolution; inspectability and version
+  pinning ride along), and MAPPING.md/DRIFT.md/PENDING.md as optional
+  brownfield install artifacts, explicitly not spec primitives. Bare
+  fence for the tree (docextract only checks yaml fences;
+  playbook-format.md precedent).
+- [x] `playbooks pin` default `--to` flipped `playbooks` → `builds-on`:
+  help text documents "run from your playbook's directory" and the
+  non-kbf-consumer motivation; `spec/cli.md` (command-table row now
+  "How does my install get the closure on disk? / Once per install",
+  section rewritten, examples show the in-playbook and repo-root
+  spellings); tests updated (`resetPinFlags`, default-destination
+  checks, marker paths).
+- [x] Decision entry: resolution appended to the 2026-08-18 entry
+  (trigger fired, default flipped with the doc, same day).
+- [x] init reconciliation: cheapest consistent story chosen, "the doc
+  states pin adds it". `kbf init` deliberately unchanged: an empty
+  `builds-on/` would be git-invisible and greenfield authoring never
+  needs the closure on disk (embedded fallback resolves), so pin
+  creates the directory on demand and `spec/onboarding.md` says exactly
+  that ("init creates everything except builds-on/").
+- [x] Proof: `make check` green from clean after `make embed-sync`; in
+  a temp dir, `kbf init playbook --builds-on core-operations`, pin from
+  inside `playbook/` landed the three cores in `builds-on/`, `kbf lint
+  playbook` still clean from the repo root.

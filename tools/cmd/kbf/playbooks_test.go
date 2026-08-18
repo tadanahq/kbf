@@ -25,13 +25,14 @@ import (
 )
 
 func resetPinFlags() {
-	pinTo = "playbooks"
+	pinTo = "builds-on"
 	pinForce = false
 }
 
-// TestPlaybooksPin checks the default destination, that all three core
-// playbooks land, and that the result lints clean standalone (no
-// embedded fallback needed: everything pin writes is now local).
+// TestPlaybooksPin checks the default destination (builds-on, the
+// install-repo layout), that all three core playbooks land, and that
+// the result lints clean standalone (no embedded fallback needed:
+// everything pin writes is now local).
 func TestPlaybooksPin(t *testing.T) {
 	resetPinFlags()
 	t.Chdir(t.TempDir())
@@ -42,7 +43,7 @@ func TestPlaybooksPin(t *testing.T) {
 
 	var paths []string
 	for _, name := range embedded.CorePlaybookNames() {
-		dir := filepath.Join("playbooks", name)
+		dir := filepath.Join("builds-on", name)
 		if _, err := os.Stat(filepath.Join(dir, "manifest.yaml")); err != nil {
 			t.Errorf("%s/manifest.yaml: %v", dir, err)
 		}
@@ -69,7 +70,7 @@ func TestPlaybooksPinIdempotencyAndForce(t *testing.T) {
 		t.Fatalf("first pin: %v", err)
 	}
 
-	marker := filepath.Join("playbooks", "core-business", "manifest.yaml")
+	marker := filepath.Join("builds-on", "core-business", "manifest.yaml")
 	if err := os.WriteFile(marker, []byte("locally edited"), 0o644); err != nil {
 		t.Fatal(err)
 	}
@@ -102,7 +103,7 @@ func TestPlaybooksPinIdempotencyAndForce(t *testing.T) {
 }
 
 // TestPlaybooksPinTo checks --to writes under a custom directory
-// instead of the default ./playbooks.
+// instead of the default ./builds-on.
 func TestPlaybooksPinTo(t *testing.T) {
 	resetPinFlags()
 	t.Chdir(t.TempDir())

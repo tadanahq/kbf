@@ -34,6 +34,18 @@ version pinning of playbook dependencies), rename the command again
 under rule 1; the rules themselves stand unless the owner overturns
 them.
 
+Resolved, 2026-08-18, same day: the revisit trigger fired. The first
+real install fixed the convention (one playbook per repo, rooted at
+`playbook/`, its pinned closure in `playbook/builds-on/`), and
+`spec/onboarding.md`'s new "The install repo" section documents it
+publicly, so the default flipped to `builds-on` in that same change,
+exactly as this entry required. The flip also supplied the motivation
+that was missing when `playbooks` was chosen: a pinned closure is how
+tools that are not kbf (an agent runtime's contract loader, say) read
+the full composition from disk without reimplementing builds-on
+resolution. That motivation now leads the command's own help and
+`spec/cli.md`'s section, alongside inspectability and version pinning.
+
 ## 2026-08-17 - Batteries-included binary: embedded cores/skill/docs with local-override precedence
 
 Owner-approved Batch 9. Supersedes `project-architecture.md`'s Boundaries
