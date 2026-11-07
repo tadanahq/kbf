@@ -1,0 +1,25 @@
+# Two extensions:
+# 1. on-time-delivery-rate: a threshold override. Under KBF008 (see
+#    spec/playbook-format.md), the override leaves every
+#    non-glossary field zero-valued: formula, grain, additivity, unit and
+#    tier are omitted, not repeated. Only `thresholds` (Metric's one
+#    glossary-eligible field) is set, tightened from core-services' 0.85
+#    to 0.90: Demo Studio holds itself to a stricter bar.
+# 2. repeat-engagement-rate: a net-new vertical metric, not present in
+#    core-services or core-business, so it is declared in full. A classic
+#    agency health signal (customer loyalty), expressible from customer and
+#    engagement counts alone, no attributes beyond what core-services
+#    already declares.
+
+kind: metric
+name: on-time-delivery-rate
+thresholds: {warn-below: 0.90}
+---
+kind: metric
+name: repeat-engagement-rate
+formula: count(customer, more-than-one-engagement) / count(customer)
+grain: [organization, business-date]
+additivity: non-additive
+unit: ratio
+thresholds: {warn-below: 0.30}
+tier: structural

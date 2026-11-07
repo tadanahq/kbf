@@ -1,0 +1,8 @@
+# `loan` is not declared anywhere: an action's `on` must resolve to a
+# declared entity, or it fails KBF009 (spec/primitives/action.md). This
+# playbook breaks no other rule, so KBF009 is the only finding it can earn.
+kind: action
+name: flag-overdue
+"on": loan
+approval: automatic
+writes: finding

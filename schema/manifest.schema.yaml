@@ -1,0 +1,48 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://raw.githubusercontent.com/tadanahq/kbf/main/schema/manifest.schema.yaml
+$ref: "#/$defs/Manifest"
+$defs:
+  Manifest:
+    properties:
+      name:
+        type: string
+        description: "Name is the playbook's identifier, e.g. \"core-business\". Doubles as its namespace: element uniqueness (KBF003) and fork detection (KBF008) are scoped by this name."
+      version:
+        type: string
+        description: "Version is the playbook's own version, independent of the spec version it targets: a playbook can change while the spec stands still, and the other way around."
+      spec:
+        type: string
+        description: Spec is the KBF spec version this playbook's content was authored against, e.g. "v0".
+      builds-on:
+        items:
+          type: string
+        type: array
+        description: "BuildsOn lists the playbook(s) this one composes: zero or more parent names, resolved as a DAG closure (transitive, deduped by name), not a single linear chain. Two entries can legitimately share a deeper ancestor (the diamond case: two core playbooks both building on the same root, then a third composing both of them) without that ancestor being loaded twice. Empty means this playbook builds on nothing: for layer: core that is what makes it a root (root-ness is derived from an empty BuildsOn, never declared as its own value); layer: vertical always needs at least one entry (KBF013). Every name must resolve, either within the set of playbooks passed to `kbf lint` or from the core playbooks embedded in kbf when a name isn't passed at all (a local path of the same name always wins over the embedded copy), and the closure must not cycle: both KBF011."
+      layer:
+        type: string
+        description: "Layer states this playbook's place in the taxonomy: core (a foundation playbook other playbooks compose; builds-on only core playbooks, empty allowed) or vertical (a business-specific leaf; builds-on at least one core or vertical playbook, so a vertical may itself be composed by another vertical). This is what makes \"core playbook\" a checkable claim instead of a naming convention nobody enforces: KBF013 cross-checks Layer against BuildsOn and against Name (core playbooks are named \"core-...\", vertical playbooks are not). Layer is a governance-taxonomy field the same way an entity's or metric's tier is: an empty layer is KBF010, a value other than core or vertical is KBF002, and a valid value that still doesn't line up with builds-on or name is KBF013."
+    additionalProperties: false
+    type: object
+    required:
+    - name
+    - version
+    - spec
+    - builds-on
+    - layer
+    description: "Manifest is a playbook's identity card: manifest.yaml at the playbook root. It names the playbook, the spec version it targets, and what it builds on. Every playbook has exactly one manifest; the linter reads it before touching any ontology content, since builds-on drives cross-playbook resolution (KBF006, KBF007, KBF008)."
+  SlotMapping:
+    properties:
+      slot:
+        type: string
+        description: Slot is the slot identifier, e.g. "catalog.offering-label". Matches the slot of an attribute elsewhere in the resolved playbook.
+      source:
+        type: string
+        description: "Source is the source system this slot is mapped to. Empty means declared but not yet mapped: counted as unmapped by `kbf coverage`."
+    additionalProperties: false
+    type: object
+    required:
+    - slot
+    - source
+    description: "SlotMapping is one row of a playbook's install/slots.yaml: a declared slot and the source system it fills from, if known yet. The file itself is a plain list of these rows (no `kind:` wrapper): static coverage is the share of rows with a non-empty source. Every row must match the slot of some attribute in the resolved playbook: KBF012."
+title: KBF Playbook Manifest
+description: Identity and composition declaration for a KBF playbook (manifest.yaml).

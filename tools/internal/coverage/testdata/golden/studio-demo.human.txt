@@ -1,0 +1,36 @@
+studio-demo
+┌────────────┬────────────────────────────────┬─────────┬────────┐
+│ENTITY      │SLOT                            │SOURCE   │STATUS  │
+├────────────┼────────────────────────────────┼─────────┼────────┤
+│customer    │crm.customer-contact            │demopm   │mapped  │
+│customer    │crm.customer-joined-date        │demopm   │mapped  │
+│customer    │crm.customer-name               │demopm   │mapped  │
+│deliverable │delivery.deliverable-due        │demopm   │mapped  │
+│deliverable │delivery.deliverable-label      │demopm   │mapped  │
+│deliverable │delivery.deliverable-status     │demopm   │mapped  │
+│employee    │hr.employee-hire-date           │demobooks│mapped  │
+│employee    │hr.employee-labor-cost          │demobooks│mapped  │
+│employee    │hr.employee-name                │demobooks│mapped  │
+│employee    │hr.employee-role                │demobooks│mapped  │
+│engagement  │delivery.engagement-billed-hours│demopm   │mapped  │
+│engagement  │delivery.engagement-end         │demopm   │mapped  │
+│engagement  │delivery.engagement-label       │demopm   │mapped  │
+│engagement  │delivery.engagement-start       │demopm   │mapped  │
+│engagement  │delivery.engagement-status      │demopm   │mapped  │
+│offering    │catalog.offering-category       │demopm   │mapped  │
+│offering    │catalog.offering-label          │demopm   │mapped  │
+│offering    │catalog.offering-price          │demopm   │mapped  │
+│organization│core.organization-display-name  │demobooks│mapped  │
+│organization│core.organization-legal-name    │demobooks│mapped  │
+│organization│core.organization-tax-id        │demobooks│mapped  │
+│purchase    │purchasing.purchase-status      │demobooks│mapped  │
+│purchase    │purchasing.purchase-timestamp   │demobooks│mapped  │
+│purchase    │purchasing.purchase-total       │demobooks│mapped  │
+│supplier    │purchasing.supplier-contact     │         │unmapped│
+│supplier    │purchasing.supplier-name        │         │unmapped│
+│transaction │sales.transaction-status        │demobooks│mapped  │
+│transaction │sales.transaction-timestamp     │demobooks│mapped  │
+│transaction │sales.transaction-total         │demobooks│mapped  │
+└────────────┴────────────────────────────────┴─────────┴────────┘
+27/29 slots mapped (93%)
+

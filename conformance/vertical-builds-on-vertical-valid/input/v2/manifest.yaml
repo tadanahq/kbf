@@ -1,0 +1,7 @@
+# A vertical building on another vertical (downtown-branch), not a core
+# playbook: KBF013 allows this (vertical may build on core or vertical).
+name: downtown-branch-kids-wing
+version: 0.1.0
+spec: v0
+builds-on: [downtown-branch]
+layer: vertical

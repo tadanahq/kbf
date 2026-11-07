@@ -1,0 +1,14 @@
+# A middle layer adding a *relation instance* that reuses a verb
+# chain-grandparent already declares: chain-grandparent's own
+# assembled-from is (batch, material); this is a new pair, (component,
+# material), legal because the verb is already in this playbook's
+# composition closure (KBF007). A verb new to the closure would need a
+# relation touching an entity this playbook declares itself.
+kind: relation
+name: assembled-from
+from: component
+to: material
+cardinality: many-to-many
+join: [component_id, material_id]
+origin: source-synced
+temporal: false

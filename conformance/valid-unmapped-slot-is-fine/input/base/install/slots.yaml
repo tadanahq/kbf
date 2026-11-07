@@ -1,0 +1,4 @@
+# An empty source is a valid "not yet mapped" state, not a lint error
+# (spec/primitives/slot-mapping.md): only surfaced by `kbf coverage`.
+- slot: catalog.book-title
+  source: ""

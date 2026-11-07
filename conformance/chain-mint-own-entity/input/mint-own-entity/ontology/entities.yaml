@@ -1,0 +1,6 @@
+kind: entity
+name: warehouse
+meaning: A storage site this playbook introduces, distinct from chain-grandparent's site.
+identity: [warehouse_id]
+resolution: identity-mapping
+tier: structural

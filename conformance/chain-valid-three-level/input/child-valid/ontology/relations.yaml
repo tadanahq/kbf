@@ -1,0 +1,21 @@
+# Reuses assembled-from (declared by chain-grandparent two layers up, and
+# reused by chain-parent one layer up) on a new pair, and sourced-from
+# (declared by chain-grandparent only) on another: both verbs must resolve
+# across the full chain, not just the immediate parent.
+kind: relation
+name: assembled-from
+from: product
+to: material
+cardinality: many-to-many
+join: [product_id, material_id]
+origin: source-synced
+temporal: false
+---
+kind: relation
+name: sourced-from
+from: product
+to: site
+cardinality: many-to-one
+join: [product_id, site_id]
+origin: client-configured
+temporal: false

@@ -1,0 +1,18 @@
+# DO NOT EDIT: generated from playbooks/core-operations/install/slots.yaml by scripts/embedsync. Edit the source, then run `make embed-sync`.
+# Slot-mapping template for core-operations' own new attributes only
+# (location, shift). core-business's 21 slots are declared in its own
+# install/slots.yaml; a leaf install building on this playbook maps the
+# full resolved set. See spec/primitives/slot-mapping.md.
+
+- slot: core.location-label
+  source: ""
+- slot: core.location-address
+  source: ""
+- slot: core.location-timezone
+  source: ""
+- slot: hr.shift-start
+  source: ""
+- slot: hr.shift-end
+  source: ""
+- slot: hr.shift-labor-cost
+  source: ""

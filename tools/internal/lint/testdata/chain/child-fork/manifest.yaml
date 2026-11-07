@@ -1,0 +1,8 @@
+# Builds on chain-parent, which never touches chain-grandparent's
+# `material` entity: this playbook's own redeclaration of `material` must
+# still be caught, against the grandparent by name, not the parent.
+name: chain-child-fork
+version: 0.1.0
+spec: v0
+builds-on: [core-chain-parent]
+layer: vertical

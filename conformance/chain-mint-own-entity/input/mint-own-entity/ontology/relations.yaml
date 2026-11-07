@@ -1,0 +1,12 @@
+# stored-at is a brand-new verb: nothing in the composition closure declares
+# it (chain-grandparent only has sourced-from and assembled-from). Legal
+# because it touches warehouse, an entity this playbook declares itself:
+# minting rights come with introducing a new entity (KBF007 condition (b)).
+kind: relation
+name: stored-at
+from: material
+to: warehouse
+cardinality: many-to-one
+join: [material_id, warehouse_id]
+origin: source-synced
+temporal: false

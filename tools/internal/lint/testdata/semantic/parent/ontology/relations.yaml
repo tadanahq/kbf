@@ -1,0 +1,21 @@
+# "contains" recurs across two pairs on purpose: relation identity is
+# (name, from, to), and the vocabulary this fixture's child playbook must
+# stay inside is {contains}.
+
+kind: relation
+name: contains
+from: workshop
+to: widget
+cardinality: one-to-many
+join: [workshop_id, widget_id]
+origin: source-synced
+temporal: false
+---
+kind: relation
+name: contains
+from: workshop
+to: gizmo
+cardinality: one-to-many
+join: [workshop_id, gizmo_id]
+origin: source-synced
+temporal: false

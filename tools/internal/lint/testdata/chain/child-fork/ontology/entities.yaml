@@ -1,0 +1,8 @@
+# Redeclares chain-grandparent's `material` (two layers up; chain-parent
+# never touches it) and sets `meaning`, a non-glossary field: a fork.
+kind: entity
+name: material
+meaning: A redefinition of the grandparent's material entity.
+identity: [material_id]
+resolution: identity-mapping
+tier: structural

@@ -1,0 +1,5 @@
+name: core-catalog-b
+version: 0.1.0
+spec: v0
+builds-on: []
+layer: core

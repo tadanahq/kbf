@@ -1,0 +1,8 @@
+# Builds on both core-catalog-a and core-catalog-b, which both declare
+# `book`: composition has no resolution order, so this is always an
+# error (KBF003's cross-playbook variant), reported against both files.
+name: downtown-branch
+version: 0.1.0
+spec: v0
+builds-on: [core-catalog-a, core-catalog-b]
+layer: vertical

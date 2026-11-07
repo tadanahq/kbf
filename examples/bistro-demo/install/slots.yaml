@@ -1,0 +1,82 @@
+# Demo Bistro & Events' install: the full resolved slot set across its
+# closure (core-business's 21 + core-operations' 6 + core-services' 8 =
+# 35; bistro-demo adds no new attributes of its own), mapped to two
+# fictional sources: demopos (the point-of-sale system, for the walk-in
+# side) and demopm (the booking/project tool, for the events side). Demo
+# Bistro & Events coordinates individual event deliverables informally
+# rather than in a system, so the two delivery.deliverable-due/status
+# slots stay unmapped on purpose: `kbf coverage` should show them as the
+# gap, a different one than examples/cafe-demo's (crm.customer-*) or
+# examples/studio-demo's (purchasing.supplier-*), proof the pattern is
+# not hardcoded to one business or one demo.
+
+- slot: core.organization-legal-name
+  source: demobooks
+- slot: core.organization-display-name
+  source: demobooks
+- slot: core.organization-tax-id
+  source: demobooks
+- slot: sales.transaction-timestamp
+  source: demopos
+- slot: sales.transaction-status
+  source: demopos
+- slot: sales.transaction-total
+  source: demopos
+- slot: catalog.offering-label
+  source: demopos
+- slot: catalog.offering-category
+  source: demopos
+- slot: catalog.offering-price
+  source: demopos
+- slot: crm.customer-name
+  source: demopm
+- slot: crm.customer-contact
+  source: demopm
+- slot: crm.customer-joined-date
+  source: demopm
+- slot: hr.employee-name
+  source: demobooks
+- slot: hr.employee-role
+  source: demobooks
+- slot: hr.employee-hire-date
+  source: demobooks
+- slot: hr.employee-labor-cost
+  source: demobooks
+- slot: purchasing.supplier-name
+  source: demobooks
+- slot: purchasing.supplier-contact
+  source: demobooks
+- slot: purchasing.purchase-timestamp
+  source: demobooks
+- slot: purchasing.purchase-status
+  source: demobooks
+- slot: purchasing.purchase-total
+  source: demobooks
+- slot: core.location-label
+  source: demopos
+- slot: core.location-address
+  source: demopos
+- slot: core.location-timezone
+  source: demopos
+- slot: hr.shift-start
+  source: demobooks
+- slot: hr.shift-end
+  source: demobooks
+- slot: hr.shift-labor-cost
+  source: demobooks
+- slot: delivery.engagement-label
+  source: demopm
+- slot: delivery.engagement-start
+  source: demopm
+- slot: delivery.engagement-end
+  source: demopm
+- slot: delivery.engagement-status
+  source: demopm
+- slot: delivery.engagement-billed-hours
+  source: demopm
+- slot: delivery.deliverable-label
+  source: demopm
+- slot: delivery.deliverable-due
+  source: ""
+- slot: delivery.deliverable-status
+  source: ""

@@ -1,0 +1,9 @@
+# DO NOT EDIT: generated from playbooks/core-business/manifest.yaml by scripts/embedsync. Edit the source, then run `make embed-sync`.
+# core-business is Playbook Zero: the base ontology every KBF business
+# shares. It has no parent; every other playbook in this repository
+# builds on it, directly or through the closure.
+name: core-business
+version: 0.1.0
+spec: v0
+builds-on: []
+layer: core

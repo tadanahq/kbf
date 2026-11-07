@@ -1,0 +1,6 @@
+kind: entity
+name: reading-room
+meaning: A room at this branch where patrons read on site.
+identity: [reading_room_id]
+resolution: identity-mapping
+tier: structural

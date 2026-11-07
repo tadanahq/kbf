@@ -1,0 +1,9 @@
+# layer: vertical, building on core-lending (itself a core playbook, not
+# the root): KBF013 requires a vertical to build on at least one core or
+# vertical playbook, any depth (it does, two hops from the root is fine)
+# and its name to NOT start with core- (it doesn't).
+name: downtown-branch
+version: 0.1.0
+spec: v0
+builds-on: [core-lending]
+layer: vertical

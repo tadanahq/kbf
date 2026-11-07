@@ -1,0 +1,30 @@
+# Two extensions:
+# 1. location-labor-cost-ratio: a threshold override. Under KBF008 (see
+#    spec/playbook-format.md), the override leaves every
+#    non-glossary field zero-valued: formula, grain, additivity, unit and
+#    tier are omitted, not repeated. Only `thresholds` (Metric's one
+#    glossary-eligible field) is set, tightened from core-operations' 0.35
+#    to 0.32. This overrides core-operations' location-grain metric, not
+#    core-business's organization-grain labor-cost-ratio: they are
+#    different metrics (different name), so overriding one says nothing
+#    about the other.
+# 2. waste-ratio: a net-new vertical metric, not present in core at all, so
+#    it is declared in full. Its formula references `purchase.waste-cost`,
+#    a concept Demo Cafe tracks but has not formally declared as an
+#    attribute yet: v0 formulas are opaque expression strings, not
+#    cross-referenced against declared attributes (see spec/versioning.md),
+#    so this is valid content even though `waste-cost` has no slot mapping
+#    of its own.
+
+kind: metric
+name: location-labor-cost-ratio
+thresholds: {warn-above: 0.32}
+---
+kind: metric
+name: waste-ratio
+formula: sum(purchase.waste-cost) / purchase-cost
+grain: [location, business-date]
+additivity: non-additive
+unit: ratio
+thresholds: {warn-above: 0.08}
+tier: structural

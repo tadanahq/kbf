@@ -1,0 +1,24 @@
+# DO NOT EDIT: generated from playbooks/core-services/ontology/metrics.yaml by scripts/embedsync. Edit the source, then run `make embed-sync`.
+# Thin but real: two metrics that are actually expressible from
+# engagement and deliverable alone, without inventing capacity data
+# core-services does not have (a true utilization metric needs employee
+# available-hours, which is not a field this playbook can add to
+# core-business's employee without forking it, so it is left out rather
+# than faked).
+
+kind: metric
+name: effective-rate
+formula: revenue / sum(engagement.billed-hours)
+grain: [organization, business-date]
+additivity: non-additive
+unit: currency
+tier: structural
+---
+kind: metric
+name: on-time-delivery-rate
+formula: count(deliverable, delivered-by-due) / count(deliverable)
+grain: [organization, business-date]
+additivity: non-additive
+unit: ratio
+thresholds: {warn-below: 0.85}
+tier: structural

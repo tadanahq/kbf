@@ -1,0 +1,9 @@
+# DO NOT EDIT: generated from playbooks/core-services/manifest.yaml by scripts/embedsync. Edit the source, then run `make embed-sync`.
+# core-services: the core playbook for businesses that sell scoped work
+# rather than physical goods (agencies, consultancies, studios). Adds
+# engagement and deliverable on top of core-business; does not fork it.
+name: core-services
+version: 0.1.0
+spec: v0
+builds-on: [core-business]
+layer: core

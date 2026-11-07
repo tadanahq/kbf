@@ -1,0 +1,6 @@
+# catalog.book-title matches the attribute above. catalog.book-isbn does
+# not match any attribute anywhere: KBF012.
+- slot: catalog.book-title
+  source: ""
+- slot: catalog.book-isbn
+  source: ""

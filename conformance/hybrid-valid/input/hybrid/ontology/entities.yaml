@@ -1,0 +1,9 @@
+# A genuinely new entity hybrid itself introduces: only a playbook
+# composing both core-catalog and core-events has both `book` and `venue`
+# available to pair one against.
+kind: entity
+name: session
+meaning: A scheduled session pairing a book with a venue.
+identity: [session_id]
+resolution: identity-mapping
+tier: structural

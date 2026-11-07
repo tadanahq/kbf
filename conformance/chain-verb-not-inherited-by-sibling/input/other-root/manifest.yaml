@@ -1,0 +1,11 @@
+# A root playbook genuinely unrelated to chain-grandparent's line: exists
+# so chain-cousin can prove KBF007's composed-verb union AND
+# the own-entity minting rule are both scoped to a playbook's actual
+# ancestors and its own declarations, not to "everything passed to kbf lint
+# in the same invocation". Declares the two entities chain-cousin's bad
+# relation connects, so that relation is fully inherited on both ends:
+# neither the verb nor the entities give chain-cousin a legal way in.
+name: chain-other-root
+version: 0.1.0
+spec: v0
+builds-on: []

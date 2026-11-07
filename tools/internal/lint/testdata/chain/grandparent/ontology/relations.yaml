@@ -1,0 +1,24 @@
+# Seeds the chain's vocabulary with two verbs: sourced-from and
+# assembled-from. KBF007: a playbook may use any verb already declared in
+# its composition closure, and may mint a new verb only on a relation
+# touching an entity it declares itself. This root composes nothing, so it
+# mints both verbs on its own entities. assembled-from's own pair here
+# (batch/material) is deliberately minimal: its only job is to exist so
+# chain-parent has a composed verb to reuse for a *different* pair.
+kind: relation
+name: sourced-from
+from: material
+to: site
+cardinality: many-to-one
+join: [material_id, site_id]
+origin: source-synced
+temporal: false
+---
+kind: relation
+name: assembled-from
+from: batch
+to: material
+cardinality: many-to-many
+join: [batch_id, material_id]
+origin: source-synced
+temporal: false

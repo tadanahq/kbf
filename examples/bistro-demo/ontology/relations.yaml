@@ -1,0 +1,19 @@
+# The hybrid pairing only a playbook composing both core-operations and
+# core-services can express: an event (engagement, from core-services)
+# happens at a specific site (location, from core-operations). No
+# booking tool emits which location hosts a given event; Demo Bistro &
+# Events staff assign it by hand when the event is scheduled, so it is
+# origin: client-configured, not source-synced (see the governance model
+# in spec/conventions.md). This reuses the `located-at` verb core-
+# operations already mints for transaction-to-location: relation identity
+# is (name, from, to), and (located-at, engagement, location) is a
+# distinct triple from that one, so this is a new relation, not a fork.
+
+kind: relation
+name: located-at
+from: engagement
+to: location
+cardinality: many-to-one
+join: [engagement_id, location_id]
+origin: client-configured
+temporal: false

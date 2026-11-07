@@ -1,0 +1,13 @@
+# Demo Studio calls `engagement` a "campaign" in conversation. Under
+# KBF008 (see spec/playbook-format.md), a glossary-only override must
+# leave every non-glossary field zero-valued: meaning, identity,
+# resolution, tier, attributes and states are omitted here on purpose,
+# not repeated. Only `synonyms` (Entity's one glossary-eligible field)
+# is set. `engagement` is declared in core-services, studio-demo's
+# immediate parent, so this matches it, listing core-services' own
+# `project`/`retainer` beside Demo Studio's word. See "Composition,
+# never fork" in spec/playbook-format.md.
+
+kind: entity
+name: engagement
+synonyms: {en: [project, retainer, campaign], es: [proyecto]}

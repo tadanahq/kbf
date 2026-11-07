@@ -1,0 +1,25 @@
+# .gitignore
+
+# Build output.
+bin/
+dist/
+
+# Go
+*.test
+coverage.out
+
+# `kbf compile --to mermaid` output: the README tour's step 6 generates
+# this exact file; it's a regeneratable byproduct, not source content.
+# Golden test fixtures are the deliberate exception: they're committed,
+# intentional content, not byproduct (internal/compile/testdata/golden/).
+*.mmd
+!**/testdata/**/*.mmd
+
+# Editors / OS. Personal editor state stays out, but the two committed
+# settings files are project intent: they pin the published schemas and
+# disable schemastore auto-matching, which otherwise misdetects
+# playbooks/**/*.yaml as Ansible.
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/settings.json

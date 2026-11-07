@@ -1,0 +1,13 @@
+kind: entity
+name: book
+meaning: A single title held by the library.
+identity: [book_id]
+resolution: identity-mapping
+tier: structural
+---
+kind: entity
+name: branch
+meaning: A physical library location.
+identity: [branch_id]
+resolution: identity-mapping
+tier: structural

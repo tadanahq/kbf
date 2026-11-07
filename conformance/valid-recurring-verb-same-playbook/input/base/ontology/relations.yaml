@@ -1,0 +1,20 @@
+# `held-at` recurs across two distinct (from, to) pairs within one
+# playbook: relation identity is (name, from, to), not name alone
+# (spec/primitives/relation.md), so this is not a KBF003 duplicate.
+kind: relation
+name: held-at
+from: book
+to: branch
+cardinality: many-to-one
+join: [book_id, branch_id]
+origin: source-synced
+temporal: false
+---
+kind: relation
+name: held-at
+from: author
+to: branch
+cardinality: many-to-one
+join: [author_id, branch_id]
+origin: client-configured
+temporal: false

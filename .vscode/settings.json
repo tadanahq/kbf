@@ -1,0 +1,16 @@
+{
+  "files.associations": {
+    "playbooks/**/*.yaml": "yaml",
+    "examples/**/*.yaml": "yaml",
+    "conformance/**/*.yaml": "yaml"
+  },
+  "yaml.schemaStore.enable": false,
+  "yaml.schemas": {
+    "schema/manifest.schema.yaml": ["**/manifest.yaml"],
+    "schema/ontology.schema.yaml": [
+      "**/ontology/*.yaml",
+      "**/evals/*.yaml",
+      "**/install/*.yaml"
+    ]
+  }
+}

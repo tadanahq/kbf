@@ -1,0 +1,6 @@
+kind: entity
+name: widget
+meaning: A thing coll-root-b declares, unaware coll-root-a declares the same name.
+identity: [widget_id]
+resolution: identity-mapping
+tier: structural

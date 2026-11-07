@@ -1,0 +1,18 @@
+testdata/structural/ontology/entity.yaml
+┌────┬──────┬────────────────┬───────────────────────────────────────────────────────────────────────────────────────┬───────────────────────────────────────────────────────────┐
+│LINE│RULE  │ELEMENT         │MESSAGE                                                                                │FIX                                                        │
+├────┼──────┼────────────────┼───────────────────────────────────────────────────────────────────────────────────────┼───────────────────────────────────────────────────────────┤
+│18  │KBF001│not_a_real_field│unknown field "not_a_real_field"                                                       │remove it, or check spelling against the primitive's fields│
+│20  │KBF004│sprocket        │entity has no identity key(s)                                                          │add identity: [<key>, ...]                                 │
+│20  │KBF010│sprocket        │entity has no governance tier                                                          │add tier: structural, glossary, or instance                │
+│25  │KBF003│widget          │duplicate entity "widget", first declared at testdata/structural/ontology/entity.yaml:5│rename one, or remove the duplicate                        │
+└────┴──────┴────────────────┴───────────────────────────────────────────────────────────────────────────────────────┴───────────────────────────────────────────────────────────┘
+
+testdata/structural/ontology/other.yaml
+┌────┬──────┬─────────┬──────────────────────────────────────────────────────────────────────────┬───────────────────────────────────────────────────────────────┐
+│LINE│RULE  │ELEMENT  │MESSAGE                                                                   │FIX                                                            │
+├────┼──────┼─────────┼──────────────────────────────────────────────────────────────────────────┼───────────────────────────────────────────────────────────────┤
+│4   │KBF002│sometimes│additivity "sometimes" is not one of additive, semi-additive, non-additive│set additivity to one of: additive, semi-additive, non-additive│
+└────┴──────┴─────────┴──────────────────────────────────────────────────────────────────────────┴───────────────────────────────────────────────────────────────┘
+
+5 finding(s) across 2 file(s)

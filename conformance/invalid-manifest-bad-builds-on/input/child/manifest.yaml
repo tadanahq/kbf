@@ -1,0 +1,6 @@
+# `builds-on: [parent]` names a playbook that is never passed to the
+# linter alongside this one: KBF011.
+name: child
+version: 0.1.0
+spec: v0
+builds-on: [parent]

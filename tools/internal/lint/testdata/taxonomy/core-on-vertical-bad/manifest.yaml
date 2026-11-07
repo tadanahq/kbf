@@ -1,0 +1,9 @@
+# layer: core building on tax-vertical (layer: vertical): KBF013. A core
+# playbook may only build on other core playbooks; the foundation must
+# stay a closed set that never becomes load-bearing on something
+# business-specific.
+name: core-tax-bad
+version: 0.1.0
+spec: v0
+builds-on: [tax-vertical]
+layer: core

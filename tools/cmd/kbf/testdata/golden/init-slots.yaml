@@ -1,0 +1,4 @@
+# One row per attribute slot in this playbook's composed closure:
+# {slot: <domain.concept>, source: <system, or "" if not yet mapped>}.
+# kbf init writes no rows: add them at the slot matrix (spec/onboarding.md
+# step 7). kbf coverage reports the rows listed here.

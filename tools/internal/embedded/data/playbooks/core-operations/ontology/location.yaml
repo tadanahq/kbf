@@ -1,0 +1,15 @@
+# DO NOT EDIT: generated from playbooks/core-operations/ontology/location.yaml by scripts/embedsync. Edit the source, then run `make embed-sync`.
+kind: entity
+name: location
+meaning: >-
+  A physical or operational site where the business serves customers or
+  holds stock.
+identity: [location_id]
+resolution: identity-mapping
+tier: structural
+synonyms: {en: [site, branch, store], es: [sede, sucursal, local]}
+attributes:
+  - {name: label, type: text, slot: core.location-label}
+  - {name: address, type: text, slot: core.location-address}
+  - {name: timezone, type: text, slot: core.location-timezone}
+states: [active, inactive]

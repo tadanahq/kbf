@@ -1,0 +1,14 @@
+# DO NOT EDIT: generated from playbooks/core-business/ontology/offering.yaml by scripts/embedsync. Edit the source, then run `make embed-sync`.
+kind: entity
+name: offering
+meaning: >-
+  A product or service the business sells to customers.
+identity: [offering_id]
+resolution: identity-mapping
+tier: structural
+synonyms: {en: [item], es: [articulo]}
+attributes:
+  - {name: label, type: text, slot: catalog.offering-label}
+  - {name: category, type: text, slot: catalog.offering-category}
+  - {name: unit-price, type: currency, slot: catalog.offering-price}
+states: [active, retired]

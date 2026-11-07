@@ -1,0 +1,4 @@
+name: bad-builds-on-fixture
+version: 0.1.0
+spec: v0
+builds-on: [some-playbook-that-was-never-loaded]

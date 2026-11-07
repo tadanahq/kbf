@@ -1,0 +1,8 @@
+# layer: core, building on the root directly: KBF013 requires a core
+# playbook to build on other core playbooks only (it does) and its name
+# to start with core- (it does).
+name: core-lending
+version: 0.1.0
+spec: v0
+builds-on: [core-library]
+layer: core

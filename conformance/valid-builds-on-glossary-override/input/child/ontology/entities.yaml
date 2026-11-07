@@ -1,0 +1,6 @@
+# Glossary-eligible override: only kind, name, and synonyms set. Every
+# other field (meaning, identity, resolution, tier) is left zero-valued on
+# purpose: this is a legitimate layer on the parent's `book`, not a fork.
+kind: entity
+name: book
+synonyms: {en: [title, volume]}

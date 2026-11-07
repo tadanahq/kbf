@@ -1,0 +1,11 @@
+# `shelved-at` is not in the composition closure's vocabulary ({held-at}),
+# and neither endpoint is an entity this playbook declares itself, so it
+# may not mint the verb: KBF007 (spec/conventions.md).
+kind: relation
+name: shelved-at
+from: book
+to: branch
+cardinality: many-to-one
+join: [book_id, branch_id]
+origin: client-configured
+temporal: false

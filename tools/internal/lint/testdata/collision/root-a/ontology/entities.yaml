@@ -1,0 +1,6 @@
+kind: entity
+name: widget
+meaning: A thing coll-root-a declares.
+identity: [widget_id]
+resolution: identity-mapping
+tier: structural

@@ -1,0 +1,8 @@
+# Composes both mid-a and mid-b, which both build on core-library: the
+# diamond. core-library's `book` entity is reached through two paths and
+# must resolve exactly once, not fork or duplicate.
+name: downtown-library
+version: 0.1.0
+spec: v0
+builds-on: [core-lending, core-catalog]
+layer: vertical

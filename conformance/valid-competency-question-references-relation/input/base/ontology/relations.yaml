@@ -1,0 +1,8 @@
+kind: relation
+name: written-by
+from: book
+to: author
+cardinality: many-to-one
+join: [book_id, author_id]
+origin: source-synced
+temporal: false

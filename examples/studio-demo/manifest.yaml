@@ -1,0 +1,12 @@
+# Demo Studio: a fictional single-team marketing agency. Teaching content
+# only, fully valid, exercising every KBF primitive at least once (directly
+# or through composition). Builds on core-services, which builds on
+# core-business; both resolve from kbf's embedded copies unless local paths
+# are passed.
+# The sibling of examples/cafe-demo: same teaching role, the other core
+# playbook, proof core-business is shared, not operations-flavored.
+name: studio-demo
+version: 0.1.0
+spec: v0
+builds-on: [core-services]
+layer: vertical

@@ -1,0 +1,221 @@
+{
+  "packages": [
+    {
+      "package": "bistro-demo",
+      "rows": [
+        {
+          "entity": "customer",
+          "slot": "crm.customer-contact",
+          "source": "demopm",
+          "mapped": true
+        },
+        {
+          "entity": "customer",
+          "slot": "crm.customer-joined-date",
+          "source": "demopm",
+          "mapped": true
+        },
+        {
+          "entity": "customer",
+          "slot": "crm.customer-name",
+          "source": "demopm",
+          "mapped": true
+        },
+        {
+          "entity": "deliverable",
+          "slot": "delivery.deliverable-due",
+          "source": "",
+          "mapped": false
+        },
+        {
+          "entity": "deliverable",
+          "slot": "delivery.deliverable-label",
+          "source": "demopm",
+          "mapped": true
+        },
+        {
+          "entity": "deliverable",
+          "slot": "delivery.deliverable-status",
+          "source": "",
+          "mapped": false
+        },
+        {
+          "entity": "employee",
+          "slot": "hr.employee-hire-date",
+          "source": "demobooks",
+          "mapped": true
+        },
+        {
+          "entity": "employee",
+          "slot": "hr.employee-labor-cost",
+          "source": "demobooks",
+          "mapped": true
+        },
+        {
+          "entity": "employee",
+          "slot": "hr.employee-name",
+          "source": "demobooks",
+          "mapped": true
+        },
+        {
+          "entity": "employee",
+          "slot": "hr.employee-role",
+          "source": "demobooks",
+          "mapped": true
+        },
+        {
+          "entity": "engagement",
+          "slot": "delivery.engagement-billed-hours",
+          "source": "demopm",
+          "mapped": true
+        },
+        {
+          "entity": "engagement",
+          "slot": "delivery.engagement-end",
+          "source": "demopm",
+          "mapped": true
+        },
+        {
+          "entity": "engagement",
+          "slot": "delivery.engagement-label",
+          "source": "demopm",
+          "mapped": true
+        },
+        {
+          "entity": "engagement",
+          "slot": "delivery.engagement-start",
+          "source": "demopm",
+          "mapped": true
+        },
+        {
+          "entity": "engagement",
+          "slot": "delivery.engagement-status",
+          "source": "demopm",
+          "mapped": true
+        },
+        {
+          "entity": "location",
+          "slot": "core.location-address",
+          "source": "demopos",
+          "mapped": true
+        },
+        {
+          "entity": "location",
+          "slot": "core.location-label",
+          "source": "demopos",
+          "mapped": true
+        },
+        {
+          "entity": "location",
+          "slot": "core.location-timezone",
+          "source": "demopos",
+          "mapped": true
+        },
+        {
+          "entity": "offering",
+          "slot": "catalog.offering-category",
+          "source": "demopos",
+          "mapped": true
+        },
+        {
+          "entity": "offering",
+          "slot": "catalog.offering-label",
+          "source": "demopos",
+          "mapped": true
+        },
+        {
+          "entity": "offering",
+          "slot": "catalog.offering-price",
+          "source": "demopos",
+          "mapped": true
+        },
+        {
+          "entity": "organization",
+          "slot": "core.organization-display-name",
+          "source": "demobooks",
+          "mapped": true
+        },
+        {
+          "entity": "organization",
+          "slot": "core.organization-legal-name",
+          "source": "demobooks",
+          "mapped": true
+        },
+        {
+          "entity": "organization",
+          "slot": "core.organization-tax-id",
+          "source": "demobooks",
+          "mapped": true
+        },
+        {
+          "entity": "purchase",
+          "slot": "purchasing.purchase-status",
+          "source": "demobooks",
+          "mapped": true
+        },
+        {
+          "entity": "purchase",
+          "slot": "purchasing.purchase-timestamp",
+          "source": "demobooks",
+          "mapped": true
+        },
+        {
+          "entity": "purchase",
+          "slot": "purchasing.purchase-total",
+          "source": "demobooks",
+          "mapped": true
+        },
+        {
+          "entity": "shift",
+          "slot": "hr.shift-end",
+          "source": "demobooks",
+          "mapped": true
+        },
+        {
+          "entity": "shift",
+          "slot": "hr.shift-labor-cost",
+          "source": "demobooks",
+          "mapped": true
+        },
+        {
+          "entity": "shift",
+          "slot": "hr.shift-start",
+          "source": "demobooks",
+          "mapped": true
+        },
+        {
+          "entity": "supplier",
+          "slot": "purchasing.supplier-contact",
+          "source": "demobooks",
+          "mapped": true
+        },
+        {
+          "entity": "supplier",
+          "slot": "purchasing.supplier-name",
+          "source": "demobooks",
+          "mapped": true
+        },
+        {
+          "entity": "transaction",
+          "slot": "sales.transaction-status",
+          "source": "demopos",
+          "mapped": true
+        },
+        {
+          "entity": "transaction",
+          "slot": "sales.transaction-timestamp",
+          "source": "demopos",
+          "mapped": true
+        },
+        {
+          "entity": "transaction",
+          "slot": "sales.transaction-total",
+          "source": "demopos",
+          "mapped": true
+        }
+      ],
+      "declared": 35,
+      "mapped": 33
+    }
+  ]
+}

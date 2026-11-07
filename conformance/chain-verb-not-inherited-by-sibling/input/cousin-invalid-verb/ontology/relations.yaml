@@ -1,0 +1,15 @@
+# assembled-from is real (chain-grandparent declares it), but this
+# playbook's only ancestor is chain-other-root, which declares no
+# relations at all: illegal here, KBF007 condition (a). Both endpoints
+# (gadget, widget) are inherited from chain-other-root, not declared by
+# this playbook, so the own-entity minting rule (condition (b)) does not
+# apply either: this is deliberately the "new verb over two fully-inherited
+# entities" shape.
+kind: relation
+name: assembled-from
+from: gadget
+to: widget
+cardinality: many-to-many
+join: [gadget_id, widget_id]
+origin: source-synced
+temporal: false

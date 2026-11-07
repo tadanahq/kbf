@@ -1,0 +1,5 @@
+kind: action
+name: flag-overdue
+"on": book
+approval: automatic
+writes: finding

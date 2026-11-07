@@ -1,0 +1,3 @@
+kind: competency-question
+question: How many widgets has each workshop made?
+expects: [widget-count]

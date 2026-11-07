@@ -1,0 +1,15 @@
+# Mirrors playbooks/core-operations minting a verb on a pair that touches
+# an entity it declares itself, building on the chain's root directly (not
+# through chain-parent): KBF007's own-entity minting rule, condition (b). A
+# playbook may mint a new verb only on a relation touching an entity it
+# declares itself. The finer edge case this rule implies (minting a verb on
+# one pair does not blanket-legalize it playbook-wide for a *different*,
+# fully-inherited pair) is unit-tested directly in
+# tools/internal/lint/chain_test.go's TestChainMintOnOwnEntity, where
+# per-rule finding counts are easy to assert; this fixture stays a clean,
+# wholly valid case, matching conformance's binary ok/not-ok verdict.
+name: chain-mint-own-entity
+version: 0.1.0
+spec: v0
+builds-on: [core-chain-grandparent]
+layer: vertical

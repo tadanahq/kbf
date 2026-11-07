@@ -1,0 +1,6 @@
+# References branch (mid-a) and author (mid-b) together: only resolves
+# if both composed playbooks' content, plus their shared root's `book`,
+# are all visible in the same closure.
+kind: competency-question
+question: Which branch holds each book, and who wrote it?
+expects: [branch, author]

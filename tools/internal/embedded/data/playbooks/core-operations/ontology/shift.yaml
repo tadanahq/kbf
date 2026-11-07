@@ -1,0 +1,14 @@
+# DO NOT EDIT: generated from playbooks/core-operations/ontology/shift.yaml by scripts/embedsync. Edit the source, then run `make embed-sync`.
+kind: entity
+name: shift
+meaning: >-
+  A scheduled block of time an employee works at a location.
+identity: [shift_id]
+resolution: identity-mapping
+tier: structural
+synonyms: {en: [schedule-block], es: [turno]}
+attributes:
+  - {name: starts-at, type: timestamp, slot: hr.shift-start}
+  - {name: ends-at, type: timestamp, slot: hr.shift-end}
+  - {name: labor-cost, type: currency, slot: hr.shift-labor-cost}
+states: [scheduled, completed, cancelled]

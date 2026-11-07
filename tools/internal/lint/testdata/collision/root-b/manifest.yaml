@@ -1,0 +1,8 @@
+# Declares `widget` too: same (kind, name) identity as
+# testdata/collision/root-a's own, independently. See root-a's manifest
+# comment for why loading the two alone does not collide.
+name: coll-root-b
+version: 0.1.0
+spec: v0
+builds-on: []
+layer: core

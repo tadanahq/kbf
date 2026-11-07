@@ -1,0 +1,42 @@
+bistro-demo
+┌────────────┬────────────────────────────────┬─────────┬────────┐
+│ENTITY      │SLOT                            │SOURCE   │STATUS  │
+├────────────┼────────────────────────────────┼─────────┼────────┤
+│customer    │crm.customer-contact            │demopm   │mapped  │
+│customer    │crm.customer-joined-date        │demopm   │mapped  │
+│customer    │crm.customer-name               │demopm   │mapped  │
+│deliverable │delivery.deliverable-due        │         │unmapped│
+│deliverable │delivery.deliverable-label      │demopm   │mapped  │
+│deliverable │delivery.deliverable-status     │         │unmapped│
+│employee    │hr.employee-hire-date           │demobooks│mapped  │
+│employee    │hr.employee-labor-cost          │demobooks│mapped  │
+│employee    │hr.employee-name                │demobooks│mapped  │
+│employee    │hr.employee-role                │demobooks│mapped  │
+│engagement  │delivery.engagement-billed-hours│demopm   │mapped  │
+│engagement  │delivery.engagement-end         │demopm   │mapped  │
+│engagement  │delivery.engagement-label       │demopm   │mapped  │
+│engagement  │delivery.engagement-start       │demopm   │mapped  │
+│engagement  │delivery.engagement-status      │demopm   │mapped  │
+│location    │core.location-address           │demopos  │mapped  │
+│location    │core.location-label             │demopos  │mapped  │
+│location    │core.location-timezone          │demopos  │mapped  │
+│offering    │catalog.offering-category       │demopos  │mapped  │
+│offering    │catalog.offering-label          │demopos  │mapped  │
+│offering    │catalog.offering-price          │demopos  │mapped  │
+│organization│core.organization-display-name  │demobooks│mapped  │
+│organization│core.organization-legal-name    │demobooks│mapped  │
+│organization│core.organization-tax-id        │demobooks│mapped  │
+│purchase    │purchasing.purchase-status      │demobooks│mapped  │
+│purchase    │purchasing.purchase-timestamp   │demobooks│mapped  │
+│purchase    │purchasing.purchase-total       │demobooks│mapped  │
+│shift       │hr.shift-end                    │demobooks│mapped  │
+│shift       │hr.shift-labor-cost             │demobooks│mapped  │
+│shift       │hr.shift-start                  │demobooks│mapped  │
+│supplier    │purchasing.supplier-contact     │demobooks│mapped  │
+│supplier    │purchasing.supplier-name        │demobooks│mapped  │
+│transaction │sales.transaction-status        │demopos  │mapped  │
+│transaction │sales.transaction-timestamp     │demopos  │mapped  │
+│transaction │sales.transaction-total         │demopos  │mapped  │
+└────────────┴────────────────────────────────┴─────────┴────────┘
+33/35 slots mapped (94%)
+

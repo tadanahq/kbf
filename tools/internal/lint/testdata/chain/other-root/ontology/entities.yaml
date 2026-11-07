@@ -1,0 +1,15 @@
+kind: entity
+name: gadget
+meaning: An entity in a sibling chain that never goes through chain-grandparent.
+identity: [gadget_id]
+resolution: identity-mapping
+tier: structural
+---
+kind: entity
+name: widget
+meaning: >-
+  The other end of chain-cousin's bad relation: both endpoints inherited
+  from here, so the own-entity minting rule does not apply either.
+identity: [widget_id]
+resolution: identity-mapping
+tier: structural

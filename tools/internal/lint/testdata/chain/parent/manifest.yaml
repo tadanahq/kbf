@@ -1,0 +1,5 @@
+name: core-chain-parent
+version: 0.1.0
+spec: v0
+builds-on: [core-chain-grandparent]
+layer: core

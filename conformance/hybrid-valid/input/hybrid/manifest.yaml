@@ -1,0 +1,9 @@
+# Composes core-catalog and core-events, two unrelated core playbooks,
+# directly: the hybrid shape (contrast diamond-valid, where the two
+# composed playbooks share a root). Neither core-catalog nor core-events
+# alone has both `book` and `venue` to pair.
+name: downtown-hub
+version: 0.1.0
+spec: v0
+builds-on: [core-catalog, core-events]
+layer: vertical

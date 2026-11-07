@@ -1,0 +1,9 @@
+# Redeclares the parent's `book` and sets `meaning`, a non-glossary
+# field: a fork, not a glossary edit (spec/playbook-format.md's
+# "Composition rules").
+kind: entity
+name: book
+meaning: A redefinition of the parent's book entity.
+identity: [book_id]
+resolution: identity-mapping
+tier: structural

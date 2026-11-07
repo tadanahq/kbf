@@ -1,0 +1,14 @@
+# DO NOT EDIT: generated from playbooks/core-business/ontology/organization.yaml by scripts/embedsync. Edit the source, then run `make embed-sync`.
+kind: entity
+name: organization
+meaning: >-
+  The legal or commercial entity that owns and operates the business.
+identity: [organization_id]
+resolution: identity-mapping
+tier: structural
+synonyms: {en: [company, business], es: [empresa, negocio]}
+attributes:
+  - {name: legal-name, type: text, slot: core.organization-legal-name}
+  - {name: display-name, type: text, slot: core.organization-display-name}
+  - {name: tax-id, type: text, slot: core.organization-tax-id}
+states: [active, inactive]

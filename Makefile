@@ -1,0 +1,79 @@
+# kbf: repo gates.
+#
+# `make check` is the quality gate (AGENTS.md / project-standards.md):
+# gofmt, golangci-lint, go test, `kbf lint` over playbooks/ + examples/
+# (dogfood), the conformance suite, spec doc-extraction, schema-freshness,
+# embed-freshness, and boundaries. Green before any task is marked done.
+
+TOOLS := tools
+SCRIPTS := scripts
+BIN := bin/kbf
+
+.PHONY: check
+check: fmt lint test dogfood-lint conformance spec-examples schema-freshness embed-freshness boundaries
+
+.PHONY: fmt
+fmt:
+	@for mod in $(TOOLS) $(SCRIPTS); do \
+		files="$$(cd $$mod && gofmt -l .)"; \
+		if [ -n "$$files" ]; then \
+			echo "gofmt would reformat ($$mod):"; echo "$$files"; \
+			echo "run: cd $$mod && gofmt -w ."; \
+			exit 1; \
+		fi; \
+	done
+
+.PHONY: lint
+lint:
+	cd $(TOOLS) && golangci-lint run ./...
+	cd $(SCRIPTS) && golangci-lint run ./...
+
+.PHONY: test
+test:
+	cd $(TOOLS) && go test ./...
+
+$(BIN): $(shell find $(TOOLS) -name '*.go') $(TOOLS)/go.mod $(TOOLS)/go.sum
+	@mkdir -p bin
+	cd $(TOOLS) && go build -o ../$(BIN) ./cmd/kbf
+
+.PHONY: build
+build: $(BIN)
+
+.PHONY: dogfood-lint
+dogfood-lint: $(BIN)
+	./$(BIN) lint playbooks/core-business playbooks/core-operations examples/cafe-demo
+	./$(BIN) lint playbooks/core-business playbooks/core-services examples/studio-demo
+	./$(BIN) lint playbooks/core-business playbooks/core-operations playbooks/core-services examples/bistro-demo
+
+.PHONY: conformance
+conformance:
+	cd $(TOOLS) && go test ./internal/conformance/...
+
+.PHONY: spec-examples
+spec-examples:
+	cd $(TOOLS) && go test ./internal/docextract/...
+
+.PHONY: schema
+schema: $(BIN)
+	./$(BIN) schema --out schema
+
+.PHONY: schema-freshness
+schema-freshness: $(BIN)
+	./$(BIN) schema --check --out schema
+
+.PHONY: embed-sync
+embed-sync:
+	cd $(SCRIPTS) && go run ./embedsync --root ..
+
+.PHONY: embed-freshness
+embed-freshness:
+	cd $(SCRIPTS) && go run ./embedsync --root .. --check
+
+.PHONY: boundaries
+boundaries:
+	cd $(SCRIPTS) && go test ./...
+	cd $(SCRIPTS) && go run . --root ..
+
+.PHONY: clean
+clean:
+	rm -rf bin

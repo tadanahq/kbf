@@ -1,0 +1,8 @@
+# The violation: layer: vertical with a name that starts with core-.
+# builds-on is a perfectly valid root, so KBF013's build-target check
+# passes; only the name-prefix check fails. Fails KBF013.
+name: core-downtown-branch
+version: 0.1.0
+spec: v0
+builds-on: [core-library]
+layer: vertical
